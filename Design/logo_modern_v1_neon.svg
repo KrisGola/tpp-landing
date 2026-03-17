@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 215" width="500" height="537">
+  <defs>
+    <!-- Tło segmentów -->
+    <linearGradient id="gTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#060E04"/>
+      <stop offset="100%" stop-color="#0F2209"/>
+    </linearGradient>
+    <linearGradient id="gLeft" x1="0%" y1="0%" x2="100%" y2="130%">
+      <stop offset="0%"   stop-color="#0F2209"/>
+      <stop offset="100%" stop-color="#1A3D0E"/>
+    </linearGradient>
+    <linearGradient id="gRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#1B5E20"/>
+      <stop offset="60%"  stop-color="#2E7D32"/>
+      <stop offset="100%" stop-color="#43A047"/>
+    </linearGradient>
+
+    <!-- Glow na prawym segmencie -->
+    <radialGradient id="gGlow" cx="75%" cy="40%" r="60%">
+      <stop offset="0%"   stop-color="#69F060" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#69F060" stop-opacity="0.00"/>
+    </radialGradient>
+
+    <!-- Shine (refleks górny) -->
+    <linearGradient id="gShine" x1="0%" y1="0%" x2="10%" y2="100%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.13"/>
+      <stop offset="45%"  stop-color="#ffffff" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.00"/>
+    </linearGradient>
+
+    <!-- Obramowanie (jasna krawędź) -->
+    <linearGradient id="gEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#4ADE80" stop-opacity="0.55"/>
+      <stop offset="50%"  stop-color="#4ADE80" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#4ADE80" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Outer glow filtr -->
+    <filter id="outerGlow" x="-20%" y="-15%" width="140%" height="135%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glowFaint" x="-25%" y="-20%" width="150%" height="145%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10"
+                    flood-color="#22C55E" flood-opacity="0.5"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8"
+                    flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <clipPath id="clip"><path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z"/></clipPath>
+  </defs>
+
+  <!-- === Outer glow halo (zielony nimb) === -->
+  <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z" fill="#22C55E" fill-opacity="0.08"
+        transform="scale(1.06) translate(-5.7,-6.5)"/>
+  <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z" fill="#22C55E" fill-opacity="0.04"
+        transform="scale(1.12) translate(-11,-12)"/>
+
+  <!-- === Tarcza === -->
+  <g filter="url(#glowFaint)">
+    <!-- Lewa połowa (ciemna) -->
+    <rect x="0" y="0" width="100" height="215" fill="url(#gLeft)" clip-path="url(#clip)"/>
+    <!-- Prawa połowa (zielona) -->
+    <rect x="100" y="0" width="100" height="215" fill="url(#gRight)" clip-path="url(#clip)"/>
+    <!-- Górna banda (najciemniejsza) -->
+    <rect x="0" y="0" width="200" height="66" fill="url(#gTop)" clip-path="url(#clip)"/>
+    <!-- Glow overlay na prawej stronie -->
+    <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z" fill="url(#gGlow)" clip-path="url(#clip)"/>
+  </g>
+
+  <!-- === Świecące linie separatorów === -->
+  <!-- Pionowy separator lewo/prawo (od góry tarczy do wycinanki) -->
+  <line x1="100" y1="6" x2="100" y2="66"
+        stroke="#4ADE80" stroke-width="0.9" stroke-opacity="0.45"
+        clip-path="url(#clip)"/>
+  <!-- Separator poziomy (dół górnej bandy) -->
+  <path d="M 8 62 Q 100 72 192 62"
+        fill="none" stroke="#4ADE80" stroke-width="0.8" stroke-opacity="0.35"
+        clip-path="url(#clip)"/>
+  <!-- Lewy kontur wycinanki (świecący) -->
+  <path d="M 73 66 Q 59 64 59 72 Q 55 122 100 163"
+        fill="none" stroke="#4ADE80" stroke-width="0.9" stroke-opacity="0.4"
+        clip-path="url(#clip)"/>
+  <!-- Prawy kontur wycinanki -->
+  <path d="M 127 66 Q 141 64 141 72 Q 145 122 100 163"
+        fill="none" stroke="#4ADE80" stroke-width="0.9" stroke-opacity="0.4"
+        clip-path="url(#clip)"/>
+
+  <!-- === Wycinanka U (negatywna przestrzeń) – z frosted glass === -->
+  <!-- Frosted layer (glassmorphism) -->
+  <path d="M 73 66 Q 59 64 59 72 Q 55 122 100 163 Q 145 122 141 72 Q 141 64 127 66 Z" fill="white" fill-opacity="0.06" clip-path="url(#clip)"/>
+  <path d="M 73 66 Q 59 64 59 72 Q 55 122 100 163 Q 145 122 141 72 Q 141 64 127 66 Z" fill="white" clip-path="url(#clip)"/>
+  <!-- Subtelny refleks na wycinance -->
+  <path d="M 73 66 Q 59 64 59 72 Q 56 100 74 128"
+        fill="none" stroke="white" stroke-width="1" stroke-opacity="0.25"
+        clip-path="url(#clip)"/>
+
+  <!-- === Zewnętrzne obramowanie tarczy === -->
+  <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z" fill="none" stroke="url(#gEdge)" stroke-width="1.2"
+        clip-path="url(#clip)"/>
+
+  <!-- === Górny refleks świetlny === -->
+  <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z" fill="url(#gShine)" clip-path="url(#clip)"/>
+</svg>

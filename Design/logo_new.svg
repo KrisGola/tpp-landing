@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="400" height="440">
+  <defs>
+    <!-- Gradient główny: głęboka zieleń → jasna szałwia -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#2D5016"/>
+      <stop offset="50%"  stop-color="#4A7C2F"/>
+      <stop offset="100%" stop-color="#7AAD5A"/>
+    </linearGradient>
+    <!-- Subtelny połysk na górze -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0"/>
+    </linearGradient>
+    <!-- Cień filtr -->
+    <filter id="shadow" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1a3a07" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Tarcza główna – wypełnienie gradientem -->
+  <path d="M100 8
+           L190 42
+           L190 108
+           Q190 168 100 210
+           Q10 168 10 108
+           L10 42 Z"
+        fill="url(#shieldGrad)"
+        filter="url(#shadow)"/>
+
+  <!-- Połysk na górze tarczy -->
+  <path d="M100 8
+           L190 42
+           L190 108
+           Q190 168 100 210
+           Q10 168 10 108
+           L10 42 Z"
+        fill="url(#shineGrad)"/>
+
+  <!-- Wewnętrzna linia konturu tarczy (subtelna) -->
+  <path d="M100 24
+           L175 52
+           L175 110
+           Q175 160 100 196
+           Q25 160 25 110
+           L25 52 Z"
+        fill="none"
+        stroke="rgba(255,255,255,0.15)"
+        stroke-width="1.5"/>
+
+  <!-- Litera "P" – biała, odważna, wycentrowana -->
+  <text x="100" y="148"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="110"
+        font-weight="700"
+        fill="white"
+        fill-opacity="0.95"
+        text-anchor="middle"
+        dominant-baseline="auto"
+        letter-spacing="-2">P</text>
+
+  <!-- Dolna dekoracyjna belka -->
+  <rect x="62" y="164" width="76" height="4" rx="2"
+        fill="white" fill-opacity="0.4"/>
+</svg>

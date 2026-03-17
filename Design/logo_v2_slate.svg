@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 215" width="500" height="537">
+  <defs>
+    <linearGradient id="gD" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%"   stop-color="#0E2117"/>
+      <stop offset="100%" stop-color="#192D20"/>
+    </linearGradient>
+    <linearGradient id="gM" x1="0%" y1="10%" x2="80%" y2="100%">
+      <stop offset="0%"   stop-color="#254D35"/>
+      <stop offset="100%" stop-color="#326648"/>
+    </linearGradient>
+    <linearGradient id="gL" x1="20%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#4E8C62"/>
+      <stop offset="100%" stop-color="#69A87C"/>
+    </linearGradient>
+    <linearGradient id="gS" x1="0%" y1="0%" x2="0%" y2="60%">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0.00"/>
+    </linearGradient>
+    <filter id="sh">
+      <feDropShadow dx="0" dy="5" stdDeviation="7"
+                    flood-color="#0a1f05" flood-opacity="0.28"/>
+    </filter>
+
+    <!-- Kształt tarczy – proporcje jak oryginał (ok. 0.93) -->
+    <!-- Szersza/niżej zaokrąglona – nie igła GPS -->
+    <clipPath id="sh_clip">
+      <path d="M 100 6
+               C 78 6  15 28  8 62
+               Q 4  145 100 210
+               Q 196 145 192 62
+               C 185 28  122 6  100 6 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Cień -->
+  <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z"
+        fill="#0a1f05" fill-opacity="0.22" transform="translate(1,7)" filter="url(#sh)"/>
+
+  <!-- Lewa połówka (medium) -->
+  <rect x="0" y="0" width="100" height="215" fill="url(#gM)" clip-path="url(#sh_clip)"/>
+
+  <!-- Prawa połówka (light) -->
+  <rect x="100" y="0" width="100" height="215" fill="url(#gL)" clip-path="url(#sh_clip)"/>
+
+  <!-- Górna banda (dark) – dokładnie y=0..66 -->
+  <rect x="0" y="0" width="200" height="66" fill="url(#gD)" clip-path="url(#sh_clip)"/>
+
+  <!-- Wycinanka U – skalowana do nowego kształtu -->
+  <!-- Oryginał: otwiera się y=62, max x=59..141 przy y=67, zwęża do (100,165) -->
+  <!-- Przeskalowane do nowej siatki (215px wys): mnożnik 215/220 ≈ 0.977 -->
+  <path d="M 73 66
+           Q 59 64  59 72
+           Q 55 122 100 163
+           Q 145 122 141 72
+           Q 141 64  127 66
+           Z"
+        fill="white" clip-path="url(#sh_clip)"/>
+
+  <!-- Subtelna wewnętrzna ramka -->
+  <path d="M 100 14 C 82 14 22 32 16 64 Q 12 143 100 202 Q 188 143 184 64 C 178 32 118 14 100 14 Z"
+        fill="none" stroke="white" stroke-opacity="0.14" stroke-width="1.5"
+        clip-path="url(#sh_clip)"/>
+
+  <!-- Połysk -->
+  <path d="M 100 6 C 78 6 15 28 8 62 Q 4 145 100 210 Q 196 145 192 62 C 185 28 122 6 100 6 Z"
+        fill="url(#gS)" clip-path="url(#sh_clip)"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="400" height="440">
+  <defs>
+    <linearGradient id="shieldGradD" x1="0%" y1="0%" x2="100%" y2="120%">
+      <stop offset="0%"   stop-color="#7AAD5A"/>
+      <stop offset="100%" stop-color="#4A7C2F"/>
+    </linearGradient>
+    <filter id="glowD">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#7AAD5A" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Tło demo (ciemny sidebar) -->
+  <rect width="200" height="220" fill="#1e2d1a" rx="12"/>
+
+  <!-- Tarcza z zielonym gradientem i glow -->
+  <path d="M100 18
+           L182 48
+           L182 108
+           Q182 164 100 202
+           Q18 164 18 108
+           L18 48 Z"
+        fill="url(#shieldGradD)"
+        filter="url(#glowD)"/>
+
+  <!-- Połysk -->
+  <path d="M100 18 L182 48 L182 78 Q141 68 100 30 Q59 68 18 78 L18 48 Z"
+        fill="white" fill-opacity="0.08"/>
+
+  <!-- Litera P -->
+  <text x="100" y="148"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="110"
+        font-weight="700"
+        fill="white"
+        fill-opacity="0.95"
+        text-anchor="middle"
+        letter-spacing="-2">P</text>
+
+  <rect x="62" y="164" width="76" height="3.5" rx="2"
+        fill="white" fill-opacity="0.35"/>
+</svg>
