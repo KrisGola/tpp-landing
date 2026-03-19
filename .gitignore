@@ -1,0 +1,17 @@
+# Large media files
+*.mov
+*.mp4
+*.avi
+*.mkv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Claude internal
+.claude/
+memory/
