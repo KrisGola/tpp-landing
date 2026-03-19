@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwojaPomocPrawna — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── TOKENS (identical to landing-v2.html) ── */
+    :root {
+      --green-dark:  #1C5E3E;
+      --green-mid:   #1C7C50;
+      --green-light: #25A36A;
+      --lime:        #6BBF90;
+      --lime-hover:  #52A87A;
+      --teal:        #2EC48A;
+
+      --cream:   #F2F0E8;
+      --cream-2: #E8E5DC;
+      --white:   #FFFFFF;
+      --text:    #0D0D0B;
+      --text-2:  #3D3A35;
+      --text-3:  #7A746D;
+      --text-4:  #A8A29C;
+
+      --r-sm: 8px;
+      --r-md: 16px;
+      --r-lg: 24px;
+
+      /* DS-only helpers */
+      --ds-sidebar: 220px;
+      --ds-gap: 48px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #F7F6F2;
+      color: var(--text);
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    .ds-nav {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--ds-sidebar);
+      background: var(--text);
+      padding: 32px 0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+    .ds-nav__brand {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--lime);
+      letter-spacing: 0.5px;
+      padding: 0 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 16px;
+    }
+    .ds-nav__brand span { color: rgba(255,255,255,0.4); font-weight: 400; display: block; font-size: 11px; margin-top: 4px; letter-spacing: 0; }
+    .ds-nav a {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      padding: 8px 24px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .ds-nav a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .ds-nav__group {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 20px 24px 6px;
+    }
+
+    /* ── MAIN ── */
+    .ds-main {
+      margin-left: var(--ds-sidebar);
+      flex: 1;
+      padding: 60px var(--ds-gap);
+      max-width: 1000px;
+    }
+
+    /* ── SECTION ── */
+    .ds-section {
+      margin-bottom: 80px;
+      padding-bottom: 80px;
+      border-bottom: 1px solid var(--cream-2);
+    }
+    .ds-section:last-child { border-bottom: none; }
+    .ds-section__title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--text-4);
+      margin-bottom: 8px;
+    }
+    .ds-section__heading {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .ds-section__desc {
+      font-size: 15px;
+      color: var(--text-3);
+      line-height: 1.65;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+
+    /* ── CODE BLOCK ── */
+    .ds-code {
+      background: var(--text);
+      color: #A8E0C8;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      border-radius: var(--r-md);
+      padding: 20px 24px;
+      margin-top: 20px;
+      overflow-x: auto;
+      position: relative;
+    }
+    .ds-code .c { color: rgba(255,255,255,0.28); }
+    .ds-code .v { color: #6BBF90; }
+    .ds-code .p { color: #fff; }
+    .ds-code .n { color: #A8E0C8; }
+
+    /* ── CANVAS (preview bg) ── */
+    .ds-canvas { background: var(--white); border: 1px solid var(--cream-2); border-radius: var(--r-lg); padding: 40px; margin-bottom: 8px; }
+    .ds-canvas--dark { background: linear-gradient(150deg, #2E9465 0%, #124030 100%); }
+    .ds-canvas--cream { background: var(--cream); }
+
+    /* ── ROW GRID ── */
+    .ds-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+    .ds-col { flex: 1; min-width: 160px; }
+
+    /* ── LABEL ── */
+    .ds-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-4);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .ds-value {
+      font-size: 12px;
+      font-family: 'SF Mono', monospace;
+      color: var(--text-3);
+    }
+
+    /* ════════════════════════════════════
+       COLORS
+    ════════════════════════════════════ */
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .color-chip { border-radius: var(--r-md); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .color-chip__swatch { height: 72px; }
+    .color-chip__info { background: var(--white); padding: 10px 14px; }
+    .color-chip__name { font-size: 12px; font-weight: 700; color: var(--text-2); }
+    .color-chip__hex  { font-size: 11px; font-family: monospace; color: var(--text-4); margin-top: 2px; }
+    .color-chip__var  { font-size: 10px; font-family: monospace; color: var(--lime-hover); margin-top: 2px; }
+
+    /* ════════════════════════════════════
+       TYPOGRAPHY
+    ════════════════════════════════════ */
+    .type-row { padding: 20px 0; border-bottom: 1px solid var(--cream-2); display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { flex-shrink: 0; font-size: 11px; font-family: monospace; color: var(--text-4); text-align: right; line-height: 1.8; }
+
+    /* ════════════════════════════════════
+       SPACING
+    ════════════════════════════════════ */
+    .space-row { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
+    .space-bar { background: var(--lime); border-radius: 4px; height: 20px; flex-shrink: 0; }
+    .space-label { font-size: 13px; font-family: monospace; color: var(--text-3); }
+
+    /* ════════════════════════════════════
+       SHADOWS
+    ════════════════════════════════════ */
+    .shadow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+    .shadow-chip { background: var(--white); border-radius: var(--r-md); padding: 32px 20px; text-align: center; }
+    .shadow-chip__name { font-size: 12px; font-weight: 700; color: var(--text-2); margin-top: 16px; }
+    .shadow-chip__val  { font-size: 10px; font-family: monospace; color: var(--text-4); margin-top: 4px; line-height: 1.5; }
+
+    /* ════════════════════════════════════
+       COPY from landing-v2 (BUTTONS, etc.)
+    ════════════════════════════════════ */
+    .btn-primary {
+      background: var(--cream);
+      color: var(--green-dark);
+      font-size: 15px; font-weight: 800;
+      padding: 15px 32px;
+      border-radius: 100px; border: none; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.22); }
+    .btn-primary--arrow::after { content: '→'; font-size: 16px; }
+
+    .btn-ghost {
+      background: transparent; color: rgba(255,255,255,0.88);
+      font-size: 15px; font-weight: 600;
+      padding: 14px 30px; border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s; font-family: inherit;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.7); color: #fff; background: rgba(255,255,255,0.08); }
+
+    .btn-green {
+      background: var(--green-mid); color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px 30px; border-radius: 100px; border: none; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: background 0.2s, transform 0.15s; font-family: inherit;
+    }
+    .btn-green:hover { background: var(--green-light); transform: translateY(-2px); }
+    .btn-green--arrow::after { content: '→'; }
+
+    .btn-nav-login {
+      background: transparent; color: rgba(255,255,255,0.88);
+      font-size: 14px; font-weight: 600;
+      padding: 10px 20px; border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.28);
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .btn-nav-cta {
+      background: var(--lime); color: var(--green-dark);
+      font-size: 14px; font-weight: 700;
+      padding: 10px 22px; border-radius: 100px; border: none;
+      cursor: pointer; transition: background 0.2s; font-family: inherit;
+    }
+    .btn-nav-cta-scrolled {
+      background: var(--green-mid); color: #fff;
+      font-size: 14px; font-weight: 700;
+      padding: 10px 22px; border-radius: 100px; border: none;
+      cursor: pointer; transition: background 0.2s; font-family: inherit;
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      display: inline-block; color: var(--green-mid);
+      font-size: 12px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+    .eyebrow--light { color: var(--lime); }
+
+    /* Pills */
+    .pill {
+      padding: 9px 20px; border-radius: 100px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      border: 1.5px solid transparent; transition: all 0.2s;
+      background: none; font-family: inherit;
+    }
+    .pill--active   { background: var(--lime); color: var(--green-dark); border-color: var(--lime); }
+    .pill--inactive { color: var(--text-2); border-color: var(--cream-2); }
+    .pill--inactive:hover { border-color: var(--green-mid); color: var(--green-mid); }
+
+    /* Inputs */
+    .ds-input {
+      width: 100%; padding: 15px 22px; border-radius: 100px;
+      border: 2px solid var(--cream-2); background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: 15px; color: var(--text);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ds-input:focus { border-color: var(--green-mid); box-shadow: 0 0 0 4px rgba(28,124,80,0.08); }
+    .ds-input::placeholder { color: var(--text-4); }
+
+    /* Feature row */
+    .feature-row {
+      display: grid; grid-template-columns: 36px 1fr; gap: 16px;
+      padding: 22px 20px; border-radius: var(--r-md);
+      background: var(--white); border: 1px solid var(--cream-2);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .feature-row:hover {
+      box-shadow: 0 6px 24px rgba(28,74,50,0.09);
+      border-color: rgba(28,124,80,0.25);
+      transform: translateX(4px);
+    }
+    .feature-row__num { font-size: 13px; font-weight: 800; color: var(--green-mid); opacity: 0.6; padding-top: 2px; font-variant-numeric: tabular-nums; }
+    .feature-row__text h4 { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; margin-bottom: 5px; }
+    .feature-row__text p  { font-size: 14px; line-height: 1.6; color: var(--text-3); }
+
+    /* Step card */
+    .step-card {
+      border-radius: var(--r-lg); padding: 32px 36px;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .step-card:hover { transform: translateX(8px); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+    .step-card__num { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+    .step-card h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 8px; margin-top: 12px; }
+    .step-card p  { font-size: 15px; line-height: 1.62; }
+    .step-card--white { background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+    .step-card--white .step-card__num { color: var(--lime); }
+    .step-card--white h3 { color: var(--text); }
+    .step-card--white p  { color: var(--text-3); }
+    .step-card--sage { background: #D4EDD8; box-shadow: 0 4px 24px rgba(28,94,62,0.15); }
+    .step-card--sage .step-card__num { color: var(--green-dark); }
+    .step-card--sage h3 { color: var(--text); }
+    .step-card--sage p  { color: var(--text-3); }
+    .step-card--glass { background: rgba(255,255,255,0.22); border: 1.5px solid rgba(255,255,255,0.36); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .step-card--glass .step-card__num { color: #A8E0C8; }
+    .step-card--glass h3 { color: #fff; }
+    .step-card--glass p  { color: rgba(255,255,255,0.72); }
+
+    /* Highlight card */
+    .highlight-card {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--white); border: 1.5px solid rgba(28,124,80,0.2);
+      border-radius: var(--r-lg); padding: 20px 28px;
+      box-shadow: 0 4px 20px rgba(28,74,50,0.07);
+    }
+    .highlight-card__badge {
+      flex-shrink: 0; background: var(--green-mid); color: #fff;
+      font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; padding: 6px 14px; border-radius: 100px;
+    }
+    .highlight-card__text { font-size: 15px; line-height: 1.5; color: var(--text-2); }
+    .highlight-card__text strong { color: var(--green-mid); font-weight: 700; }
+
+    /* Reveal animation */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal--d1 { transition-delay: 0.1s; }
+    .reveal--d2 { transition-delay: 0.2s; }
+    .reveal--d3 { transition-delay: 0.3s; }
+    .reveal--d4 { transition-delay: 0.4s; }
+
+    /* Dot pattern */
+    .dot-pattern-dark::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(186,255,90,0.07) 1px, transparent 1px);
+      background-size: 26px 26px; pointer-events: none; border-radius: inherit;
+    }
+    .dot-pattern-light::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 28px 28px; pointer-events: none; border-radius: inherit;
+    }
+
+    /* Radius demo */
+    .radius-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .radius-chip { width: 80px; height: 80px; background: var(--lime); opacity: 0.7; }
+
+    /* Gradient chips */
+    .grad-chip { height: 80px; border-radius: var(--r-md); margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<nav class="ds-nav">
+  <div class="ds-nav__brand">
+    TwojaPomocPrawna
+    <span>Design System v1.0</span>
+  </div>
+  <div class="ds-nav__group">Foundations</div>
+  <a href="#colors">Colors</a>
+  <a href="#typography">Typography</a>
+  <a href="#spacing">Spacing</a>
+  <a href="#radii">Border Radius</a>
+  <a href="#shadows">Shadows</a>
+  <a href="#gradients">Gradients & Textures</a>
+  <div class="ds-nav__group">Components</div>
+  <a href="#buttons">Buttons</a>
+  <a href="#inputs">Form Inputs</a>
+  <a href="#pills">Pills / Tags</a>
+  <a href="#eyebrow">Eyebrow Label</a>
+  <a href="#cards">Cards</a>
+  <a href="#navigation">Navigation</a>
+  <div class="ds-nav__group">Motion</div>
+  <a href="#animation">Animations</a>
+  <a href="#transitions">Transitions</a>
+  <div class="ds-nav__group">Usage</div>
+  <a href="#tokens">CSS Tokens</a>
+  <a href="#contexts">Contexts</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="ds-main">
+
+  <div style="margin-bottom:60px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-4);margin-bottom:8px;">TwojaPomocPrawna</div>
+    <h1 style="font-size:48px;font-weight:900;letter-spacing:-2px;color:var(--text);line-height:1.05;">Design System</h1>
+    <p style="font-size:16px;color:var(--text-3);margin-top:12px;line-height:1.6;max-width:560px;">Kompletne tokeny, komponenty i zasady stylistyczne dla wszystkich powierzchni produktu — landing page, panel prawnika, aplikacja klienta.</p>
+  </div>
+
+  <!-- ════ COLORS ════ -->
+  <section class="ds-section" id="colors">
+    <div class="ds-section__title">01 — Foundations</div>
+    <h2 class="ds-section__heading">Colors</h2>
+    <p class="ds-section__desc">Paleta oparta na leśnej zieleni z ciepłą kremową bazą. Zielenie służą do akcentów, CTA i brandingu. Kremowe neutralne tworzą tło. Biele są zarezerwowane dla kart i stopek.</p>
+
+    <div style="margin-bottom:32px;">
+      <div class="ds-label" style="margin-bottom:12px;">Brand Greens</div>
+      <div class="color-grid">
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#1C5E3E;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Green Dark</div>
+            <div class="color-chip__hex">#1C5E3E</div>
+            <div class="color-chip__var">--green-dark</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#1C7C50;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Green Mid</div>
+            <div class="color-chip__hex">#1C7C50</div>
+            <div class="color-chip__var">--green-mid</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#25A36A;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Green Light</div>
+            <div class="color-chip__hex">#25A36A</div>
+            <div class="color-chip__var">--green-light</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#6BBF90;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Lime</div>
+            <div class="color-chip__hex">#6BBF90</div>
+            <div class="color-chip__var">--lime</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#52A87A;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Lime Hover</div>
+            <div class="color-chip__hex">#52A87A</div>
+            <div class="color-chip__var">--lime-hover</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#2EC48A;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Teal</div>
+            <div class="color-chip__hex">#2EC48A</div>
+            <div class="color-chip__var">--teal</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#D4EDD8;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Sage</div>
+            <div class="color-chip__hex">#D4EDD8</div>
+            <div class="color-chip__var">— (card bg)</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#A8E0C8;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Mint Accent</div>
+            <div class="color-chip__hex">#A8E0C8</div>
+            <div class="color-chip__var">— (glass num)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="ds-label" style="margin-bottom:12px;">Neutrals</div>
+      <div class="color-grid">
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#F2F0E8; border:1px solid #E8E5DC;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Cream</div>
+            <div class="color-chip__hex">#F2F0E8</div>
+            <div class="color-chip__var">--cream</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#E8E5DC;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Cream 2</div>
+            <div class="color-chip__hex">#E8E5DC</div>
+            <div class="color-chip__var">--cream-2</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#FFFFFF; border:1px solid #E8E5DC;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">White</div>
+            <div class="color-chip__hex">#FFFFFF</div>
+            <div class="color-chip__var">--white</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#0D0D0B;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Text</div>
+            <div class="color-chip__hex">#0D0D0B</div>
+            <div class="color-chip__var">--text</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#3D3A35;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Text 2</div>
+            <div class="color-chip__hex">#3D3A35</div>
+            <div class="color-chip__var">--text-2</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#7A746D;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Text 3</div>
+            <div class="color-chip__hex">#7A746D</div>
+            <div class="color-chip__var">--text-3</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip__swatch" style="background:#A8A29C;"></div>
+          <div class="color-chip__info">
+            <div class="color-chip__name">Text 4 / Muted</div>
+            <div class="color-chip__hex">#A8A29C</div>
+            <div class="color-chip__var">--text-4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ TYPOGRAPHY ════ -->
+  <section class="ds-section" id="typography">
+    <div class="ds-section__title">01 — Foundations</div>
+    <h2 class="ds-section__heading">Typography</h2>
+    <p class="ds-section__desc">Jedyna rodzina czcionek: <strong>Inter</strong> (Google Fonts). Wagi: 400, 500, 600, 700, 800, 900. Letter-spacing ujemny dla nagłówków.</p>
+
+    <div style="background:var(--white);border:1px solid var(--cream-2);border-radius:var(--r-lg);padding:40px;">
+
+      <div class="type-row">
+        <div style="font-size:clamp(44px,7vw,80px);font-weight:900;line-height:1.05;letter-spacing:-2px;color:var(--text);">Hero Title</div>
+        <div class="type-meta">clamp(44px, 7vw, 80px)<br>weight 900 · tracking -2px<br>line-height 1.05</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:clamp(36px,5vw,58px);font-weight:900;line-height:1.1;letter-spacing:-1.5px;color:var(--text);">Section Heading</div>
+        <div class="type-meta">clamp(36px, 5vw, 58px)<br>weight 900 · tracking -1.5px<br>line-height 1.1</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:clamp(36px,4.5vw,54px);font-weight:900;line-height:1.08;letter-spacing:-1.5px;color:var(--text);">Features Heading</div>
+        <div class="type-meta">clamp(36px, 4.5vw, 54px)<br>weight 900 · tracking -1.5px<br>line-height 1.08</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:20px;font-weight:800;letter-spacing:-0.4px;color:var(--text);">Card Title (h3)</div>
+        <div class="type-meta">20px · weight 800<br>tracking -0.4px</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:16px;font-weight:800;letter-spacing:-0.3px;color:var(--text);">Feature Row Title (h4)</div>
+        <div class="type-meta">16px · weight 800<br>tracking -0.3px</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:18px;font-weight:400;line-height:1.65;color:var(--text-3);">Hero subtitle — body large. Tłumaczymy prawo na ludzki język dla każdego.</div>
+        <div class="type-meta">18px · weight 400<br>line-height 1.65</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:16px;font-weight:400;line-height:1.7;color:var(--text-3);">Body standard — opis sekcji, tekst akapitowy, lead pod nagłówkiem.</div>
+        <div class="type-meta">16px · weight 400<br>line-height 1.7</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:15px;font-weight:400;line-height:1.62;color:var(--text-3);">Body small — treść kart, opisy kroków, tekst w listach.</div>
+        <div class="type-meta">15px · weight 400<br>line-height 1.62</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:14px;font-weight:400;line-height:1.6;color:var(--text-3);">Body XS — linki w stopce, opisy pomocnicze.</div>
+        <div class="type-meta">14px · weight 400<br>line-height 1.6</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:13px;font-weight:400;color:var(--text-4);">Caption / Note — drobne adnotacje, disclaimery.</div>
+        <div class="type-meta">13px · weight 400</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-mid);">EYEBROW LABEL</div>
+        <div class="type-meta">12px · weight 700<br>tracking 1.2px · uppercase</div>
+      </div>
+
+      <div class="type-row">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-4);">MICRO LABEL / NAV SECTION</div>
+        <div class="type-meta">11px · weight 700<br>tracking 1px · uppercase</div>
+      </div>
+
+      <div class="type-row" style="border-bottom:none;">
+        <div style="font-size:56px;font-weight:900;line-height:1;letter-spacing:-2px;color:var(--lime);">01</div>
+        <div class="type-meta">56px · weight 900<br>tracking -2px<br>(step card number)</div>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* Font import */</span>
+<span class="p">@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');</span>
+
+<span class="c">/* Base */</span>
+<span class="n">body</span> { <span class="v">font-family</span>: <span class="p">'Inter', sans-serif</span>; }
+
+<span class="c">/* Hero title */</span>
+<span class="n">font-size</span>: <span class="p">clamp(44px, 7vw, 80px)</span>; <span class="n">font-weight</span>: <span class="p">900</span>; <span class="n">letter-spacing</span>: <span class="p">-2px</span>;
+
+<span class="c">/* Section heading */</span>
+<span class="n">font-size</span>: <span class="p">clamp(36px, 5vw, 58px)</span>; <span class="n">font-weight</span>: <span class="p">900</span>; <span class="n">letter-spacing</span>: <span class="p">-1.5px</span>;
+
+<span class="c">/* Eyebrow */</span>
+<span class="n">font-size</span>: <span class="p">12px</span>; <span class="n">font-weight</span>: <span class="p">700</span>; <span class="n">letter-spacing</span>: <span class="p">1.2px</span>; <span class="n">text-transform</span>: <span class="p">uppercase</span>;</div>
+  </section>
+
+  <!-- ════ SPACING ════ -->
+  <section class="ds-section" id="spacing">
+    <div class="ds-section__title">01 — Foundations</div>
+    <h2 class="ds-section__heading">Spacing Scale</h2>
+    <p class="ds-section__desc">Sekcje używają padding 100px top/bottom. Wewnętrzne odstępy oparte na skali 4px.</p>
+
+    <div style="background:var(--white);border:1px solid var(--cream-2);border-radius:var(--r-lg);padding:40px;">
+      <div class="space-row"><div class="space-bar" style="width:4px;"></div><span class="space-label">4px — micro gap (ikona/tekst)</span></div>
+      <div class="space-row"><div class="space-bar" style="width:8px;"></div><span class="space-label">8px — gap w przyciskach</span></div>
+      <div class="space-row"><div class="space-bar" style="width:10px;"></div><span class="space-label">10px — gap w pill-group</span></div>
+      <div class="space-row"><div class="space-bar" style="width:14px;"></div><span class="space-label">14px — gap między przyciskami hero</span></div>
+      <div class="space-row"><div class="space-bar" style="width:16px;"></div><span class="space-label">16px — gap w feature-row, margin-bottom eyebrow</span></div>
+      <div class="space-row"><div class="space-bar" style="width:20px;"></div><span class="space-label">20px — padding card header</span></div>
+      <div class="space-row"><div class="space-bar" style="width:24px;"></div><span class="space-label">24px — h-padding sekcji mobile, margin-bottom tytułów</span></div>
+      <div class="space-row"><div class="space-bar" style="width:32px;"></div><span class="space-label">32px — gap w step-card, gap nav links</span></div>
+      <div class="space-row"><div class="space-bar" style="width:40px;"></div><span class="space-label">40px — hero stats padding-top, hero sub margin-bottom</span></div>
+      <div class="space-row"><div class="space-bar" style="width:48px;"></div><span class="space-label">48px — nav h-padding desktop, hero stat gap</span></div>
+      <div class="space-row"><div class="space-bar" style="width:60px;"></div><span class="space-label">60px — search header margin-bottom</span></div>
+      <div class="space-row"><div class="space-bar" style="width:64px;"></div><span class="space-label">64px — steps header margin-bottom</span></div>
+      <div class="space-row"><div class="space-bar" style="width:72px;"></div><span class="space-label">72px — hero stats margin-top</span></div>
+      <div class="space-row"><div class="space-bar" style="width:100px;"></div><span class="space-label">100px — section padding vertical</span></div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* Section padding */</span>
+<span class="n">padding</span>: <span class="p">100px 24px</span>;
+
+<span class="c">/* Max widths */</span>
+<span class="n">max-width</span>: <span class="p">1140px</span>; <span class="c">/* full layout */</span>
+<span class="n">max-width</span>: <span class="p">820px</span>;  <span class="c">/* hero inner */</span>
+<span class="n">max-width</span>: <span class="p">680px</span>;  <span class="c">/* steps list */</span>
+<span class="n">max-width</span>: <span class="p">640px</span>;  <span class="c">/* waitlist / narrow content */</span>
+<span class="n">max-width</span>: <span class="p">560px</span>;  <span class="c">/* hero subtitle */</span>
+<span class="n">max-width</span>: <span class="p">480px</span>;  <span class="c">/* form row */</span></div>
+  </section>
+
+  <!-- ════ RADII ════ -->
+  <section class="ds-section" id="radii">
+    <div class="ds-section__title">01 — Foundations</div>
+    <h2 class="ds-section__heading">Border Radius</h2>
+
+    <div class="ds-canvas">
+      <div class="ds-row">
+        <div class="ds-col">
+          <div class="ds-label">--r-sm · 8px</div>
+          <div class="radius-chip" style="border-radius:8px;"></div>
+          <div class="ds-value">Małe elementy, tagi, numery</div>
+        </div>
+        <div class="ds-col">
+          <div class="ds-label">--r-md · 16px</div>
+          <div class="radius-chip" style="border-radius:16px;"></div>
+          <div class="ds-value">Feature cards, inputy w siatce</div>
+        </div>
+        <div class="ds-col">
+          <div class="ds-label">--r-lg · 24px</div>
+          <div class="radius-chip" style="border-radius:24px;"></div>
+          <div class="ds-value">Step cards, highlight cards, główne bloki</div>
+        </div>
+        <div class="ds-col">
+          <div class="ds-label">100px (pill)</div>
+          <div class="radius-chip" style="border-radius:100px; height:40px; width:120px;"></div>
+          <div class="ds-value">Przyciski, inputy tekstowe, tagi pill</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* Radius tokens */</span>
+<span class="v">--r-sm</span>: <span class="p">8px</span>;   <span class="c">/* small elements */</span>
+<span class="v">--r-md</span>: <span class="p">16px</span>;  <span class="c">/* cards, rows */</span>
+<span class="v">--r-lg</span>: <span class="p">24px</span>;  <span class="c">/* major blocks */</span>
+
+<span class="c">/* Buttons & inputs always use: */</span>
+<span class="n">border-radius</span>: <span class="p">100px</span>;</div>
+  </section>
+
+  <!-- ════ SHADOWS ════ -->
+  <section class="ds-section" id="shadows">
+    <div class="ds-section__title">01 — Foundations</div>
+    <h2 class="ds-section__heading">Shadows</h2>
+
+    <div class="shadow-grid">
+      <div class="shadow-chip" style="box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+        <div class="shadow-chip__name">Subtle</div>
+        <div class="shadow-chip__val">0 1px 4px rgba(0,0,0,0.04)<br><br>Feature row default</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 4px 20px rgba(0,0,0,0.18);">
+        <div class="shadow-chip__name">Elevated</div>
+        <div class="shadow-chip__val">0 4px 20px rgba(0,0,0,0.18)<br><br>Btn-primary, highlight cards</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 4px 24px rgba(0,0,0,0.12);">
+        <div class="shadow-chip__name">Card White</div>
+        <div class="shadow-chip__val">0 4px 24px rgba(0,0,0,0.12)<br><br>Step card white variant</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 4px 24px rgba(28,94,62,0.15);">
+        <div class="shadow-chip__name">Card Green</div>
+        <div class="shadow-chip__val">0 4px 24px rgba(28,94,62,0.15)<br><br>Step card sage variant</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 6px 24px rgba(28,74,50,0.09);">
+        <div class="shadow-chip__name">Feature Active</div>
+        <div class="shadow-chip__val">0 6px 24px rgba(28,74,50,0.09)<br><br>Feature row hover/active</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 4px 20px rgba(28,74,50,0.07);">
+        <div class="shadow-chip__name">Card Subtle Green</div>
+        <div class="shadow-chip__val">0 4px 20px rgba(28,74,50,0.07)<br><br>Highlight info cards</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 12px 40px rgba(0,0,0,0.22);">
+        <div class="shadow-chip__name">Hover Large</div>
+        <div class="shadow-chip__val">0 12px 40px rgba(0,0,0,0.22)<br><br>Btn-primary hover</div>
+      </div>
+      <div class="shadow-chip" style="box-shadow:0 0 0 4px rgba(28,124,80,0.08);">
+        <div class="shadow-chip__name">Focus Ring</div>
+        <div class="shadow-chip__val">0 0 0 4px rgba(28,124,80,0.08)<br><br>Input focus state</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ GRADIENTS ════ -->
+  <section class="ds-section" id="gradients">
+    <div class="ds-section__title">01 — Foundations</div>
+    <h2 class="ds-section__heading">Gradients & Textures</h2>
+
+    <div class="ds-row" style="margin-bottom:24px;">
+      <div class="ds-col" style="min-width:200px;">
+        <div class="ds-label">Hero gradient</div>
+        <div class="grad-chip" style="background:linear-gradient(150deg,#2E9465 0%,#1F7A52 35%,#196045 65%,#124030 100%);"></div>
+        <div class="ds-value">150deg · 4 stops</div>
+      </div>
+      <div class="ds-col" style="min-width:200px;">
+        <div class="ds-label">Steps section gradient</div>
+        <div class="grad-chip" style="background:linear-gradient(160deg,#1E7A50 0%,#1A6040 50%,#175238 100%);"></div>
+        <div class="ds-value">160deg · 3 stops (darker)</div>
+      </div>
+      <div class="ds-col" style="min-width:200px;">
+        <div class="ds-label">Nav on dark (frosted)</div>
+        <div class="grad-chip" style="background:rgba(18,64,48,0.6);backdrop-filter:blur(16px);"></div>
+        <div class="ds-value">rgba(18,64,48,0.6) + blur(16px)</div>
+      </div>
+      <div class="ds-col" style="min-width:200px;">
+        <div class="ds-label">Nav scrolled (frosted white)</div>
+        <div class="grad-chip" style="background:rgba(255,255,255,0.95);"></div>
+        <div class="ds-value">rgba(255,255,255,0.95)</div>
+      </div>
+    </div>
+
+    <div class="ds-label" style="margin-bottom:12px;">Dot texture overlays</div>
+    <div class="ds-row">
+      <div class="ds-col" style="min-width:220px;">
+        <div style="position:relative;height:80px;border-radius:var(--r-md);background:linear-gradient(150deg,#2E9465 0%,#124030 100%);overflow:hidden;">
+          <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(186,255,90,0.07) 1px,transparent 1px);background-size:26px 26px;"></div>
+        </div>
+        <div class="ds-label" style="margin-top:8px;">Dark hero texture</div>
+        <div class="ds-value">rgba(186,255,90,0.07) · 26px grid</div>
+      </div>
+      <div class="ds-col" style="min-width:220px;">
+        <div style="position:relative;height:80px;border-radius:var(--r-md);background:linear-gradient(160deg,#1E7A50 0%,#175238 100%);overflow:hidden;">
+          <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.06) 1px,transparent 1px);background-size:28px 28px;"></div>
+        </div>
+        <div class="ds-label" style="margin-top:8px;">Steps section texture</div>
+        <div class="ds-value">rgba(255,255,255,0.06) · 28px grid</div>
+      </div>
+      <div class="ds-col" style="min-width:220px;">
+        <div style="position:relative;height:80px;border-radius:var(--r-md);background:linear-gradient(150deg,#2E9465 0%,#124030 100%);overflow:hidden;">
+          <div style="position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(46,148,101,0.35) 0%,transparent 70%);filter:blur(80px);top:-100px;left:-100px;border-radius:50%;"></div>
+          <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(186,255,90,0.12) 0%,transparent 70%);filter:blur(80px);bottom:-120px;right:-100px;border-radius:50%;"></div>
+        </div>
+        <div class="ds-label" style="margin-top:8px;">Blob glows (hero)</div>
+        <div class="ds-value">filter:blur(80px) · 3 blobs</div>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* Hero */</span>
+<span class="n">background</span>: <span class="p">linear-gradient(150deg, #2E9465 0%, #1F7A52 35%, #196045 65%, #124030 100%)</span>;
+
+<span class="c">/* Steps / dark sections */</span>
+<span class="n">background</span>: <span class="p">linear-gradient(160deg, #1E7A50 0%, #1A6040 50%, #175238 100%)</span>;
+
+<span class="c">/* Dot grid — on dark */</span>
+<span class="n">background-image</span>: <span class="p">radial-gradient(circle, rgba(186,255,90,0.07) 1px, transparent 1px)</span>;
+<span class="n">background-size</span>: <span class="p">26px 26px</span>;
+
+<span class="c">/* Nav frosted glass */</span>
+<span class="n">background</span>: <span class="p">rgba(18, 64, 48, 0.6)</span>;
+<span class="n">backdrop-filter</span>: <span class="p">blur(16px)</span>;</div>
+  </section>
+
+  <!-- ════ BUTTONS ════ -->
+  <section class="ds-section" id="buttons">
+    <div class="ds-section__title">02 — Components</div>
+    <h2 class="ds-section__heading">Buttons</h2>
+    <p class="ds-section__desc">Trzy warianty. Zawsze <code style="font-family:monospace;font-size:13px;background:var(--cream);padding:2px 6px;border-radius:4px;">border-radius: 100px</code>. Hover zawsze: <code style="font-family:monospace;font-size:13px;background:var(--cream);padding:2px 6px;border-radius:4px;">translateY(-2px)</code>.</p>
+
+    <div class="ds-label">btn-primary — na ciemnym tle (hero)</div>
+    <div class="ds-canvas ds-canvas--dark" style="margin-bottom:24px;">
+      <div class="ds-row">
+        <button class="btn-primary btn-primary--arrow">Dołącz do listy</button>
+        <button class="btn-ghost">Zobacz jak działa</button>
+      </div>
+    </div>
+
+    <div class="ds-label">btn-green — na jasnym tle</div>
+    <div class="ds-canvas" style="margin-bottom:24px;">
+      <div class="ds-row">
+        <button class="btn-green btn-green--arrow">Zacznij bezpłatnie</button>
+        <button class="btn-green btn-green--arrow" disabled style="opacity:0.4;cursor:not-allowed;transform:none;">Niedostępny</button>
+      </div>
+    </div>
+
+    <div class="ds-label">Nav buttons — dwa stany nawigacji</div>
+    <div class="ds-canvas ds-canvas--dark" style="margin-bottom:8px;">
+      <div class="ds-row">
+        <span style="color:rgba(255,255,255,0.5);font-size:13px;align-self:center;">nav on dark:</span>
+        <button class="btn-nav-login">Zaloguj się</button>
+        <button class="btn-nav-cta">Dołącz bezpłatnie</button>
+      </div>
+    </div>
+    <div class="ds-canvas" style="margin-bottom:24px;">
+      <div class="ds-row">
+        <span style="color:var(--text-4);font-size:13px;align-self:center;">nav scrolled:</span>
+        <button style="background:transparent;color:var(--text-2);font-size:14px;font-weight:600;padding:10px 20px;border-radius:100px;border:1.5px solid rgba(28,74,50,0.25);cursor:pointer;font-family:inherit;">Zaloguj się</button>
+        <button class="btn-nav-cta-scrolled">Dołącz bezpłatnie</button>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* btn-primary (on dark) */</span>
+<span class="n">.btn-primary</span> {
+  background: <span class="v">var(--cream)</span>; color: <span class="v">var(--green-dark)</span>;
+  font-size: <span class="p">15px</span>; font-weight: <span class="p">800</span>; padding: <span class="p">15px 32px</span>;
+  border-radius: <span class="p">100px</span>; border: <span class="p">none</span>;
+  box-shadow: <span class="p">0 4px 20px rgba(0,0,0,0.18)</span>;
+  transition: <span class="p">background 0.2s, transform 0.15s, box-shadow 0.2s</span>;
+}
+<span class="n">.btn-primary:hover</span> { background: <span class="v">#fff</span>; transform: <span class="p">translateY(-2px)</span>; }
+<span class="n">.btn-primary--arrow::after</span> { content: <span class="p">'→'</span>; }
+
+<span class="c">/* btn-ghost (on dark) */</span>
+<span class="n">.btn-ghost</span> {
+  background: <span class="p">transparent</span>; color: <span class="p">rgba(255,255,255,0.88)</span>;
+  font-size: <span class="p">15px</span>; font-weight: <span class="p">600</span>; padding: <span class="p">14px 30px</span>;
+  border-radius: <span class="p">100px</span>; border: <span class="p">1.5px solid rgba(255,255,255,0.3)</span>;
+  transition: <span class="p">border-color 0.2s, color 0.2s, background 0.2s</span>;
+}
+
+<span class="c">/* btn-green (on light) */</span>
+<span class="n">.btn-green</span> {
+  background: <span class="v">var(--green-mid)</span>; color: <span class="p">#fff</span>;
+  font-size: <span class="p">15px</span>; font-weight: <span class="p">700</span>; padding: <span class="p">14px 30px</span>;
+  border-radius: <span class="p">100px</span>; border: <span class="p">none</span>;
+  transition: <span class="p">background 0.2s, transform 0.15s</span>;
+}
+<span class="n">.btn-green:hover</span> { background: <span class="v">var(--green-light)</span>; transform: <span class="p">translateY(-2px)</span>; }</div>
+  </section>
+
+  <!-- ════ INPUTS ════ -->
+  <section class="ds-section" id="inputs">
+    <div class="ds-section__title">02 — Components</div>
+    <h2 class="ds-section__heading">Form Inputs</h2>
+
+    <div class="ds-canvas ds-canvas--cream" style="margin-bottom:24px;">
+      <div style="display:flex;flex-direction:column;gap:20px;max-width:500px;">
+        <div>
+          <div class="ds-label">Input default</div>
+          <input class="ds-input" type="text" placeholder="np. prawo rodzinne, Warszawa…">
+        </div>
+        <div>
+          <div class="ds-label">Input focus (kliknij)</div>
+          <input class="ds-input" type="email" placeholder="twoj@email.pl" style="border-color:var(--green-mid);box-shadow:0 0 0 4px rgba(28,124,80,0.08);">
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-label">Search input (z przyciskiem wewnątrz)</div>
+    <div class="ds-canvas" style="margin-bottom:24px;">
+      <div style="position:relative;max-width:540px;">
+        <input type="text" placeholder="Opisz swoją sprawę lub wpisz specjalizację…" style="width:100%;padding:18px 150px 18px 28px;border-radius:100px;border:2px solid var(--cream-2);background:var(--cream);font-family:Inter,sans-serif;font-size:15px;color:var(--text);outline:none;">
+        <button style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--green-dark);color:#fff;font-size:14px;font-weight:700;padding:11px 22px;border-radius:100px;border:none;cursor:pointer;font-family:inherit;">Szukaj</button>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* Standard input */</span>
+<span class="n">.ds-input</span> {
+  padding: <span class="p">15px 22px</span>; border-radius: <span class="p">100px</span>;
+  border: <span class="p">2px solid var(--cream-2)</span>; background: <span class="v">var(--white)</span>;
+  font-size: <span class="p">15px</span>; transition: <span class="p">border-color 0.2s, box-shadow 0.2s</span>;
+}
+<span class="n">.ds-input:focus</span> {
+  border-color: <span class="v">var(--green-mid)</span>;
+  box-shadow: <span class="p">0 0 0 4px rgba(28,124,80,0.08)</span>;
+}
+
+<span class="c">/* Search input (larger, button inside) */</span>
+<span class="n">padding</span>: <span class="p">18px 140px 18px 28px</span>; <span class="c">/* space for inner button */</span>
+<span class="n">background</span>: <span class="v">var(--cream)</span>; <span class="c">/* slightly tinted */</span></div>
+  </section>
+
+  <!-- ════ PILLS ════ -->
+  <section class="ds-section" id="pills">
+    <div class="ds-section__title">02 — Components</div>
+    <h2 class="ds-section__heading">Pills / Filter Tags</h2>
+
+    <div class="ds-canvas" style="margin-bottom:24px;">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <button class="pill pill--active">Wszystkie</button>
+        <button class="pill pill--inactive">Prawo rodzinne</button>
+        <button class="pill pill--inactive">Prawo pracy</button>
+        <button class="pill pill--inactive">Prawo karne</button>
+        <button class="pill pill--inactive">Nieruchomości</button>
+        <button class="pill pill--inactive">Prawo podatkowe</button>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="n">.pill</span> { padding: <span class="p">9px 20px</span>; border-radius: <span class="p">100px</span>; font-size: <span class="p">14px</span>; font-weight: <span class="p">600</span>; border: <span class="p">1.5px solid transparent</span>; }
+<span class="n">.pill--active</span>   { background: <span class="v">var(--lime)</span>; color: <span class="v">var(--green-dark)</span>; border-color: <span class="v">var(--lime)</span>; }
+<span class="n">.pill--inactive</span> { color: <span class="v">var(--text-2)</span>; border-color: <span class="v">var(--cream-2)</span>; }
+<span class="n">.pill--inactive:hover</span> { border-color: <span class="v">var(--green-mid)</span>; color: <span class="v">var(--green-mid)</span>; }
+
+<span class="c">/* Badge (filled, uppercase) */</span>
+<span class="n">.badge</span> {
+  background: <span class="v">var(--green-mid)</span>; color: <span class="p">#fff</span>;
+  font-size: <span class="p">11px</span>; font-weight: <span class="p">800</span>; letter-spacing: <span class="p">1px</span>;
+  text-transform: <span class="p">uppercase</span>; padding: <span class="p">6px 14px</span>; border-radius: <span class="p">100px</span>;
+}</div>
+  </section>
+
+  <!-- ════ EYEBROW ════ -->
+  <section class="ds-section" id="eyebrow">
+    <div class="ds-section__title">02 — Components</div>
+    <h2 class="ds-section__heading">Eyebrow Label</h2>
+    <p class="ds-section__desc">Drobny element nad nagłówkami sekcji. Dwa warianty: ciemny (na jasnym tle) i jasny (na zielonym tle).</p>
+
+    <div class="ds-canvas" style="margin-bottom:12px;">
+      <div class="eyebrow">Funkcje platformy</div>
+      <div style="font-size:36px;font-weight:900;letter-spacing:-1.5px;">Tytuł sekcji</div>
+    </div>
+    <div class="ds-canvas ds-canvas--dark" style="margin-bottom:24px;">
+      <div class="eyebrow eyebrow--light">Jak to działa</div>
+      <div style="font-size:36px;font-weight:900;letter-spacing:-1.5px;color:#fff;">Tytuł sekcji</div>
+    </div>
+
+    <div class="ds-code">
+<span class="n">.eyebrow</span> { color: <span class="v">var(--green-mid)</span>; font-size: <span class="p">12px</span>; font-weight: <span class="p">700</span>; letter-spacing: <span class="p">1.2px</span>; text-transform: <span class="p">uppercase</span>; margin-bottom: <span class="p">16px</span>; }
+<span class="n">.eyebrow--light</span> { color: <span class="v">var(--lime)</span>; } <span class="c">/* on dark backgrounds */</span></div>
+  </section>
+
+  <!-- ════ CARDS ════ -->
+  <section class="ds-section" id="cards">
+    <div class="ds-section__title">02 — Components</div>
+    <h2 class="ds-section__heading">Cards</h2>
+
+    <div class="ds-label" style="margin-bottom:12px;">Step Cards (3 warianty) — na ciemnym tle</div>
+    <div class="ds-canvas ds-canvas--dark" style="margin-bottom:24px;">
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:560px;">
+        <div class="step-card step-card--white">
+          <div class="step-card__num">01</div>
+          <h3>AI odpowiada od razu</h3>
+          <p>Opisz sytuację lub wgraj dokument. AI wyjaśni Twoje prawa i wskaże ryzyka.</p>
+        </div>
+        <div class="step-card step-card--sage">
+          <div class="step-card__num">02</div>
+          <h3>Dopasowana lista specjalistów</h3>
+          <p>AI dobiera prawników według dziedziny, lokalizacji i ocen klientów.</p>
+        </div>
+        <div class="step-card step-card--glass">
+          <div class="step-card__num">03</div>
+          <h3>Umów konsultację online</h3>
+          <p>Wybierz prawnika, termin i formę spotkania. Płacisz bezpiecznie przez platformę.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-label" style="margin-bottom:12px;">Feature Row Cards — na kremowym tle</div>
+    <div class="ds-canvas ds-canvas--cream" style="margin-bottom:24px;">
+      <div style="display:flex;flex-direction:column;gap:4px;max-width:480px;">
+        <div class="feature-row">
+          <span class="feature-row__num">01</span>
+          <div class="feature-row__text">
+            <h4>Analiza dokumentów przez AI</h4>
+            <p>Prześlij umowę. AI wskaże ryzyka zanim prawnik ją przejrzy.</p>
+          </div>
+        </div>
+        <div class="feature-row" style="box-shadow:0 6px 24px rgba(28,74,50,0.09);border-color:rgba(28,124,80,0.25);transform:translateX(4px);">
+          <span class="feature-row__num">02</span>
+          <div class="feature-row__text">
+            <h4>Inteligentne dopasowanie</h4>
+            <p>Platforma dobiera specjalistę według dziedziny, lokalizacji i ocen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-label" style="margin-bottom:12px;">Highlight / Info Card</div>
+    <div class="ds-canvas" style="margin-bottom:24px;">
+      <div class="highlight-card" style="max-width:480px;">
+        <div class="highlight-card__badge">Beta</div>
+        <p class="highlight-card__text">Pierwsze <strong>500 kancelarii</strong> otrzyma dostęp bezpłatnie przez 3 miesiące</p>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* Step card base */</span>
+<span class="n">.step-card</span> { border-radius: <span class="v">var(--r-lg)</span>; padding: <span class="p">32px 36px</span>; transition: <span class="p">transform 0.25s, box-shadow 0.25s</span>; }
+<span class="n">.step-card:hover</span> { transform: <span class="p">translateX(8px)</span>; box-shadow: <span class="p">0 12px 40px rgba(0,0,0,0.2)</span>; }
+
+<span class="c">/* Step card —- white */</span>
+<span class="n">background</span>: <span class="p">#fff</span>; box-shadow: <span class="p">0 4px 24px rgba(0,0,0,0.12)</span>;
+
+<span class="c">/* Step card — sage */</span>
+<span class="n">background</span>: <span class="p">#D4EDD8</span>; box-shadow: <span class="p">0 4px 24px rgba(28,94,62,0.15)</span>;
+
+<span class="c">/* Step card — glass */</span>
+<span class="n">background</span>: <span class="p">rgba(255,255,255,0.22)</span>; border: <span class="p">1.5px solid rgba(255,255,255,0.36)</span>;
+
+<span class="c">/* Feature row */</span>
+<span class="n">.feature-row</span> {
+  display: grid; grid-template-columns: <span class="p">36px 1fr</span>; gap: <span class="p">16px</span>;
+  padding: <span class="p">22px 20px</span>; border-radius: <span class="v">var(--r-md)</span>;
+  background: <span class="v">var(--white)</span>; border: <span class="p">1px solid var(--cream-2)</span>;
+}
+<span class="n">.feature-row:hover</span> {
+  box-sadow: <span class="p">0 6px 24px rgba(28,74,50,0.09)</span>;
+  border-color: <span class="p">rgba(28,124,80,0.25)</span>; transform: <span class="p">translateX(4px)</span>;
+}
+
+<span class="c">/* Highlight card */</span>
+<span class="n">.highlight-card</span> {
+  background: <span class="v">var(--white)</span>; border: <span class="p">1.5px solid rgba(28,124,80,0.2)</span>;
+  border-radius: <span class="v">var(--r-lg)</span>; padding: <span class="p">20px 28px</span>;
+  box-shadow: <span class="p">0 4px 20px rgba(28,74,50,0.07)</span>;
+}</div>
+  </section>
+
+  <!-- ════ NAVIGATION ════ -->
+  <section class="ds-section" id="navigation">
+    <div class="ds-section__title">02 — Components</div>
+    <h2 class="ds-section__heading">Navigation</h2>
+    <p class="ds-section__desc">Navbar fixed, wysokość 68px. Dwa stany: transparentny ciemny (na hero) i biały frosted (po scroll > 60px). Przełączanie przez klasę <code style="font-family:monospace;font-size:13px;background:var(--cream);padding:2px 6px;border-radius:4px;">.scrolled</code>.</p>
+
+    <div class="ds-label" style="margin-bottom:8px;">State 1 — on dark hero (default)</div>
+    <div style="background:linear-gradient(150deg,#2E9465 0%,#124030 100%);border-radius:var(--r-lg);padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <a style="font-size:17px;font-weight:800;color:#fff;letter-spacing:-0.3px;text-decoration:none;"><span style="color:var(--lime);">Twoja</span>PomocPrawna</a>
+      <div style="display:flex;align-items:center;gap:32px;">
+        <a style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;">Jak działa</a>
+        <a style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;">Funkcje</a>
+        <button class="btn-nav-login">Zaloguj się</button>
+        <button class="btn-nav-cta">Dołącz bezpłatnie</button>
+      </div>
+    </div>
+
+    <div class="ds-label" style="margin-bottom:8px;margin-top:20px;">State 2 — scrolled (white)</div>
+    <div style="background:rgba(255,255,255,0.95);border-radius:var(--r-lg);padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(28,74,50,0.1);box-shadow:0 2px 16px rgba(0,0,0,0.06);margin-bottom:24px;">
+      <a style="font-size:17px;font-weight:800;color:var(--text);letter-spacing:-0.3px;text-decoration:none;"><span style="color:var(--green-mid);">Twoja</span>PomocPrawna</a>
+      <div style="display:flex;align-items:center;gap:32px;">
+        <a style="font-size:14px;font-weight:500;color:var(--text-3);text-decoration:none;">Jak działa</a>
+        <a style="font-size:14px;font-weight:500;color:var(--text-3);text-decoration:none;">Funkcje</a>
+        <button style="background:transparent;color:var(--text-2);font-size:14px;font-weight:600;padding:10px 20px;border-radius:100px;border:1.5px solid rgba(28,74,50,0.25);cursor:pointer;font-family:inherit;">Zaloguj się</button>
+        <button class="btn-nav-cta-scrolled">Dołącz bezpłatnie</button>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="n">.nav</span> {
+  position: <span class="p">fixed</span>; top: <span class="p">0</span>; left: <span class="p">0</span>; right: <span class="p">0</span>; height: <span class="p">68px</span>;
+  padding: <span class="p">0 48px</span>;
+  background: <span class="p">rgba(18, 64, 48, 0.6)</span>;
+  backdrop-filter: <span class="p">blur(16px)</span>;
+  border-bottom: <span class="p">1px solid rgba(255, 255, 255, 0.08)</span>;
+  transition: <span class="p">background 0.35s, border-color 0.35s</span>;
+}
+<span class="n">.nav.scrolled</span> {
+  background: <span class="p">rgba(255, 255, 255, 0.95)</span>;
+  border-bottom-color: <span class="p">rgba(28, 74, 50, 0.1)</span>;
+}
+
+<span class="c">/* JS trigger */</span>
+<span class="n">window</span>.addEventListener(<span class="p">'scroll'</span>, () => {
+  nav.classList.toggle(<span class="p">'scrolled'</span>, window.scrollY > <span class="p">60</span>);
+});</div>
+  </section>
+
+  <!-- ════ ANIMATIONS ════ -->
+  <section class="ds-section" id="animation">
+    <div class="ds-section__title">03 — Motion</div>
+    <h2 class="ds-section__heading">Scroll Reveal</h2>
+    <p class="ds-section__desc">Elementy wchodzą z dołu. Obsługa przez <code style="font-family:monospace;font-size:13px;background:var(--cream);padding:2px 6px;border-radius:4px;">IntersectionObserver</code>. Klasa <code style="font-family:monospace;font-size:13px;background:var(--cream);padding:2px 6px;border-radius:4px;">.visible</code> dodawana automatycznie.</p>
+
+    <div class="ds-canvas" style="margin-bottom:24px;">
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;">
+        <div style="padding:20px;background:var(--cream);border-radius:var(--r-md);">
+          <div class="ds-label">Element bez delay</div>
+          <code style="font-family:monospace;font-size:12px;color:var(--text-3);">class="reveal"</code>
+        </div>
+        <div style="padding:20px;background:var(--cream);border-radius:var(--r-md);">
+          <div class="ds-label">Z delay 100ms</div>
+          <code style="font-family:monospace;font-size:12px;color:var(--text-3);">class="reveal reveal--d1"</code>
+        </div>
+        <div style="padding:20px;background:var(--cream);border-radius:var(--r-md);">
+          <div class="ds-label">Z delay 200ms</div>
+          <code style="font-family:monospace;font-size:12px;color:var(--text-3);">class="reveal reveal--d2"</code>
+        </div>
+        <div style="padding:20px;background:var(--cream);border-radius:var(--r-md);">
+          <div class="ds-label">Z delay 300ms</div>
+          <code style="font-family:monospace;font-size:12px;color:var(--text-3);">class="reveal reveal--d3"</code>
+        </div>
+        <div style="padding:20px;background:var(--cream);border-radius:var(--r-md);">
+          <div class="ds-label">Z delay 400ms</div>
+          <code style="font-family:monospace;font-size:12px;color:var(--text-3);">class="reveal reveal--d4"</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-code">
+<span class="c">/* CSS */</span>
+<span class="n">.reveal</span> { opacity: <span class="p">0</span>; transform: <span class="p">translateY(28px)</span>; transition: <span class="p">opacity 0.6s ease, transform 0.6s ease</span>; }
+<span class="n">.reveal.visible</span> { opacity: <span class="p">1</span>; transform: <span class="p">translateY(0)</span>; }
+<span class="n">.reveal--d1</span> { transition-delay: <span class="p">0.1s</span>; }
+<span class="n">.reveal--d2</span> { transition-delay: <span class="p">0.2s</span>; }
+<span class="n">.reveal--d3</span> { transition-delay: <span class="p">0.3s</span>; }
+<span class="n">.reveal--d4</span> { transition-delay: <span class="p">0.4s</span>; }
+
+<span class="c">/* JS */</span>
+<span class="n">const</span> observer = <span class="n">new</span> IntersectionObserver((entries) => {
+  entries.forEach(e => { <span class="n">if</span> (e.isIntersecting) { e.target.classList.add(<span class="p">'visible'</span>); observer.unobserve(e.target); } });
+}, { threshold: <span class="p">0.12</span>, rootMargin: <span class="p">'0px 0px -40px 0px'</span> });
+document.querySelectorAll(<span class="p">'.reveal'</span>).forEach(el => observer.observe(el));</div>
+  </section>
+
+  <!-- ════ TRANSITIONS ════ -->
+  <section class="ds-section" id="transitions">
+    <div class="ds-section__title">03 — Motion</div>
+    <h2 class="ds-section__heading">Transition Specs</h2>
+
+    <div style="background:var(--white);border:1px solid var(--cream-2);border-radius:var(--r-lg);overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:var(--cream);">
+            <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-4);">Element</th>
+            <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-4);">Właściwość</th>
+            <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-4);">Czas / Easing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Navbar</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">background, border-color, color</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.35s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Buttons</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">background, color, border-color</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.2s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Btn hover lift</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">transform: translateY(-2px)</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.15s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Step card hover</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">transform: translateX(8px), box-shadow</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.25s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Feature row hover</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">transform: translateX(4px), box-shadow, border-color</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.2s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Input focus</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">border-color, box-shadow</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.2s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Scroll reveal</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">opacity, transform (Y28→0)</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.6s ease</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;font-weight:600;color:var(--text-2);">Link hover</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--text-3);">color</td>
+            <td style="padding:14px 20px;font-family:monospace;color:var(--green-mid);">0.2s ease</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════ TOKENS ════ -->
+  <section class="ds-section" id="tokens">
+    <div class="ds-section__title">04 — Usage</div>
+    <h2 class="ds-section__heading">CSS Tokens — gotowe do skopiowania</h2>
+    <p class="ds-section__desc">Wklej ten blok na początku każdego nowego pliku CSS / <code style="font-family:monospace;font-size:13px;background:var(--cream);padding:2px 6px;border-radius:4px;">&lt;style&gt;</code>.</p>
+
+    <div class="ds-code">
+<span class="n">:root</span> {
+  <span class="c">/* ── Brand greens ── */</span>
+  <span class="v">--green-dark</span>:  <span class="p">#1C5E3E</span>;   <span class="c">/* darkest, buttons/text on light */</span>
+  <span class="v">--green-mid</span>:   <span class="p">#1C7C50</span>;   <span class="c">/* primary — btn-green, links, borders */</span>
+  <span class="v">--green-light</span>: <span class="p">#25A36A</span>;   <span class="c">/* hover state for green-mid */</span>
+  <span class="v">--lime</span>:        <span class="p">#6BBF90</span>;   <span class="c">/* accent — pills, nav CTA on dark, eyebrow-light */</span>
+  <span class="v">--lime-hover</span>:  <span class="p">#52A87A</span>;   <span class="c">/* hover state for lime */</span>
+  <span class="v">--teal</span>:        <span class="p">#2EC48A</span>;   <span class="c">/* reserved for highlights / notifications */</span>
+
+  <span class="c">/* ── Neutrals ── */</span>
+  <span class="v">--cream</span>:   <span class="p">#F2F0E8</span>;       <span class="c">/* page background, input bg on light */</span>
+  <span class="v">--cream-2</span>: <span class="p">#E8E5DC</span>;       <span class="c">/* borders, dividers, pill borders */</span>
+  <span class="v">--white</span>:   <span class="p">#FFFFFF</span>;       <span class="c">/* cards, footer, input bg */</span>
+  <span class="v">--text</span>:    <span class="p">#0D0D0B</span>;       <span class="c">/* primary text */</span>
+  <span class="v">--text-2</span>:  <span class="p">#3D3A35</span>;       <span class="c">/* secondary text, icons */</span>
+  <span class="v">--text-3</span>:  <span class="p">#7A746D</span>;       <span class="c">/* body copy, descriptions */</span>
+  <span class="v">--text-4</span>:  <span class="p">#A8A29C</span>;       <span class="c">/* placeholders, captions, muted */</span>
+
+  <span class="c">/* ── Radii ── */</span>
+  <span class="v">--r-sm</span>: <span class="p">8px</span>;              <span class="c">/* small chips */</span>
+  <span class="v">--r-md</span>: <span class="p">16px</span>;             <span class="c">/* cards, rows */</span>
+  <span class="v">--r-lg</span>: <span class="p">24px</span>;             <span class="c">/* major blocks, modals */</span>
+  <span class="c">/* buttons/inputs: always 100px */</span>
+}</div>
+  </section>
+
+  <!-- ════ CONTEXTS ════ -->
+  <section class="ds-section" id="contexts">
+    <div class="ds-section__title">04 — Usage</div>
+    <h2 class="ds-section__heading">Konteksty użycia</h2>
+    <p class="ds-section__desc">Zasady doboru komponentów w zależności od tła sekcji.</p>
+
+    <div style="background:var(--white);border:1px solid var(--cream-2);border-radius:var(--r-lg);overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:var(--cream);">
+            <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-4);">Tło sekcji</th>
+            <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-4);">Używaj</th>
+            <th style="padding:14px 20px;text-align:left;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-4);">Unikaj</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;"><div style="width:24px;height:24px;background:linear-gradient(135deg,#2E9465,#124030);border-radius:6px;display:inline-block;vertical-align:middle;margin-right:8px;"></div><strong>Ciemna zieleń</strong><br><span style="font-size:11px;color:var(--text-4);">(hero, steps)</span></td>
+            <td style="padding:14px 20px;color:var(--text-3);">btn-primary (cream), btn-ghost (white outline), eyebrow--light (lime), tekst biały, akcenty lime</td>
+            <td style="padding:14px 20px;color:var(--text-3);">btn-green, ciemny tekst, cream cards</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;"><div style="width:24px;height:24px;background:#F2F0E8;border:1px solid #E8E5DC;border-radius:6px;display:inline-block;vertical-align:middle;margin-right:8px;"></div><strong>Cream</strong><br><span style="font-size:11px;color:var(--text-4);">(features, waitlist)</span></td>
+            <td style="padding:14px 20px;color:var(--text-3);">btn-green, feature-row (white bg), highlight-card, eyebrow (green), dark text, cream-2 borders</td>
+            <td style="padding:14px 20px;color:var(--text-3);">btn-primary, btn-ghost, lime eyebrow</td>
+          </tr>
+          <tr style="border-top:1px solid var(--cream-2);">
+            <td style="padding:14px 20px;"><div style="width:24px;height:24px;background:#fff;border:1px solid #E8E5DC;border-radius:6px;display:inline-block;vertical-align:middle;margin-right:8px;"></div><strong>White</strong><br><span style="font-size:11px;color:var(--text-4);">(search, footer)</span></td>
+            <td style="padding:14px 20px;color:var(--text-3);">btn-green, pills, search input (cream bg), eyebrow (green), cream-2 dividers</td>
+            <td style="padding:14px 20px;color:var(--text-3);">btn-primary, btn-ghost, white cards (no contrast)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:32px;">
+      <div class="ds-label" style="margin-bottom:16px;">Section backgrounds — kolejność na landing page</div>
+      <div style="display:flex;flex-direction:column;gap:2px;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--cream-2);">
+        <div style="padding:16px 24px;background:linear-gradient(90deg,#2E9465,#124030);color:#fff;display:flex;justify-content:space-between;align-items:center;"><strong>Hero</strong><span style="font-family:monospace;font-size:12px;opacity:0.7;">linear-gradient(150deg, #2E9465 → #124030)</span></div>
+        <div style="padding:16px 24px;background:linear-gradient(90deg,#1E7A50,#175238);color:#fff;display:flex;justify-content:space-between;align-items:center;"><strong>Steps / Jak działa</strong><span style="font-family:monospace;font-size:12px;opacity:0.7;">linear-gradient(160deg, #1E7A50 → #175238)</span></div>
+        <div style="padding:16px 24px;background:#F2F0E8;display:flex;justify-content:space-between;align-items:center;"><strong>Features / Funkcje</strong><span style="font-family:monospace;font-size:12px;color:var(--text-4);">var(--cream) #F2F0E8</span></div>
+        <div style="padding:16px 24px;background:#fff;border-top:1px solid #E8E5DC;display:flex;justify-content:space-between;align-items:center;"><strong>Specjalizacje / Search</strong><span style="font-family:monospace;font-size:12px;color:var(--text-4);">var(--white) #FFFFFF</span></div>
+        <div style="padding:16px 24px;background:#F2F0E8;border-top:1px solid #E8E5DC;display:flex;justify-content:space-between;align-items:center;"><strong>Waitlist</strong><span style="font-family:monospace;font-size:12px;color:var(--text-4);">var(--cream) #F2F0E8</span></div>
+        <div style="padding:16px 24px;background:#fff;border-top:3px solid #E8E5DC;display:flex;justify-content:space-between;align-items:center;"><strong>Footer</strong><span style="font-family:monospace;font-size:12px;color:var(--text-4);">var(--white) + 3px border-top</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Scroll reveal for this page
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Sidebar active link
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.ds-nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+    links.forEach(l => {
+      l.style.color = l.getAttribute('href') === '#' + current ? '#fff' : '';
+      l.style.background = l.getAttribute('href') === '#' + current ? 'rgba(255,255,255,0.08)' : '';
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>
