@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwojaPomocPrawna — Prawnik dopasowany do Ciebie</title>
+  <meta name="description" content="AI-powered platforma prawna. Znajdź zweryfikowanego prawnika w minutę, sprawdź umowę przez AI i umów konsultację online.">
+  <meta property="og:title" content="TwojaPomocPrawna — Prawnik dopasowany przez AI">
+  <meta property="og:description" content="Platforma łącząca klientów z prawnikami w Polsce. AI matching, analiza dokumentów, konsultacje online.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://twojapomocprawna.pl">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+
+/* ─────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────── */
+:root {
+  /* Brand greens */
+  --green-dark:  #1C5E3E;
+  --green-mid:   #1C7C50;
+  --green-light: #25A36A;
+  --lime:        #6BBF90;
+  --lime-hover:  #52A87A;
+  --teal:        #2EC48A;
+
+  /* Neutrals */
+  --cream:   #F2F0E8;
+  --cream-2: #E8E5DC;
+  --white:   #FFFFFF;
+  --text:    #0D0D0B;
+  --text-2:  #3D3A35;
+  --text-3:  #7A746D;
+  --text-4:  #A8A29C;
+
+  /* Radii */
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: 24px;
+}
+
+/* ─────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 68px;
+  background: rgba(18, 64, 48, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.35s, border-color 0.35s;
+}
+.nav.scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom-color: rgba(28, 74, 50, 0.1);
+}
+
+.nav__logo {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+  text-decoration: none;
+  transition: color 0.35s;
+}
+.nav__logo span { color: var(--lime); transition: color 0.35s; }
+.nav.scrolled .nav__logo { color: var(--text); }
+.nav.scrolled .nav__logo span { color: var(--green-mid); }
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+.nav__links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav__links a:hover { color: #fff; }
+.nav.scrolled .nav__links a { color: var(--text-3); }
+.nav.scrolled .nav__links a:hover { color: var(--text); }
+
+.nav__login {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-weight: 600 !important;
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  transition: border-color 0.2s, background 0.2s, color 0.2s !important;
+}
+.nav__login:hover {
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+.nav.scrolled .nav__login {
+  color: var(--text-2) !important;
+  border-color: rgba(28, 74, 50, 0.25);
+}
+.nav.scrolled .nav__login:hover {
+  border-color: var(--green-mid) !important;
+  color: var(--green-mid) !important;
+  background: rgba(28, 124, 80, 0.05) !important;
+}
+
+.nav__cta {
+  background: var(--lime);
+  color: var(--green-dark) !important;
+  font-weight: 700 !important;
+  padding: 10px 22px;
+  border-radius: 100px;
+  transition: background 0.2s, transform 0.15s !important;
+}
+.nav__cta:hover { background: var(--lime-hover) !important; transform: translateY(-1px); }
+.nav.scrolled .nav__cta { background: var(--green-mid); color: #fff !important; }
+.nav.scrolled .nav__cta:hover { background: var(--green-dark) !important; }
+
+/* ─────────────────────────────────────
+   HERO
+───────────────────────────────────── */
+.hero {
+  position: relative;
+  background: linear-gradient(150deg, #2E9465 0%, #1F7A52 35%, #196045 65%, #124030 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 140px 24px 100px;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(186, 255, 90, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  z-index: 0;
+}
+.hero__blob--1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(46, 148, 101, 0.35) 0%, transparent 70%);
+  top: -100px; left: -100px;
+}
+.hero__blob--2 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(186, 255, 90, 0.12) 0%, transparent 70%);
+  bottom: -120px; right: -100px;
+}
+.hero__blob--3 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(186, 255, 90, 0.16) 0%, transparent 70%);
+  top: 30%; left: 40%;
+  transform: translate(-50%, -50%);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+}
+.hero__eyebrow {
+  display: inline-block;
+  color: var(--lime);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero__title {
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: #fff;
+  margin-bottom: 24px;
+}
+.hero__title em { font-style: normal; color: var(--lime); }
+.hero__sub {
+  font-size: 18px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 560px;
+  margin: 0 auto 44px;
+}
+.hero__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.hero__stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+.hero__stat { text-align: center; }
+.hero__stat-num {
+  font-size: 32px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.hero__stat-num span { color: var(--lime); }
+.hero__stat-label { font-size: 13px; color: rgba(255, 255, 255, 0.5); margin-top: 6px; }
+.hero__stat-divider { width: 1px; height: 40px; background: rgba(255, 255, 255, 0.15); }
+
+/* ─────────────────────────────────────
+   BUTTONS
+───────────────────────────────────── */
+
+/* Cream — primary on dark hero */
+.btn-primary {
+  background: var(--cream);
+  color: var(--green-dark);
+  font-size: 15px;
+  font-weight: 800;
+  padding: 15px 32px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.22); }
+.btn-primary--arrow::after { content: '→'; font-size: 16px; }
+
+/* Ghost — white outline on dark */
+.btn-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 30px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.7); color: #fff; background: rgba(255,255,255,0.08); }
+
+/* Green — on light bg */
+.btn-green {
+  background: var(--green-mid);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 30px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-green:hover { background: var(--green-light); transform: translateY(-2px); }
+.btn-green::after { content: '→+; }
+
+
+/* ─────────────────────────────────────
+   EYEBROW LABEL
+───────────────────────────────────── */
+.eyebrow {
+  display: inline-block;
+  color: var(--green-mid);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.eyebrow--light { color: var(--lime); }
+
+/* ─────────────────────────────────────
+   HOW IT WORKS
+───────────────────────────────────── */
+.steps {
+  background: linear-gradient(160deg, #1E7A50 0%, #1A6040 50%, #175238 100%);
+  padding: 100px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.steps::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+.steps__header { text-align: center; margin-bottom: 64px; }
+.steps__title {
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  max-width: 540px;
+  margin: 0 auto 16px;
+}
+.steps__subtitle { font-size: 16px; color: rgba(255, 255, 255, 0.5); max-width: 420px; margin: 0 auto; }
+
+.steps__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 680px;
+  margin: 0 auto;
+  list-style: none;
+}
+.step-card {
+  border-radius: var(--r-lg);
+  padding: 32px 36px;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.step-card:hover { transform: translateX(8px); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+.step-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.step-card__num { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+.step-card__tag { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; align-self: flex-start; margin-top: 8px; }
+.step-card h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 8px; }
+.step-card p  { font-size: 15px; line-height: 1.62; }
+
+/* Card 1 — white */
+.step-card:nth-child(1) { background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+.step-card:nth-child(1) .step-card__num { color: var(--lime); }
+.step-card:nth-child(1) .step-card__tag { color: var(--text-4); }
+.step-card:nth-child(1) h3              { color: var(--text); }
+.step-card:nth-child(1) p               { color: var(--text-3); }
+
+/* Card 2 — soft sage */
+.step-card:nth-child(2) { background: #D7EDD8; box-shadow: 0 4px 24px rgba(28,94,62,0.15); }
+.step-card:nth-child(2) .step-card__num { color: var(--green-dark); }
+.step-card:nth-child(2) .step-card__tag { color: var(--text-4); }
+.step-card:nth-child(2) h3              { color: var(--text); }
+.step-card:nth-child(2) p               { color: var(--text-3); }
+
+/* Card 3 — glass */
+.step-card:nth-child(3) { background: rgba(255,255,255,0.22); border: 1.5px solid rgba(255,255,255,0.36); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.step-card:nth-child(3) .step-card__num { color: #A8E0C8; }
+.step-card:nth-child(3) .step-card__tag { color: rgba(255,255,255,0.5); }
+.step-card:nth-child(3) h3              { color: #fff; }
+.step-card:nth-child(3) p               { color: rgba(255,255,255,0.72); }
+
+/* ─────────────────────────────────────
+   FEATURES
+───────────────────────────────────── */
+.features { background: var(--cream); padding: 100px 24px; }
+.features__inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.features__lead { position: sticky; top: 120px; }
+.features__lead h2 { font-size: clamp(36px, 4.5vw, 54px); font-weight: 900; color: var(--text); letter-spacing: -1.5px; line-height: 1.08; margin-bottom: 20px; }
+.features__lead h2 em { font-style: normal; color: var(--green-mid); }
+.features__lead p  { font-size: 16px; line-height: 1.7; color: var(--text-3); margin-bottom: 36px; max-width: 380px; }
+
+.features__list { display: flex; flex-direction: column; gap: 4px; list-style: none; }
+
+.feature-row {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 16px;
+  padding: 22px 20px;
+  border-radius: var(--r-md);
+  background: var(--white);
+  border: 1px solid var(--cream-2);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.feature-row:hover,
+.feature-row--active {
+  box-shadow: 0 6px 24px rgba(28, 74, 50, 0.09);
+  border-color: rgba(28, 124, 80, 0.25);
+  transform: translateX(4px);
+}
+.feature-row__num { font-size: 13px; font-weight: 800; color: var(--green-mid); opacity: 0.6; letter-spacing: 0.5px; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.feature-row__text h4 { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; margin-bottom: 5px; }
+.feature-row__text p  { font-size: 14px; line-height: 1.6; color: var(--text-3); }
+
+/* ─────────────────────────────────────
+   SPECIALIZATIONS / SEARCH
+───────────────────────────────────── */
+.search-section { background: var(--white); padding: 100px 24px 80px; }
+.search-section__header { text-align: center; max-width: 1140px; margin: 0 auto 60px; }
+.search-section__header h2 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; color: var(--text); letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; }
+.search-section__header p  { font-size: 16px; color: var(--text-3); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 48px; }
+.pill { padding: 9px 20px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s; background: none; font-family: inherit; }
+.pill--active   { background: var(--lime); color: var(--green-dark); border-color: var(--lime); }
+.pill--inactive { color: var(--text-2); border-color: var(--cream-2); }
+.pill--inactive:hover { border-color: var(--green-mid); color: var(--green-mid); }
+
+.search-wrap { max-width: 640px; margin: 0 auto; position: relative; }
+.search-input {
+  width: 100%;
+  padding: 18px 140px 18px 28px;
+  border-radius: 100px;
+  border: 2px solid var(--cream-2);
+  background: var(--cream);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus { border-color: var(--green-mid); box-shadow: 0 0 0 4px rgba(28,124,80,0.08); }
+.search-input::placeholder { color: var(--text-4); }
+.search-btn {
+  position: absolute;
+  right: 8px; top: 50%;
+  transform: translateY(-50%);
+  background: var(--green-dark);
+  color: #fff;
+  font-size: 14px; font-weight: 700;
+  padding: 11px 22px;
+  border-radius: 100px;
+  border: none; cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.search-btn:hover { background: var(--green-mid); }
+
+/* ─────────────────────────────────────
+   WAITLIST
+───────────────────────────────────── */
+.waitlist { background: var(--cream); padding: 100px 24px; }
+.waitlist__inner { max-width: 640px; margin: 0 auto; text-align: center; }
+.waitlist__inner h2 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; color: var(--text); letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 20px; }
+.waitlist__inner h2 em { font-style: normal; color: var(--green-mid); }
+.waitlist__inner .reveal:first-child { margin-bottom: 40px; }
+.waitlist__inner .reveal:first-child p { font-size: 16px; color: var(--text-3); line-height: 1.6; }
+.waitlist__form { display: flex; gap: 10px; max-width: 480px; margin: 0 auto 20px; }
+.waitlist__input {
+  flex: 1;
+  padding: 15px 22px;
+  border-radius: 100px;
+  border: 2px solid var(--cream-2);
+  background: var(--white);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.waitlist__input:focus { border-color: var(--green-mid); }
+.waitlist__input::placeholder { color: var(--text-4); }
+.waitlist__note { font-size: 13px; color: var(--text-4); }
+.waitlist__note strong { color: var(--green-mid); font-weight: 600; }
+
+.waitlist__highlight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--white);
+  border: 1.5px solid rgba(28, 124, 80, 0.2);
+  border-radius: var(--r-lg);
+  padding: 20px 28px;
+  max-width: 480px;
+  margin: 0 auto 32px;
+  box-shadow: 0 4px 20px rgba(28, 74, 50, 0.07);
+}
+.waitlist__badge {
+  flex-shrink: 0;
+  background: var(--green-mid);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+}
+.waitlist__offer {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-2);
+  text-align: left;
+}
+.waitlist__offer strong { color: var(--green-mid); font-weight: 700; }
+
+
+/* ─────────────────────────────────────
+   FOOTER
+───────────────────────────────────── */
+.footer { background: var(--white); border-top: 3px solid var(--cream-2); padding: 64px 24px 36px; }
+.footer__inner {
+  max-width: 1140px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 36px; border-bottom: 1px solid var(--cream-2); margin-bottom: 24px;
+}
+.footer__brand p { font-size: 14px; line-height: 1.6; color: var(--text-3); margin-top: 14px; max-width: 240px; }
+.footer__col h5 { font-size: 11px; font-weight: 700; color: var(--text-4); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 16px; }
+.footer__col ul { list-style: none; }
+.footer__col li + li { margin-top: 10px; }
+.footer__col a { font-size: 14px; color: var(--text-3); text-decoration: none; transition: color 0.2s; }
+.footer__col a:hover { color: var(--green-mid); }
+.footer__bottom { max-width: 1140px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.footer__bottom p { font-size: 13px; color: var(--text-4); }
+
+/* ─────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal--d1 { transition-delay: 0.1s; }
+.reveal--d2 { transition-delay: 0.2s; }
+.reveal--d3 { transition-delay: 0.3s; }
+.reveal--d4 { transition-delay: 0.4s; }
+
+/* ─────────────────────────────────────
+   UTILITIES
+───────────────────────────────────── */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────── */
+@media (max-width: 900px) {
+  .nav { padding: 0 24px; }
+  .nav__links { display: none; }
+  .features__inner { grid-template-columns: 1fr; gap: 48px; }
+  .features__lead { position: static; }
+  .footer__inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .hero__stats { gap: 28px; }
+  .hero__stat-divider { display: none; }
+}
+@media (max-width: 580px) {
+  .footer__inner { grid-template-columns: 1fr; }
+  .waitlist__form { flex-direction: column; }
+  .hero__stats { flex-wrap: wrap; }
+}
+
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<header>
+  <nav class="nav" aria-label="Główna nawigacja">
+    <a class="nav__logo" href="#"><span>Twoja</span>PomocPrawna</a>
+    <ul class="nav__links">
+      <li><a href="#jak-dziala">Jak działa</a></li>
+      <li><a href="#funkcje">Funkcje</a></li>
+      <li><a href="#specjalizacje">Specjalizacje</a></li>
+      <li><a href="#" class="nav__login">Zaloguj się</a></li>
+      <li><a href="#lista" class="nav__cta">Dołącz bezpłatnie</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__blob hero__blob--1" aria-hidden="true"></div>
+    <div class="hero__blob hero__blob--2" aria-hidden="true"></div>
+    <div class="hero__blob hero__blob--3" aria-hidden="true"></div>
+
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Platforma prawna nowej generacji</p>
+
+      <h1 class="hero__title" id="hero-title">
+        Twój prawnik,<br><em>dopasowany przez AI</em>
+      </h1>
+
+      <p class="hero__sub">
+        Znajdź zweryfikowanego specjalistę w minutę. Sprawdź umowę zanim ją podpiszesz.
+        Tłumaczymy prawo na ludzki język.
+      </p>
+
+      <div class="hero__buttons">
+        <a href="#lista" class="btn-primary btn-primary--arrow">Dołącz do listy oczekujących</a>
+        <a href="#jak-dziala" class="btn-ghost">Zobacz jak działa</a>
+      </div>
+
+      <div class="hero__stats" aria-label="Statystyki rynku">
+        <div class="hero__stat">
+          <div class="hero__stat-num">10–18<span>B</span></div>
+          <div class="hero__stat-label">PLN — rynek prawny w Polsce</div>
+        </div>
+        <div class="hero__stat-divider" aria-hidden="true"></div>
+        <div class="hero__stat">
+          <div class="hero__stat-num"><span>85</span>%</div>
+          <div class="hero__stat-label">kancelarii bez nowoczesnych narzędzi</div>
+        </div>
+        <div class="hero__stat-divider" aria-hidden="true"></div>
+        <div class="hero__stat">
+          <div class="hero__stat-num">1<span> min</span></div>
+          <div class="hero__stat-label">do dopasowania z prawnikiem</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="steps" id="jak-dziala" aria-labelledby="steps-title">
+    <div class="steps__header reveal">
+      <p class="eyebrow eyebrow--light">Jak to działa</p>
+      <h2 class="steps__title" id="steps-title">Prosta droga do pomocy prawnej</h2>
+      <p class="steps__subtitle">Trzy kroki i masz dostęp do najlepszego specjalisty dla swojej sprawy.</p>
+    </div>
+
+    <ol class="steps__list">
+      <li class="step-card reveal reveal--d1">
+        <div class="step-card__top">
+          <span class="step-card__num">01</span>
+          <span class="step-card__tag">Proste sprawy</span>
+        </div>
+        <h3>AI odpowiada od razu</h3>
+        <p>Opisz sytuację lub wgraj dokument. AI wyjaśni Twoje prawa, wskaże ryzyka i pomoże rozwiązać prostą sprawę bez udziału prawnika.</p>
+      </li>
+
+      <li class="step-card reveal reveal--d2">
+        <div class="step-card__top">
+          <span class="step-card__num">02</span>
+          <span class="step-card__tag">Gdy potrzebny prawnik</span>
+        </div>
+        <h3>Dopasowana lista specjalistów</h3>
+        <p>Kiedy sprawa wymaga eksperta, AI dobiera prawników według dziedziny, lokalizacji, ocen i dostępności — i prezentuje dopasowaną listę.</p>
+      </li>
+
+      <li class="step-card reveal reveal--d3">
+        <div class="step-card__top">
+          <span class="step-card__num">03</span>
+          <span class="step-card__tag">Finalizacja</span>
+        </div>
+        <h3>Umów konsultację online</h3>
+        <p>Wybierz prawnika, termin i formę spotkania — wideo, telefon lub wizyta. Płacisz bezpiecznie przez platformę, bez ukrytych opłat.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="funkcje" aria-labelledby="features-title">
+    <div class="features__inner">
+      <div class="features__lead reveal">
+        <p class="eyebrow">Funkcje platformy</p>
+        <h2 id="features-title">Wszystko, czego <em>potrzebujesz</em></h2>
+        <p>Jedna platforma dla klientów i prawników — od pierwszego kontaktu po finalną umowę.</p>
+        <a href="#lista" class="btn-green">Zacznij bezpłatnie</a>
+      </div>
+
+      <ul class="features__list">
+        <li class="feature-row feature-row--active reveal reveal--d1">
+          <span class="feature-row__num">01</span>
+          <div class="feature-row__text">
+            <h4>Analiza dokumentów przez AI</h4>
+            <p>Przex�lij umowę, akt notarialny lub pismo urzędowe. AI wskaże ryzyka i niezrozumiałe zapisy zanim prawnik je przejrzy.</p>
+          </div>
+        </li>
+
+        <li class="feature-row reveal reveal--d2">
+          <span class="feature-row__num">02</span>
+          <div class="feature-row__text">
+            <h4>Inteligentne dopasowanie</h4>
+            <p>Nie szukasz prawnika ręcznie — platforma dobiera specjalistę według dziedziny, lokalizacji i ocen klientów.</p>
+          </div>
+        </li>
+
+        <li class="feature-row reveal reveal--d3">
+          <span class="feature-row__num">03</span>
+          <div class="feature-row__text">
+            <h4>Zweryfikowane opinie</h4>
+            <p>Tylko prawdziwi klienci mogą wystawiać oceny. Przejrzyste profile, potwierdzone kwalifikacje i historia spraw.</p>
+          </div>
+        </li>
+
+        <li class="feature-row reveal reveal--d4">
+          <span class="feature-row__num">04</span>
+          <div class="feature-row__text">
+            <h4>Komunikacja i płatności w jednym</h4>
+            <p>Bezpieczny czat, wideorozmowy, e-podpis i płatności — wszystko w jednym miejscu, bez zewnętrznych narzędzi.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SPECIALIZATIONS -->
+  <section class="search-section" id="specjalizacje" aria-labelledby="search-title">
+    <div class="search-section__header reveal">
+      <p class="eyebrow">Specjalizacje</p>
+      <h2 id="search-title">Znajdź prawnika<br>w swojej dziedzinie</h2>
+      <p>Ponad 20 specjalizacji. Prawnicy z całej Polski.</p>
+    </div>
+
+    <div class="pills reveal" role="group" aria-label="Filtruj specjalizacje">
+      <button class="pill pill--active" type="button">Wszystkie</button>
+      <button class="pill pill--inactive" type="button">Prawo rodzinne</button>
+      <button class="pill pill--inactive" type="button">Prawo pracy</button>
+      <button class="pill pill--inactive" type="button">Prawo karne</button>
+      <button class="pill pill--inactive" type="button">Nieruchomości</button>
+      <button class="pill pill--inactive" type="button">Prawo gospodarcze</button>
+      <button class="pill pill--inactive" type="button">Prawo podatkowe</button>
+    </div>
+
+    <div class="search-wrap reveal">
+      <label for="lawyer-search" class="sr-only">Szukaj prawnika</label>
+      <input
+        id="lawyer-search"
+        class="search-input"
+        type="search"
+        placeholder="Opisz swoją sprawę lub wpisz specjalizację…"
+        autocomplete="off"
+      >
+      <button class="search-btn" type="button">Szukaj</button>
+    </div>
+  </section>
+
+  <!-- WAITLIST -->
+  <section class="waitlist" id="lista" aria-labelledby="waitlist-title">
+    <div class="waitlist__inner">
+      <div class="reveal">
+        <p class="eyebrow" style="display:block;text-align:center;">Dla prawników</p>
+        <h2 id="waitlist-title">Rozwijaj kancelarię<br>z <em>nowym kanałem</em></h2>
+        <p>Dołącz do listy oczekujących i bądź wśród pierwszych prawników na platformie.</p>
+      </div>
+
+      <div class="waitlist__highlight reveal reveal--d1">
+        <div class="waitlist__badge">Beta</div>
+        <p class="waitlist__offer">Pierwsze <strong>500 kancelarii</strong> otrzyma dostęp bezpłatnie przez 3 miesiące</p>
+      </div>
+
+      <div class="waitlist__form reveal reveal--d2">
+        <label for="waitlist-email" class="sr-only">Twój adres e-mail</label>
+        <input
+          id="waitlist-email"
+          class="waitlist__input"
+          type="email"
+          placeholder="twoj@email.pl"
+          autocomplete="email"
+        >
+        <button class="btn-green" type="button" id="waitlist-btn">Dołącz</button>
+      </div>
+
+      <p class="waitlist__note reveal reveal--d3">
+        Bez spamu · Wypisz się kiedy chcesz
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <a class="nav__logo" href="#" style="color:var(--text);font-size:16px;"><span>Twoja</span>PomocPrawna</a>
+      <p>AI-powered marketplace łączący klientów z najlepszymi prawnikami w Polsce.</p>
+    </div>
+    <nav class="footer__col" aria-label="Produkt">
+      <h5>Produkt</h5>
+      <ul>
+        <li><a href="#">Jak działa</a></li>
+        <li><a href="#">Funkcje</a></li>
+        <li><a href="#">Cennik</a></li>
+        <li><a href="#">Dla prawników</a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col" aria-label="Firma">
+      <h5>Firma</h5>
+      <ul>
+        <li><a href="#">O nas</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Kariera</a></li>
+        <li><a href="#">Kontakt</a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col" aria-label="Prawne">
+      <h5>Prawo</h5>
+      <ul>
+        <li><a href="#">Regulamin</a></li>
+        <li><a href="#">Prywatność</a></li>
+        <li><a href="#">Cookies</a></li>
+        <li><a href="#">RODO</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="footer__bottom">
+    <p>© 2026 TwojaPomocPrawna · twojapomocprawna.pl</p>
+    <p>Made in Poland</p>
+  </div>
+</footer>
+
+<script>
+  'use strict';
+
+  // Nav: transparent on hero → white on scroll
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Scroll reveal
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Filter pills (event delegation)
+  document.querySelector('.pills').addEventListener('click', (e) => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    document.querySelectorAll('.pill').forEach(p => {
+      p.classList.replace('pill--active', 'pill--inactive');
+    });
+    pill.classList.replace('pill--inactive', 'pill--active');
+  });
+
+  // Feature rows: highlight on hover
+  document.querySelectorAll('.feature-row').forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      document.querySelectorAll('.feature-row').forEach(r => r.classList.remove('feature-row--active'));
+      row.classList.add('feature-row--active');
+    });
+  });
+
+  // Waitlist form
+  document.getElementById('waitlist-btn').addEventListener('click', function () {
+    const input = document.getElementById('waitlist-email');
+    if (input.value.includes('@')) {
+      this.textContent = '✓ Zapisano!';
+      this.style.background = 'var(--green-mid)';
+      input.disabled = true;
+      input.style.opacity = '0.6';
+    } else {
+      input.focus();
+    }
+  });
+</script>
+
+</body>
+</html>
