@@ -661,6 +661,209 @@
       .mid-panel { padding: 32px 20px; }
       .hero-title { font-size: 30px; }
     }
+
+    /* ─────────────────────────────────────────────────────
+       FILTER PILLS — horizontal scroll row
+    ───────────────────────────────────────────────────── */
+    .filter-pills {
+      display: flex; gap: 8px;
+      overflow-x: auto; padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .filter-pills::-webkit-scrollbar { display: none; }
+    .filter-pill {
+      flex-shrink: 0;
+      background: var(--white); border: 1.5px solid var(--cream-2);
+      border-radius: var(--r-pill); padding: 7px 16px;
+      font-size: 13px; font-weight: 700; color: var(--text-3);
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+      font-family: inherit;
+    }
+    .filter-pill.active,
+    .filter-pill:hover {
+      background: var(--green-mid); color: #fff; border-color: var(--green-mid);
+    }
+
+    /* ─────────────────────────────────────────────────────
+       AVAILABILITY BADGE
+    ───────────────────────────────────────────────────── */
+    .avail-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--green-dark);
+    }
+    .avail-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal); flex-shrink: 0;
+    }
+    .avail-dot--grey { background: var(--text-4); }
+
+    /* ─────────────────────────────────────────────────────
+       LAWYER CARD V2 — richer matching card
+    ───────────────────────────────────────────────────── */
+    .lawyer-card-v2 {
+      background: var(--white); border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .lawyer-card-v2:hover {
+      box-shadow: 0 6px 28px rgba(28,74,50,0.1);
+      border-color: rgba(28,124,80,0.25);
+    }
+    .lawyer-card-v2 + .lawyer-card-v2 { margin-top: 10px; }
+    .lcv2-top { padding: 20px 20px 16px; }
+    .lcv2-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+    .lcv2-initials {
+      width: 56px; height: 56px; border-radius: var(--r-md);
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px; font-weight: 900; color: #fff;
+      flex-shrink: 0; letter-spacing: -0.5px;
+    }
+    .lcv2-name { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+    .lcv2-spec { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .lcv2-rating { font-size: 13px; color: #B45309; font-weight: 700; margin-top: 3px; }
+    .lcv2-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .lcv2-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--cream-3); color: var(--green-dark);
+      border-radius: var(--r-pill); padding: 4px 11px;
+      font-size: 12px; font-weight: 700;
+    }
+    .lcv2-tag--resp { background: var(--cream-2); color: var(--text-3); }
+    .lcv2-price {
+      font-size: 14px; color: var(--text-3); line-height: 1.5;
+      padding: 12px 20px; border-top: 1px solid var(--cream-2);
+    }
+    .lcv2-price strong { color: var(--text); font-weight: 700; }
+    .lcv2-actions {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--cream-2);
+    }
+    .lcv2-btn {
+      padding: 14px 12px; font-size: 14px; font-weight: 700;
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; transition: background .15s; text-align: center;
+    }
+    .lcv2-btn--profile { color: var(--green-mid); border-right: 1px solid var(--cream-2); }
+    .lcv2-btn--profile:hover { background: var(--cream-3); }
+    .lcv2-btn--book { color: #fff; background: var(--green-mid); }
+    .lcv2-btn--book:hover { background: var(--green-dark); }
+
+    /* ─────────────────────────────────────────────────────
+       LAWYER PROFILE HERO
+    ───────────────────────────────────────────────────── */
+    .lp-hero {
+      background: linear-gradient(150deg, #2E9465 0%, #1F7A52 35%, #196045 65%, #124030 100%);
+      padding: 40px 28px 32px; position: relative; overflow: hidden;
+    }
+    .lp-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(186,255,90,0.08) 1px, transparent 1px);
+      background-size: 26px 26px; pointer-events: none;
+    }
+    .lp-inner { position: relative; z-index: 2; display: flex; gap: 18px; align-items: flex-start; }
+    .lp-initials {
+      width: 72px; height: 72px; border-radius: var(--r-lg); flex-shrink: 0;
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 900; color: #fff; letter-spacing: -0.5px;
+    }
+    .lp-name { font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.4px; margin-bottom: 3px; }
+    .lp-spec { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
+    .lp-stars { font-size: 14px; color: var(--lime); font-weight: 700; }
+    .lp-stat-row {
+      display: flex; gap: 20px; margin-top: 20px; position: relative; z-index: 2;
+    }
+    .lp-stat { text-align: center; }
+    .lp-stat-num { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+    .lp-stat-label { font-size: 11px; color: rgba(255,255,255,0.55); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; }
+
+    /* ─────────────────────────────────────────────────────
+       SPECIALIZATION TAGS
+    ───────────────────────────────────────────────────── */
+    .spec-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .spec-tag {
+      background: var(--cream-3); color: var(--green-dark);
+      border: 1px solid rgba(28,94,62,0.15);
+      border-radius: var(--r-pill); padding: 6px 14px;
+      font-size: 13px; font-weight: 600;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       REVIEW CARDS
+    ───────────────────────────────────────────────────── */
+    .review-card {
+      background: var(--white); border: 1px solid var(--cream-2);
+      border-radius: var(--r-md); padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    .review-card + .review-card { margin-top: 8px; }
+    .review-stars { font-size: 13px; color: #B45309; margin-bottom: 5px; }
+    .review-text { font-size: 14px; line-height: 1.6; color: var(--text-2); margin-bottom: 8px; }
+    .review-author { font-size: 12px; color: var(--text-4); font-weight: 600; }
+
+    /* ─────────────────────────────────────────────────────
+       TIME SLOT GRID
+    ───────────────────────────────────────────────────── */
+    .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .slot-btn {
+      background: var(--white); border: 1.5px solid var(--cream-2);
+      border-radius: var(--r-md); padding: 11px 8px;
+      text-align: center; cursor: pointer; font-family: inherit;
+      transition: all .15s;
+    }
+    .slot-btn:hover, .slot-btn.selected {
+      border-color: var(--green-mid); background: var(--cream-3);
+    }
+    .slot-day { font-size: 11px; color: var(--text-4); font-weight: 600; text-transform: uppercase; }
+    .slot-time { font-size: 15px; font-weight: 800; color: var(--text); margin-top: 2px; }
+    .slot-btn.selected .slot-day,
+    .slot-btn.selected .slot-time { color: var(--green-dark); }
+
+    /* ─────────────────────────────────────────────────────
+       PRICE ROWS
+    ───────────────────────────────────────────────────── */
+    .price-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 13px 0; border-bottom: 1px solid var(--cream-2); font-size: 14px;
+    }
+    .price-row:last-child { border-bottom: none; }
+    .price-label { color: var(--text-3); }
+    .price-val { font-weight: 700; color: var(--text); }
+    .price-val--free { color: var(--green-mid); }
+
+    /* ─────────────────────────────────────────────────────
+       BOOKING SUMMARY CARD
+    ───────────────────────────────────────────────────── */
+    .booking-summary {
+      background: var(--cream-3); border: 1.5px solid rgba(28,94,62,0.15);
+      border-radius: var(--r-lg); padding: 20px;
+    }
+    .bs-row {
+      display: flex; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid rgba(28,94,62,0.1);
+    }
+    .bs-row:last-child { border-bottom: none; }
+    .bs-label { font-size: 13px; color: var(--text-3); }
+    .bs-value { font-size: 14px; font-weight: 700; color: var(--green-dark); }
+
+    /* ─────────────────────────────────────────────────────
+       SUCCESS CIRCLE
+    ───────────────────────────────────────────────────── */
+    .success-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 32px rgba(28,124,80,0.3);
+    }
+    .success-check {
+      width: 28px; height: 20px;
+      border-left: 4px solid #fff; border-bottom: 4px solid #fff;
+      transform: rotate(-45deg) translateY(-4px);
+    }
   </style>
 </head>
 <body>
@@ -693,19 +896,75 @@
 const PROGRESS = {
   landing:'0','problem':'12','clarify-1':'26','clarify-2':'40',
   'clarify-3':'54','calm':'64','situation':'73','plan':'83',
-  'documents':'88','lawyer-gate':'92','matching':'96','account':'100'
+  'documents':'88','lawyer-gate':'92','matching':'95',
+  'lawyer-profile':'97','book-date':'98','book-type':'99','book-confirm':'100',
+  'account':'100'
 };
 const LABEL = {
   problem:'Krok 1 z 5','clarify-1':'Krok 2 z 5','clarify-2':'Krok 3 z 5',
   'clarify-3':'Krok 4 z 5','calm':'Krok 5 z 5','situation':'Twoja sytuacja',
   plan:'Plan działania','documents':'Dokumenty','lawyer-gate':'Dalsze kroki',
-  matching:'Dobór prawnika','account':'Twoje konto'
+  matching:'Dobór prawnika','lawyer-profile':'Profil prawnika',
+  'book-date':'Rezerwacja','book-type':'Rezerwacja','book-confirm':'Potwierdzenie',
+  account:'Twoje konto'
 };
+
+/* Lawyer data */
+const LAWYERS = [
+  {
+    id:'ak', initials:'AK', name:'mec. Anna Kowalska',
+    spec:'Prawo pracy', location:'Warszawa',
+    rating:'4.9', reviews:63, matchCount:47,
+    responseTime:'Odpowiada w 1 godz.',
+    availability:'Dostępna dziś',
+    bio:'Specjalizuję się w prawie pracy od 12 lat. Reprezentuję pracowników w sporach z pracodawcami — zwolnienia, dyskryminacja, zaległe wynagrodzenia. Wygrałam ponad 80% prowadzonych spraw.',
+    specs:['Prawo pracy','Zwolnienia','Dyskryminacja','Umowy o pracę','PIP/Mobing'],
+    priceConsult:'bezpłatna, 15 min',
+    priceHour:'280 PLN/godz.',
+    priceFixed:'od 800 PLN'
+  },
+  {
+    id:'pn', initials:'PN', name:'mec. Piotr Nowak',
+    spec:'Prawo pracy · Prawo cywilne', location:'Kraków / online',
+    rating:'4.8', reviews:41, matchCount:31,
+    responseTime:'Odpowiada w 2 godz.',
+    availability:'Dostępny jutro',
+    bio:'Praktykuję od 9 lat, specjalizuję się w prawie pracy i sporach cywilnych. Prowadzę sprawy dla klientów z całej Polski — konsultacje online lub stacjonarnie w Krakowie.',
+    specs:['Prawo pracy','Prawo cywilne','Spory pracownicze','Umowy'],
+    priceConsult:'bezpłatna, 15 min',
+    priceHour:'240 PLN/godz.',
+    priceFixed:'od 650 PLN'
+  },
+  {
+    id:'ms', initials:'MS', name:'mec. Monika Szymańska',
+    spec:'Prawo pracy · Ubezpieczenia', location:'Wrocław / online',
+    rating:'4.7', reviews:28, matchCount:22,
+    responseTime:'Odpowiada w 3 godz.',
+    availability:'Dostępna pojutrze',
+    bio:'8 lat doświadczenia w sprawach pracowniczych i ubezpieczeniowych. Pomagam klientom odzyskać należne świadczenia i odszkodowania.',
+    specs:['Prawo pracy','Ubezpieczenia społeczne','ZUS','Wypadki przy pracy'],
+    priceConsult:'bezpłatna, 15 min',
+    priceHour:'220 PLN/godz.',
+    priceFixed:'od 600 PLN'
+  }
+];
+
+const SLOTS = [
+  {day:'Dziś',date:'1 kwi',time:'14:00'},
+  {day:'Dziś',date:'1 kwi',time:'16:30'},
+  {day:'Jutro',date:'2 kwi',time:'09:00'},
+  {day:'Jutro',date:'2 kwi',time:'11:00'},
+  {day:'Jutro',date:'2 kwi',time:'15:00'},
+  {day:'Śr',date:'3 kwi',time:'10:00'},
+];
 
 const state = {
   screen:'landing', history:[], flowState:'idle',
   aiOutput:null, aiPromise:null,
-  case:{ userText:'', category:null, hasPismo:null, deadline:null }
+  case:{ userText:'', category:null, hasPismo:null, deadline:null },
+  selectedLawyer: null,
+  booking:{ slot:null, type:null, phone:'' },
+  activeFilter: 'wszyscy'
 };
 
 function goTo(id){ state.history.push(state.screen); state.screen=id; render(); }
@@ -1052,7 +1311,38 @@ documents:()=>`
 `,
 
 /* ── 11. MATCHING ───────────────────────────────────────── */
-matching:()=>`
+matching:()=>{
+  const filters=['wszyscy','online','warszawa','kraków'];
+  const filterHtml=filters.map(f=>`<button class="filter-pill${state.activeFilter===f?' active':''}" onclick="setFilter('${f}')">${f.charAt(0).toUpperCase()+f.slice(1)}</button>`).join('');
+  const visible = state.activeFilter==='wszyscy' ? LAWYERS
+    : LAWYERS.filter(l=>l.location.toLowerCase().includes(state.activeFilter)||
+        (state.activeFilter==='online'&&l.location.toLowerCase().includes('online')));
+  const cards=visible.map(l=>{
+    const avToday=l.availability.includes('Dostępn')&&l.availability.includes('dziś');
+    return `<div class="lawyer-card-v2">
+      <div class="lcv2-top">
+        <div class="lcv2-head">
+          <div class="lcv2-initials">${l.initials}</div>
+          <div>
+            <div class="lcv2-name">${esc(l.name)}</div>
+            <div class="lcv2-spec">${esc(l.spec)} · ${esc(l.location)}</div>
+            <div class="lcv2-rating">★★★★★ ${l.rating} · ${l.reviews} opinie</div>
+          </div>
+        </div>
+        <div class="lcv2-tags">
+          <div class="lcv2-tag">✓ ${l.matchCount} podobnych spraw</div>
+          <div class="lcv2-tag lcv2-tag--resp">${esc(l.responseTime)}</div>
+          <div class="avail-badge"><div class="avail-dot${avToday?'':' avail-dot--grey'}"></div>${esc(l.availability)}</div>
+        </div>
+      </div>
+      <div class="lcv2-price">Pierwsza rozmowa: <strong>${esc(l.priceConsult)}</strong> · Dalsza pomoc: <strong>${esc(l.priceHour)}</strong></div>
+      <div class="lcv2-actions">
+        <button class="lcv2-btn lcv2-btn--profile" onclick="openProfile('${l.id}')">Zobacz profil</button>
+        <button class="lcv2-btn lcv2-btn--book" onclick="openBooking('${l.id}')">Umów rozmowę →</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `
   <div class="mid-panel">
     <div class="mid-inner">
       <div class="overline overline--light" style="margin-bottom:8px;">Rekomendacje</div>
@@ -1060,41 +1350,189 @@ matching:()=>`
     </div>
   </div>
   <div class="content-panel">
-    <div class="guide-card-light" style="margin-bottom:22px;">
+    <div class="guide-card-light" style="margin-bottom:20px;">
       <div class="overline overline--lime">Dlaczego ci prawnicy?</div>
-      <p>Dobrani na podstawie: ${esc(state.aiOutput?.summary?.situationType||state.case.category||'Twojej sprawy')}.</p>
+      <p>Dopasowani na podstawie: <strong>${esc(state.aiOutput?.summary?.situationType||state.case.category||'Twojej sprawy')}</strong>. Posortowani według liczby podobnych spraw i ocen klientów.</p>
     </div>
-    <div class="lawyer-card">
-      <div class="lawyer-head">
-        <div class="lawyer-initials">AK</div>
-        <div>
-          <div class="lawyer-name">mec. Anna Kowalska</div>
-          <div class="lawyer-spec">Prawo pracy · Warszawa</div>
-          <div class="lawyer-rating">★★★★★ 4.9 · 63 opinie</div>
-        </div>
-      </div>
-      <div class="lawyer-match">✓ 47 spraw podobnych do Twojej</div>
-      <div class="lawyer-price">Pierwsza rozmowa: <strong>bezpłatna, 15 min</strong><br>Dalsza pomoc: od 200 PLN</div>
-      <button class="btn-green" onclick="goTo('account')">Umów bezpłatną rozmowę →</button>
-    </div>
-    <div class="sp-10" style="height:10px;"></div>
-    <div class="lawyer-card">
-      <div class="lawyer-head">
-        <div class="lawyer-initials">PN</div>
-        <div>
-          <div class="lawyer-name">mec. Piotr Nowak</div>
-          <div class="lawyer-spec">Prawo pracy · Kraków / online</div>
-          <div class="lawyer-rating">★★★★★ 4.8 · 41 opinie</div>
-        </div>
-      </div>
-      <div class="lawyer-match">✓ Odpowiada zwykle w 2 godz.</div>
-      <div class="lawyer-price">Pierwsza rozmowa: <strong>bezpłatna, 15 min</strong><br>Dalsza pomoc: od 180 PLN</div>
-      <button class="btn-green" onclick="goTo('account')">Umów bezpłatną rozmowę →</button>
-    </div>
+    <div class="filter-pills" style="margin-bottom:16px;">${filterHtml}</div>
+    ${cards||'<p class="body" style="color:var(--text-3);text-align:center;padding:20px 0;">Brak prawników dla tego filtra.</p>'}
     <div class="sp-20"></div>
     <p class="caption" style="text-align:center;">Wolisz działać samodzielnie? <span class="inline-link" onclick="goTo('plan')">Wróć do planu</span></p>
+  </div>`;
+},
+
+/* ── 11b. LAWYER PROFILE ────────────────────────────────── */
+'lawyer-profile':()=>{
+  const l=state.selectedLawyer;
+  if(!l) return `<div class="content-panel"><p>Błąd — brak danych prawnika.</p></div>`;
+  const specsHtml=l.specs.map(s=>`<div class="spec-tag">${esc(s)}</div>`).join('');
+  return `
+  <div class="lp-hero">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="lp-inner">
+      <div class="lp-initials">${l.initials}</div>
+      <div>
+        <div class="lp-name">${esc(l.name)}</div>
+        <div class="lp-spec">${esc(l.spec)} · ${esc(l.location)}</div>
+        <div class="lp-stars">★★★★★ ${l.rating} · ${l.reviews} opinie</div>
+      </div>
+    </div>
+    <div class="lp-stat-row">
+      <div class="lp-stat">
+        <div class="lp-stat-num">${l.matchCount}</div>
+        <div class="lp-stat-label">Podobnych spraw</div>
+      </div>
+      <div class="lp-stat">
+        <div class="lp-stat-num">${l.reviews}</div>
+        <div class="lp-stat-label">Opinii</div>
+      </div>
+      <div class="lp-stat">
+        <div class="lp-stat-num">80%</div>
+        <div class="lp-stat-label">Wygranych spraw</div>
+      </div>
+    </div>
   </div>
-`,
+
+  <div class="content-panel">
+    <div class="overline overline--dark" style="margin-bottom:10px;">O prawniczce</div>
+    <p class="body" style="margin-bottom:22px;">${esc(l.bio)}</p>
+
+    <div class="overline overline--dark" style="margin-bottom:10px;">Specjalizacje</div>
+    <div class="spec-tags" style="margin-bottom:24px;">${specsHtml}</div>
+
+    <div class="overline overline--dark" style="margin-bottom:10px;">Cennik</div>
+    <div class="white-card" style="margin-bottom:24px;">
+      <div class="price-row"><div class="price-label">Pierwsza rozmowa (15 min)</div><div class="price-val price-val--free">Bezpłatna</div></div>
+      <div class="price-row"><div class="price-label">Konsultacja godzinowa</div><div class="price-val">${esc(l.priceHour)}</div></div>
+      <div class="price-row"><div class="price-label">Obsługa sprawy</div><div class="price-val">${esc(l.priceFixed)}</div></div>
+    </div>
+
+    <div class="overline overline--dark" style="margin-bottom:10px;">Opinie klientów</div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">„Pani mecenas wyjaśniła mi wszystko przystępnie i krok po kroku. Sprawa o zwolnienie zakończyła się ugodą — dostałam odszkodowanie."</div>
+      <div class="review-author">Klientka · Prawo pracy · Marzec 2026</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">„Bardzo profesjonalne podejście. Polecam każdemu, kto ma problem z pracodawcą."</div>
+      <div class="review-author">Klient · Spory pracownicze · Luty 2026</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★☆</div>
+      <div class="review-text">„Szybka odpowiedź, dobra analiza sytuacji. Pomogła mi zrozumieć moje prawa."</div>
+      <div class="review-author">Klientka · Umowy o pracę · Styczeń 2026</div>
+    </div>
+
+    <div class="sp-24"></div>
+    <button class="btn-green" onclick="openBooking('${l.id}')" style="margin-bottom:10px;">Umów bezpłatną rozmowę →</button>
+    <button class="btn-ghost-light" onclick="goTo('matching')">Wróć do listy prawników</button>
+  </div>`;
+},
+
+/* ── 11c. BOOK DATE ─────────────────────────────────────── */
+'book-date':()=>{
+  const l=state.selectedLawyer;
+  if(!l) return `<div class="content-panel"><p>Błąd.</p></div>`;
+  const slotsHtml=SLOTS.map((s,i)=>`
+    <button class="slot-btn${state.booking.slot===i?' selected':''}" onclick="pickSlot(${i})">
+      <div class="slot-day">${esc(s.day)}</div>
+      <div class="slot-time">${esc(s.time)}</div>
+    </button>`).join('');
+  return `
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:8px;">Rezerwacja · Krok 1 z 2</div>
+      <h1 class="hero-title" style="font-size:clamp(24px,4vw,34px);text-align:left;">Wybierz termin</h1>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="guide-card-light" style="margin-bottom:22px;">
+      <div class="overline overline--lime">Rozmowa z ${esc(l.name)}</div>
+      <p>Pierwsza rozmowa (15 minut) jest bezpłatna. Możesz ją odbyć online lub stacjonarnie.</p>
+    </div>
+    <div class="overline overline--dark" style="margin-bottom:12px;">Dostępne terminy</div>
+    <div class="slot-grid" style="margin-bottom:24px;">${slotsHtml}</div>
+    <div class="bottom-action">
+      <button class="btn-green" id="slotContinue" ${state.booking.slot===null?'disabled':''} onclick="goTo('book-type')">Dalej — wybierz formę →</button>
+    </div>
+  </div>`;
+},
+
+/* ── 11d. BOOK TYPE ─────────────────────────────────────── */
+'book-type':()=>{
+  const l=state.selectedLawyer;
+  const slot=SLOTS[state.booking.slot]||SLOTS[0];
+  return `
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:8px;">Rezerwacja · Krok 2 z 2</div>
+      <h1 class="hero-title" style="font-size:clamp(24px,4vw,34px);text-align:left;">Forma spotkania</h1>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="booking-summary" style="margin-bottom:24px;">
+      <div class="bs-row"><div class="bs-label">Prawnik</div><div class="bs-value">${esc(l?.name||'')}</div></div>
+      <div class="bs-row"><div class="bs-label">Termin</div><div class="bs-value">${esc(slot.day)}, ${esc(slot.date)} · ${esc(slot.time)}</div></div>
+      <div class="bs-row"><div class="bs-label">Czas</div><div class="bs-value">15 minut · bezpłatna</div></div>
+    </div>
+    <div class="overline overline--dark" style="margin-bottom:12px;">Jak chcesz rozmawiać?</div>
+    <div class="choice-list" style="margin-bottom:22px;">
+      <button class="choice-btn${state.booking.type==='online'?' selected':''}" onclick="pickType('online')">
+        <div class="choice-indicator"></div>
+        <div class="choice-body">
+          <div class="choice-label">Rozmowa online (video / telefon)</div>
+          <div class="choice-sub">Link do spotkania dostaniesz mailem</div>
+        </div>
+      </button>
+      <button class="choice-btn${state.booking.type==='stacjonarnie'?' selected':''}" onclick="pickType('stacjonarnie')">
+        <div class="choice-indicator"></div>
+        <div class="choice-body">
+          <div class="choice-label">Stacjonarnie — ${esc(l?.location?.split('/')[0]?.trim()||'')}</div>
+          <div class="choice-sub">Adres kancelarii dostaniesz w potwierdzeniu</div>
+        </div>
+      </button>
+    </div>
+    <div class="overline overline--dark" style="margin-bottom:10px;">Numer telefonu (opcjonalnie)</div>
+    <input class="text-input" type="tel" id="phoneInput" placeholder="+48 000 000 000"
+      value="${esc(state.booking.phone)}"
+      oninput="state.booking.phone=this.value"
+      style="margin-bottom:22px;" />
+    <div class="bottom-action">
+      <button class="btn-green" id="typeContinue" ${!state.booking.type?'disabled':''} onclick="goTo('book-confirm')">Potwierdź rezerwację →</button>
+    </div>
+  </div>`;
+},
+
+/* ── 11e. BOOK CONFIRM ──────────────────────────────────── */
+'book-confirm':()=>{
+  const l=state.selectedLawyer;
+  const slot=SLOTS[state.booking.slot]||SLOTS[0];
+  return `
+  <div class="hero-panel" style="padding-top:64px;padding-bottom:56px;">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="hero-blob hero-blob--2"></div>
+    <div class="hero-inner">
+      <div class="success-circle"><div class="success-check"></div></div>
+      <div class="hero-eyebrow">Rezerwacja potwierdzona</div>
+      <h1 class="hero-title" style="font-size:clamp(26px,5vw,40px);">
+        Rozmowa umówiona
+      </h1>
+      <p class="hero-sub">Wysyłamy potwierdzenie mailem. Do zobaczenia!</p>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="booking-summary" style="margin-bottom:24px;">
+      <div class="bs-row"><div class="bs-label">Prawnik</div><div class="bs-value">${esc(l?.name||'')}</div></div>
+      <div class="bs-row"><div class="bs-label">Termin</div><div class="bs-value">${esc(slot.day)}, ${esc(slot.date)} · ${esc(slot.time)}</div></div>
+      <div class="bs-row"><div class="bs-label">Forma</div><div class="bs-value">${state.booking.type==='online'?'Online (video/telefon)':'Stacjonarnie'}</div></div>
+      <div class="bs-row"><div class="bs-label">Czas trwania</div><div class="bs-value">15 minut</div></div>
+      <div class="bs-row"><div class="bs-label">Cena</div><div class="bs-value" style="color:var(--green-mid);">Bezpłatna</div></div>
+    </div>
+    <button class="btn-green" onclick="window.location.href='client-portal.html'" style="margin-bottom:10px;">Przejdź do swojego konta →</button>
+    <button class="btn-ghost-light" onclick="goTo('plan')">Wróć do planu działania</button>
+  </div>`;
+},
 
 /* ── 12. ACCOUNT ────────────────────────────────────────── */
 account:()=>`
@@ -1176,7 +1614,28 @@ function docDemo(name){ alert('W pełnej wersji: „'+name+'" zostanie wygenerow
 function submitAccount(){
   const el=document.getElementById('emailInput');
   if(!el||el.value.trim().length<5){ if(el) el.classList.add('error'); return; }
-  alert('Twoja sprawa została zapisana!\nWyślemy plan działania na: '+el.value.trim());
+  window.location.href='client-portal.html';
+}
+function setFilter(f){
+  state.activeFilter=f;
+  render();
+}
+function openProfile(lawyerId){
+  state.selectedLawyer=LAWYERS.find(l=>l.id===lawyerId)||LAWYERS[0];
+  goTo('lawyer-profile');
+}
+function openBooking(lawyerId){
+  state.selectedLawyer=LAWYERS.find(l=>l.id===lawyerId)||LAWYERS[0];
+  state.booking={ slot:null, type:null, phone:'' };
+  goTo('book-date');
+}
+function pickSlot(i){
+  state.booking.slot=i;
+  render();
+}
+function pickType(t){
+  state.booking.type=t;
+  render();
 }
 
 /* ============================================================

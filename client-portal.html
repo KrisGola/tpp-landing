@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>twojapomocprawna.pl — Moje konto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:  #1C5E3E;
+      --green-mid:   #1C7C50;
+      --green-light: #25A36A;
+      --lime:        #6BBF90;
+      --teal:        #2EC48A;
+      --cream:       #F2F0E8;
+      --cream-2:     #E8E5DC;
+      --cream-3:     #D4EDD8;
+      --white:       #FFFFFF;
+      --text:        #0D0D0B;
+      --text-2:      #3D3A35;
+      --text-3:      #7A746D;
+      --text-4:      #A8A29C;
+      --amber:       #B45309;
+      --red:         #DC2626;
+      --r-sm: 8px; --r-md: 16px; --r-lg: 24px; --r-pill: 100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .portal-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 62px;
+      background: rgba(18,64,48,0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-size: 15px; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.3px; }
+    .logo span { color: var(--lime); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .notif-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+    }
+    .notif-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #EF4444; border: 1.5px solid rgba(18,64,48,0.92);
+    }
+    .user-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: #fff;
+      cursor: pointer;
+    }
+
+    /* ── BOTTOM TAB NAV ── */
+    .tab-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: var(--white);
+      border-top: 1px solid var(--cream-2);
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .tab-btn {
+      flex: 1; background: none; border: none; cursor: pointer;
+      font-family: inherit; padding: 10px 4px 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      transition: color .15s;
+    }
+    .tab-icon { width: 22px; height: 22px; }
+    .tab-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2px; color: var(--text-4); }
+    .tab-btn.active .tab-label { color: var(--green-mid); }
+    .tab-btn.active .tab-icon-path { stroke: var(--green-mid); }
+    .tab-icon-path { stroke: var(--text-4); transition: stroke .15s; }
+
+    /* ── MAIN CONTENT ── */
+    .portal-main {
+      padding-top: 62px;
+      padding-bottom: 72px;
+      min-height: 100vh;
+    }
+    .tab-view { display: none; }
+    .tab-view.active { display: block; }
+
+    /* ── SHARED COMPONENTS ── */
+    .section { padding: 20px 20px 0; }
+    .section-title {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--text-4);
+      margin-bottom: 12px;
+    }
+    .white-card {
+      background: var(--white); border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .white-card + .white-card { margin-top: 10px; }
+    .divider { height: 1px; background: var(--cream-2); }
+
+    /* ── DASHBOARD HERO (compact) ── */
+    .dash-hero {
+      background: linear-gradient(150deg, #2E9465 0%, #1F7A52 35%, #196045 65%, #124030 100%);
+      padding: 28px 20px 24px; position: relative; overflow: hidden;
+    }
+    .dash-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(186,255,90,0.07) 1px, transparent 1px);
+      background-size: 24px 24px; pointer-events: none;
+    }
+    .dash-hero-inner { position: relative; z-index: 2; }
+    .dash-greeting { font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 600; margin-bottom: 4px; }
+    .dash-name { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.5px; margin-bottom: 14px; }
+    .dash-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .dash-stat {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--r-md); padding: 12px 10px; text-align: center;
+    }
+    .dash-stat-num { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+    .dash-stat-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+    /* ── CASE CARD ── */
+    .case-card {
+      background: var(--white); border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+    .case-card + .case-card { margin-top: 10px; }
+    .case-card-top {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--cream-2);
+    }
+    .case-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .case-title { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+    .case-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 4px 10px; border-radius: var(--r-pill);
+    }
+    .badge-active   { background: var(--cream-3); color: var(--green-dark); }
+    .badge-pending  { background: #FFFBEB; color: var(--amber); }
+    .badge-closed   { background: var(--cream-2); color: var(--text-4); }
+    .case-category  { font-size: 13px; color: var(--text-3); margin-bottom: 10px; }
+    .case-summary   { font-size: 14px; line-height: 1.6; color: var(--text-2); }
+
+    /* Status timeline */
+    .case-status-bar { padding: 14px 20px; display: flex; align-items: center; gap: 0; }
+    .status-step {
+      display: flex; flex-direction: column; align-items: center;
+      flex: 1; position: relative;
+    }
+    .status-step:not(:last-child)::after {
+      content: ''; position: absolute;
+      top: 8px; left: 50%; right: -50%;
+      height: 2px; background: var(--cream-2); z-index: 0;
+    }
+    .status-step.done:not(:last-child)::after { background: var(--green-mid); }
+    .status-dot {
+      width: 16px; height: 16px; border-radius: 50%; z-index: 1;
+      border: 2px solid var(--cream-2); background: var(--white);
+    }
+    .status-step.done .status-dot { background: var(--green-mid); border-color: var(--green-mid); }
+    .status-step.current .status-dot { background: var(--white); border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(28,124,80,0.18); }
+    .status-label { font-size: 10px; font-weight: 600; color: var(--text-4); margin-top: 6px; text-align: center; }
+    .status-step.done .status-label, .status-step.current .status-label { color: var(--green-dark); }
+
+    /* Case footer */
+    .case-footer { padding: 12px 20px; background: var(--cream); display: flex; align-items: center; justify-content: space-between; }
+    .case-lawyer-row { display: flex; align-items: center; gap: 10px; }
+    .case-lawyer-initials {
+      width: 28px; height: 28px; border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .case-lawyer-name { font-size: 12px; font-weight: 700; color: var(--text-2); }
+    .case-lawyer-role { font-size: 11px; color: var(--text-4); }
+    .case-action-btn {
+      font-size: 13px; font-weight: 700; color: var(--green-mid);
+      background: none; border: none; cursor: pointer; font-family: inherit;
+    }
+
+    /* ── APPOINTMENT CARD ── */
+    .appt-card {
+      background: linear-gradient(135deg, #1E7A50 0%, #165C3C 100%);
+      border-radius: var(--r-lg); padding: 18px 20px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .appt-date-box {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: var(--r-md); padding: 10px 14px; text-align: center; flex-shrink: 0;
+    }
+    .appt-day-num { font-size: 22px; font-weight: 900; color: #fff; line-height: 1; }
+    .appt-month   { font-size: 11px; font-weight: 700; color: var(--lime); text-transform: uppercase; letter-spacing: 0.5px; }
+    .appt-details {}
+    .appt-label { font-size: 11px; font-weight: 700; color: var(--lime); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 4px; }
+    .appt-title { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+    .appt-meta { font-size: 13px; color: rgba(255,255,255,0.65); }
+    .appt-join-btn {
+      margin-top: 12px; display: inline-block;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      border-radius: var(--r-pill); padding: 7px 16px;
+      font-size: 13px; font-weight: 700; color: #fff;
+      cursor: pointer; font-family: inherit; transition: background .15s;
+    }
+    .appt-join-btn:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── NOTIFICATION BANNER ── */
+    .notif-banner {
+      border-radius: var(--r-md); padding: 14px 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .notif-banner + .notif-banner { margin-top: 8px; }
+    .notif-banner--urgent { background: #FFF8EF; border: 1px solid #FED7AA; }
+    .notif-banner--info   { background: var(--cream-3); border: 1px solid rgba(28,94,62,0.18); }
+    .notif-icon { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .notif-icon--amber { background: var(--amber); }
+    .notif-icon--green { background: var(--teal); }
+    .notif-text { font-size: 14px; line-height: 1.55; }
+    .notif-banner--urgent .notif-text { color: #92400E; }
+    .notif-banner--info   .notif-text { color: var(--green-dark); }
+    .notif-text strong { font-weight: 700; }
+
+    /* ── DOCUMENTS ── */
+    .doc-card {
+      background: var(--white); border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); padding: 16px 18px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .doc-card + .doc-card { margin-top: 8px; }
+    .doc-card:hover { border-color: rgba(28,124,80,0.2); box-shadow: 0 4px 16px rgba(28,74,50,0.08); }
+    .doc-icon {
+      width: 42px; height: 42px; border-radius: var(--r-md); flex-shrink: 0;
+      background: var(--cream-3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; color: var(--green-dark);
+    }
+    .doc-info { flex: 1; min-width: 0; }
+    .doc-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .doc-meta { font-size: 12px; color: var(--text-4); }
+    .doc-action {
+      width: 34px; height: 34px; border-radius: var(--r-sm);
+      background: var(--cream-3); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .doc-action:hover { background: var(--cream-2); }
+    .upload-zone {
+      border: 2px dashed var(--cream-2); border-radius: var(--r-lg);
+      padding: 28px 20px; text-align: center; cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .upload-zone:hover { border-color: var(--green-mid); background: rgba(28,124,80,0.03); }
+    .upload-zone-icon {
+      width: 44px; height: 44px; border-radius: var(--r-md);
+      background: var(--cream-3); margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upload-zone p { font-size: 14px; color: var(--text-3); line-height: 1.5; }
+    .upload-zone strong { color: var(--green-mid); font-weight: 700; }
+
+    /* ── CHAT / MESSAGES ── */
+    .chat-wrapper {
+      display: flex; flex-direction: column;
+      height: calc(100vh - 62px - 72px);
+    }
+    .chat-header {
+      padding: 14px 20px; background: var(--white);
+      border-bottom: 1px solid var(--cream-2);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-avatar {
+      width: 40px; height: 40px; border-radius: var(--r-md);
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .chat-lawyer-name { font-size: 14px; font-weight: 800; color: var(--text); }
+    .chat-status { font-size: 12px; color: var(--green-mid); font-weight: 600; }
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px 16px 8px;
+      display: flex; flex-direction: column; gap: 10px;
+      background: var(--cream);
+    }
+    .msg { max-width: 80%; display: flex; flex-direction: column; gap: 3px; }
+    .msg--in  { align-self: flex-start; }
+    .msg--out { align-self: flex-end; }
+    .msg-bubble {
+      padding: 11px 15px; border-radius: var(--r-md);
+      font-size: 14px; line-height: 1.6;
+    }
+    .msg--in  .msg-bubble { background: var(--white); border: 1px solid var(--cream-2); color: var(--text); border-radius: 4px var(--r-md) var(--r-md) var(--r-md); }
+    .msg--out .msg-bubble { background: var(--green-mid); color: #fff; border-radius: var(--r-md) 4px var(--r-md) var(--r-md); }
+    .msg-time { font-size: 11px; color: var(--text-4); }
+    .msg--out .msg-time { text-align: right; }
+    .msg-sender { font-size: 11px; font-weight: 700; color: var(--text-3); }
+    .chat-input-row {
+      padding: 10px 12px;
+      background: var(--white); border-top: 1px solid var(--cream-2);
+      display: flex; gap: 8px; align-items: flex-end;
+    }
+    .chat-input {
+      flex: 1; border: 1.5px solid var(--cream-2); border-radius: var(--r-md);
+      padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--text);
+      background: var(--cream); resize: none; outline: none;
+      transition: border-color .15s;
+      max-height: 100px; overflow-y: auto;
+    }
+    .chat-input:focus { border-color: var(--green-mid); }
+    .chat-input::placeholder { color: var(--text-4); }
+    .send-btn {
+      width: 42px; height: 42px; border-radius: var(--r-md);
+      background: var(--green-mid); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s; flex-shrink: 0;
+    }
+    .send-btn:hover { background: var(--green-dark); }
+
+    /* ── ACCOUNT TAB ── */
+    .account-hero {
+      background: linear-gradient(150deg, #2E9465 0%, #1F7A52 35%, #196045 65%, #124030 100%);
+      padding: 32px 20px 28px; position: relative; overflow: hidden;
+    }
+    .account-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(186,255,90,0.07) 1px, transparent 1px);
+      background-size: 24px 24px; pointer-events: none;
+    }
+    .account-avatar-wrap { position: relative; z-index: 2; display: flex; align-items: center; gap: 16px; }
+    .account-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: #fff;
+    }
+    .account-name { font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.4px; }
+    .account-email { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .plan-badge {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+      background: rgba(107,191,144,0.2); border: 1px solid rgba(107,191,144,0.4);
+      border-radius: var(--r-pill); padding: 4px 12px;
+      font-size: 12px; font-weight: 700; color: var(--lime);
+    }
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0; border-bottom: 1px solid var(--cream-2);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 15px; font-weight: 600; color: var(--text); }
+    .setting-value { font-size: 14px; color: var(--text-3); }
+    .setting-arrow { color: var(--text-4); font-size: 18px; line-height: 1; }
+    .setting-row-btn { background: none; border: none; cursor: pointer; font-family: inherit; width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; }
+    .billing-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--cream-2);
+    }
+    .billing-row:last-child { border-bottom: none; }
+    .billing-desc { font-size: 14px; color: var(--text-2); }
+    .billing-amount { font-size: 14px; font-weight: 700; color: var(--text); }
+    .billing-date { font-size: 12px; color: var(--text-4); margin-top: 1px; }
+    .logout-btn {
+      width: 100%; background: none; border: 1.5px solid #FCA5A5;
+      border-radius: var(--r-pill); padding: 14px;
+      font-size: 15px; font-weight: 700; color: var(--red);
+      cursor: pointer; font-family: inherit; transition: background .15s;
+    }
+    .logout-btn:hover { background: #FEF2F2; }
+
+    /* ── SPACING UTILS ── */
+    .sp-8  { height: 8px; }
+    .sp-12 { height: 12px; }
+    .sp-16 { height: 16px; }
+    .sp-20 { height: 20px; }
+    .sp-24 { height: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="portal-header">
+  <a class="logo" href="guided-flow.html">twojapomoc<span>prawna</span>.pl</a>
+  <div class="header-right">
+    <div class="notif-btn" onclick="switchTab('sprawy')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <div class="notif-dot"></div>
+    </div>
+    <div class="user-avatar">MW</div>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="portal-main">
+
+  <!-- ════ TAB: SPRAWY ════ -->
+  <div class="tab-view active" id="tab-sprawy">
+
+    <div class="dash-hero">
+      <div class="dash-hero-inner">
+        <div class="dash-greeting">Dzień dobry,</div>
+        <div class="dash-name">Marta Wiśniewska</div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <div class="dash-stat-num">1</div>
+            <div class="dash-stat-label">Aktywna sprawa</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-num">3</div>
+            <div class="dash-stat-label">Dokumenty</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-num">2 kwi</div>
+            <div class="dash-stat-label">Następna wizyta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sp-16"></div>
+      <div class="section-title">Powiadomienia</div>
+      <div class="notif-banner notif-banner--urgent">
+        <div class="notif-icon notif-icon--amber"></div>
+        <div class="notif-text"><strong>Termin upływa za 18 dni.</strong> Złóż odwołanie do sądu pracy najpóźniej do 19 kwietnia 2026.</div>
+      </div>
+      <div class="notif-banner notif-banner--info">
+        <div class="notif-icon notif-icon--green"></div>
+        <div class="notif-text"><strong>mec. Anna Kowalska</strong> odpowiedziała na Twoją wiadomość.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sp-16"></div>
+      <div class="section-title">Najbliższe spotkanie</div>
+      <div class="appt-card">
+        <div class="appt-date-box">
+          <div class="appt-day-num">2</div>
+          <div class="appt-month">kwi</div>
+        </div>
+        <div class="appt-details">
+          <div class="appt-label">Jutro · 09:00</div>
+          <div class="appt-title">Konsultacja z mec. Kowalską</div>
+          <div class="appt-meta">15 min · Online (video) · Bezpłatna</div>
+          <button class="appt-join-btn" onclick="switchTab('wiadomosci')">Dołącz do rozmowy →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sp-16"></div>
+      <div class="section-title">Moje sprawy</div>
+
+      <div class="case-card">
+        <div class="case-card-top">
+          <div class="case-header">
+            <div class="case-title">Bezprawne zwolnienie z pracy</div>
+            <div class="case-badge badge-active">W toku</div>
+          </div>
+          <div class="case-category">Prawo pracy · Sprawa pracownicza</div>
+          <div class="case-summary">Dostałam zwolnienie bez podania przyczyny po 5 latach pracy. Plan: złożyć odwołanie do sądu pracy w terminie 21 dni.</div>
+        </div>
+        <div class="case-status-bar">
+          <div class="status-step done">
+            <div class="status-dot"></div>
+            <div class="status-label">Analiza</div>
+          </div>
+          <div class="status-step done">
+            <div class="status-dot"></div>
+            <div class="status-label">Plan</div>
+          </div>
+          <div class="status-step current">
+            <div class="status-dot"></div>
+            <div class="status-label">Prawnik</div>
+          </div>
+          <div class="status-step">
+            <div class="status-dot"></div>
+            <div class="status-label">Sąd</div>
+          </div>
+          <div class="status-step">
+            <div class="status-dot"></div>
+            <div class="status-label">Wynik</div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-lawyer-row">
+            <div class="case-lawyer-initials">AK</div>
+            <div>
+              <div class="case-lawyer-name">mec. Anna Kowalska</div>
+              <div class="case-lawyer-role">Twój prawnik</div>
+            </div>
+          </div>
+          <button class="case-action-btn" onclick="switchTab('wiadomosci')">Napisz →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sp-20"></div>
+      <a href="guided-flow.html" style="display:block;text-align:center;font-size:14px;font-weight:700;color:var(--green-mid);text-decoration:none;padding:12px;">
+        Masz nową sprawę? Zacznij analizę →
+      </a>
+      <div class="sp-20"></div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: DOKUMENTY ════ -->
+  <div class="tab-view" id="tab-dokumenty">
+
+    <div style="padding: 20px 20px 0;">
+      <div class="sp-8"></div>
+      <h1 style="font-size:22px;font-weight:900;letter-spacing:-0.4px;margin-bottom:4px;">Dokumenty</h1>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:20px;">Pisma, umowy i materiały do sprawy.</p>
+
+      <div class="section-title">Wygenerowane przez AI</div>
+      <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-info">
+          <div class="doc-name">Żądanie pisemnego uzasadnienia zwolnienia</div>
+          <div class="doc-meta">Wygenerowany 1 kwi 2026 · PDF · 2 strony</div>
+        </div>
+        <button class="doc-action" title="Pobierz">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green-mid)" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+      <div class="doc-card">
+        <div class="doc-icon">PDF</div>
+        <div class="doc-info">
+          <div class="doc-name">Lista dokumentów do zebrania</div>
+          <div class="doc-meta">Wygenerowany 1 kwi 2026 · PDF · 1 strona</div>
+        </div>
+        <button class="doc-action" title="Pobierz">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green-mid)" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+
+      <div class="sp-20"></div>
+      <div class="section-title">Przesłane przez Ciebie</div>
+      <div class="doc-card">
+        <div class="doc-icon" style="background:var(--cream-2);color:var(--text-3);">DOC</div>
+        <div class="doc-info">
+          <div class="doc-name">Umowa o pracę — skan</div>
+          <div class="doc-meta">Przesłano 31 mar 2026 · JPG · 1.2 MB</div>
+        </div>
+        <button class="doc-action" title="Pobierz">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+
+      <div class="sp-20"></div>
+      <div class="section-title">Dodaj dokument</div>
+      <div class="upload-zone" onclick="alert('W pełnej wersji: wybierz plik do przesłania.')">
+        <div class="upload-zone-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green-mid)" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <p><strong>Kliknij, żeby przesłać plik</strong><br>lub przeciągnij tutaj · PDF, JPG, PNG · max 20 MB</p>
+      </div>
+      <div class="sp-20"></div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: WIADOMOŚCI ════ -->
+  <div class="tab-view" id="tab-wiadomosci">
+    <div class="chat-wrapper">
+      <div class="chat-header">
+        <div class="chat-avatar">AK</div>
+        <div>
+          <div class="chat-lawyer-name">mec. Anna Kowalska</div>
+          <div class="chat-status">Aktywna · odpowiada w 1 godz.</div>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+
+        <div class="msg msg--in">
+          <div class="msg-sender">mec. Anna Kowalska</div>
+          <div class="msg-bubble">Dzień dobry Pani Marto. Zapoznałam się z Pani sprawą. Zwolnienie bez pisemnego uzasadnienia po ponad 3 miesiącach zatrudnienia to naruszenie art. 30 §4 Kodeksu pracy.</div>
+          <div class="msg-time">Wczoraj, 14:22</div>
+        </div>
+
+        <div class="msg msg--in">
+          <div class="msg-bubble">Ma Pani 21 dni od otrzymania wypowiedzenia na złożenie odwołania do sądu pracy. Proszę nie czekać — termin jest prekluzyjny.</div>
+          <div class="msg-time">Wczoraj, 14:23</div>
+        </div>
+
+        <div class="msg msg--out">
+          <div class="msg-bubble">Dziękuję bardzo. Kiedy najlepiej złożyć to odwołanie? Mam jeszcze 18 dni.</div>
+          <div class="msg-time">Wczoraj, 15:01</div>
+        </div>
+
+        <div class="msg msg--in">
+          <div class="msg-sender">mec. Anna Kowalska</div>
+          <div class="msg-bubble">Najlepiej jak najszybciej. Przygotowałam dla Pani wzór odwołania — proszę go pobrać z zakładki Dokumenty i uzupełnić danymi pracodawcy. Jutro podczas naszej rozmowy przejdziemy przez niego razem.</div>
+          <div class="msg-time">Wczoraj, 15:18</div>
+        </div>
+
+        <div class="msg msg--out">
+          <div class="msg-bubble">Świetnie, dziękuję. Do zobaczenia jutro o 9:00!</div>
+          <div class="msg-time">Wczoraj, 15:30</div>
+        </div>
+
+        <div class="msg msg--in">
+          <div class="msg-sender">mec. Anna Kowalska</div>
+          <div class="msg-bubble">Do zobaczenia. Proszę mieć pod ręką umowę o pracę i pismo wypowiedzenia.</div>
+          <div class="msg-time">Wczoraj, 15:31</div>
+        </div>
+
+      </div>
+
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chatInput" rows="1" placeholder="Napisz wiadomość…" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" onclick="sendMsg()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: KONTO ════ -->
+  <div class="tab-view" id="tab-konto">
+
+    <div class="account-hero">
+      <div class="account-avatar-wrap">
+        <div class="account-avatar">MW</div>
+        <div>
+          <div class="account-name">Marta Wiśniewska</div>
+          <div class="account-email">marta.wisniewska@gmail.com</div>
+          <div class="plan-badge">Plan Podstawowy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sp-16"></div>
+      <div class="section-title">Moje dane</div>
+      <div class="white-card">
+        <button class="setting-row-btn">
+          <div class="setting-row" style="border-bottom:1px solid var(--cream-2);width:100%;">
+            <div>
+              <div class="setting-label">Imię i nazwisko</div>
+              <div class="setting-value">Marta Wiśniewska</div>
+            </div>
+            <div class="setting-arrow">›</div>
+          </div>
+        </button>
+        <button class="setting-row-btn">
+          <div class="setting-row" style="border-bottom:1px solid var(--cream-2);width:100%;">
+            <div>
+              <div class="setting-label">E-mail</div>
+              <div class="setting-value">marta.wisniewska@gmail.com</div>
+            </div>
+            <div class="setting-arrow">›</div>
+          </div>
+        </button>
+        <button class="setting-row-btn">
+          <div class="setting-row" style="width:100%;">
+            <div>
+              <div class="setting-label">Telefon</div>
+              <div class="setting-value">+48 600 123 456</div>
+            </div>
+            <div class="setting-arrow">›</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="sp-20"></div>
+      <div class="section-title">Subskrypcja</div>
+      <div class="white-card">
+        <div class="setting-row" style="border-bottom:1px solid var(--cream-2);">
+          <div>
+            <div class="setting-label">Aktywny plan</div>
+            <div class="setting-value">Podstawowy · 0 PLN/mies.</div>
+          </div>
+          <button style="font-size:13px;font-weight:700;color:var(--green-mid);background:none;border:none;cursor:pointer;font-family:inherit;">Ulepsz</button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Następne odnowienie</div>
+            <div class="setting-value">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sp-20"></div>
+      <div class="section-title">Historia płatności</div>
+      <div class="white-card">
+        <div class="billing-row">
+          <div>
+            <div class="billing-desc">Rejestracja konta</div>
+            <div class="billing-date">1 kwi 2026</div>
+          </div>
+          <div class="billing-amount" style="color:var(--green-mid);">Bezpłatna</div>
+        </div>
+        <div class="billing-row">
+          <div>
+            <div class="billing-desc">Konsultacja z mec. Kowalską</div>
+            <div class="billing-date">2 kwi 2026 (zaplanowana)</div>
+          </div>
+          <div class="billing-amount" style="color:var(--green-mid);">Bezpłatna</div>
+        </div>
+      </div>
+
+      <div class="sp-20"></div>
+      <div class="section-title">Ustawienia</div>
+      <div class="white-card">
+        <button class="setting-row-btn">
+          <div class="setting-row" style="border-bottom:1px solid var(--cream-2);width:100%;">
+            <div class="setting-label">Powiadomienia e-mail</div>
+            <div style="width:40px;height:22px;background:var(--green-mid);border-radius:var(--r-pill);display:flex;align-items:center;justify-content:flex-end;padding:2px 3px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:#fff;"></div>
+            </div>
+          </div>
+        </button>
+        <button class="setting-row-btn">
+          <div class="setting-row" style="width:100%;">
+            <div class="setting-label">Polityka prywatności</div>
+            <div class="setting-arrow">›</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="sp-20"></div>
+      <button class="logout-btn" onclick="window.location.href='guided-flow.html'">Wyloguj się</button>
+      <div class="sp-24"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Bottom Tab Nav -->
+<nav class="tab-nav">
+  <button class="tab-btn active" id="nav-sprawy" onclick="switchTab('sprawy')">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" class="tab-icon-path" stroke-width="2"/>
+      <rect x="14" y="3" width="7" height="7" rx="1.5" class="tab-icon-path" stroke-width="2"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.5" class="tab-icon-path" stroke-width="2"/>
+      <rect x="14" y="14" width="7" height="7" rx="1.5" class="tab-icon-path" stroke-width="2"/>
+    </svg>
+    <span class="tab-label">Sprawy</span>
+  </button>
+  <button class="tab-btn" id="nav-dokumenty" onclick="switchTab('dokumenty')">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none">
+      <path class="tab-icon-path" stroke-width="2" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline class="tab-icon-path" stroke-width="2" points="14 2 14 8 20 8"/>
+      <line class="tab-icon-path" stroke-width="2" x1="8" y1="13" x2="16" y2="13"/>
+      <line class="tab-icon-path" stroke-width="2" x1="8" y1="17" x2="16" y2="17"/>
+    </svg>
+    <span class="tab-label">Dokumenty</span>
+  </button>
+  <button class="tab-btn" id="nav-wiadomosci" onclick="switchTab('wiadomosci')">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none">
+      <path class="tab-icon-path" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="tab-label">Wiadomości</span>
+  </button>
+  <button class="tab-btn" id="nav-konto" onclick="switchTab('konto')">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none">
+      <path class="tab-icon-path" stroke-width="2" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle class="tab-icon-path" stroke-width="2" cx="12" cy="7" r="4"/>
+    </svg>
+    <span class="tab-label">Konto</span>
+  </button>
+</nav>
+
+<script>
+/* ── TAB SWITCHING ── */
+function switchTab(name) {
+  document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'wiadomosci') {
+    setTimeout(() => {
+      const msgs = document.getElementById('chatMessages');
+      if (msgs) msgs.scrollTop = msgs.scrollHeight;
+    }, 50);
+  }
+}
+
+/* ── CHAT ── */
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = document.getElementById('chatMessages');
+  const now = new Date();
+  const time = 'Dziś, ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  const el = document.createElement('div');
+  el.className = 'msg msg--out';
+  el.innerHTML = `<div class="msg-bubble">${esc(text)}</div><div class="msg-time">${time}</div>`;
+  msgs.appendChild(el);
+  input.value = '';
+  input.style.height = 'auto';
+  msgs.scrollTop = msgs.scrollHeight;
+  // Simulate lawyer reply after 2s
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'msg msg--in';
+    reply.innerHTML = `<div class="msg-sender">mec. Anna Kowalska</div><div class="msg-bubble">Dziękuję za wiadomość. Odezwę się wkrótce.</div><div class="msg-time">${time}</div>`;
+    msgs.appendChild(reply);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 2000);
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && document.getElementById('chatInput') === document.activeElement) {
+    e.preventDefault();
+    sendMsg();
+  }
+});
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* Check if redirected from booking */
+if (window.location.hash === '#wiadomosci') switchTab('wiadomosci');
+if (window.location.hash === '#dokumenty')  switchTab('dokumenty');
+</script>
+</body>
+</html>
