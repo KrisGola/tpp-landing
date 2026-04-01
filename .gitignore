@@ -8,6 +8,9 @@
 .DS_Store
 Thumbs.db
 
+# Lock files
+.~lock.*
+
 # Editor
 .vscode/
 .idea/
@@ -15,3 +18,16 @@ Thumbs.db
 # Claude internal
 .claude/
 memory/
+
+# Next.js
+.next/
+out/
+node_modules/
+
+# Env — never commit secrets
+.env.local
+.env.*.local
+
+# Build outputs
+*.tsbuildinfo
+next-env.d.ts
