@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>twojapomocprawna.pl — Pomoc prawna krok po kroku</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ─────────────────────────────────────────────────────
+       TOKENS — identical to landing-v2.html
+    ───────────────────────────────────────────────────── */
+    :root {
+      --green-dark:  #1C5E3E;
+      --green-mid:   #1C7C50;
+      --green-light: #25A36A;
+      --lime:        #6BBF90;
+      --lime-hover:  #52A87A;
+      --teal:        #2EC48A;
+      --cream:       #F2F0E8;
+      --cream-2:     #E8E5DC;
+      --cream-3:     #D4EDD8;
+      --white:       #FFFFFF;
+      --text:        #0D0D0B;
+      --text-2:      #3D3A35;
+      --text-3:      #7A746D;
+      --text-4:      #A8A29C;
+      --amber:       #B45309;
+      --amber-soft:  #FFFBEB;
+      --r-sm: 8px; --r-md: 16px; --r-lg: 24px; --r-pill: 100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       PROGRESS — 3px top strip, lime gradient
+    ───────────────────────────────────────────────────── */
+    .progress-track {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; background: rgba(255,255,255,0.15); z-index: 300;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--lime), #BAFF5A);
+      transition: width 0.55s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ─────────────────────────────────────────────────────
+       HEADER — dark green frosted, like nav
+    ───────────────────────────────────────────────────── */
+    .app-header {
+      position: fixed; top: 3px; left: 0; right: 0; z-index: 200;
+      height: 62px;
+      background: rgba(18,64,48,0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s;
+    }
+    .logo {
+      font-size: 15px; font-weight: 900; letter-spacing: -0.3px;
+      color: #fff; text-decoration: none;
+    }
+    .logo span { color: var(--lime); }
+
+    .step-badge {
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--r-pill); padding: 5px 14px;
+    }
+    .back-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      font-family: inherit;
+      display: flex; align-items: center; gap: 5px;
+      transition: color .15s;
+    }
+    .back-btn:hover { color: #fff; }
+    .back-btn svg { width: 16px; height: 16px; }
+
+    /* ─────────────────────────────────────────────────────
+       LAYOUT
+    ───────────────────────────────────────────────────── */
+    .main {
+      min-height: 100vh;
+      padding-top: 65px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .screen-wrap {
+      width: 100%; max-width: 600px;
+      padding: 0 0 80px;
+    }
+
+    /* Screen animation */
+    .screen-enter { animation: sIn .3s cubic-bezier(.4,0,.2,1) forwards; }
+    @keyframes sIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─────────────────────────────────────────────────────
+       HERO PANEL — full-width gradient, used for Landing
+       and Calm screens
+    ───────────────────────────────────────────────────── */
+    .hero-panel {
+      position: relative;
+      background: linear-gradient(150deg, #2E9465 0%, #1F7A52 35%, #196045 65%, #124030 100%);
+      overflow: hidden;
+      width: 100%;
+      padding: 72px 32px 64px;
+      text-align: center;
+    }
+    .hero-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(186,255,90,0.08) 1px, transparent 1px);
+      background-size: 26px 26px;
+      pointer-events: none;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      pointer-events: none; filter: blur(80px);
+    }
+    .hero-blob--1 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(46,148,101,0.38) 0%, transparent 70%);
+      top: -120px; left: -80px;
+    }
+    .hero-blob--2 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(186,255,90,0.14) 0%, transparent 70%);
+      bottom: -100px; right: -60px;
+    }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-eyebrow {
+      display: inline-block;
+      color: var(--lime);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-size: clamp(32px, 6vw, 54px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 18px;
+    }
+    .hero-title em { font-style: normal; color: var(--lime); }
+    .hero-sub {
+      font-size: 17px; line-height: 1.65;
+      color: rgba(255,255,255,0.62);
+      max-width: 440px; margin: 0 auto 36px;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       CONTENT PANEL — cream bg, used for inner screens
+    ───────────────────────────────────────────────────── */
+    .content-panel {
+      background: var(--cream);
+      padding: 36px 32px;
+      width: 100%;
+    }
+
+    /* Mid-panel — dark green gradient strip, like .steps section */
+    .mid-panel {
+      position: relative;
+      background: linear-gradient(160deg, #1E7A50 0%, #1A6040 50%, #175238 100%);
+      overflow: hidden;
+      width: 100%;
+      padding: 40px 32px;
+    }
+    .mid-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    .mid-inner { position: relative; z-index: 2; }
+
+    /* ─────────────────────────────────────────────────────
+       TYPOGRAPHY
+    ───────────────────────────────────────────────────── */
+    .h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.8px; color: var(--text); line-height: 1.18; }
+    .h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); line-height: 1.24; }
+    .body-lg { font-size: 17px; line-height: 1.68; color: var(--text-2); }
+    .body    { font-size: 15px; line-height: 1.62; color: var(--text-2); }
+    .caption { font-size: 13px; line-height: 1.5;  color: var(--text-3); }
+    .overline {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .overline--dark  { color: var(--text-4); }
+    .overline--light { color: rgba(255,255,255,0.5); }
+    .overline--lime  { color: var(--lime); }
+
+    /* ─────────────────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────────────────── */
+
+    /* Cream on dark (landing primary style) */
+    .btn-cream {
+      display: block; width: 100%;
+      background: var(--cream); color: var(--green-dark);
+      font-size: 15px; font-weight: 800; letter-spacing: -0.1px;
+      padding: 16px 32px; border-radius: var(--r-pill); border: none;
+      cursor: pointer; font-family: inherit; text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      transition: background .2s, transform .15s, box-shadow .2s;
+    }
+    .btn-cream:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.22); }
+    .btn-cream:active { transform: translateY(0); }
+    .btn-cream:disabled { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.4); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Green on light bg */
+    .btn-green {
+      display: block; width: 100%;
+      background: var(--green-mid); color: #fff;
+      font-size: 15px; font-weight: 800;
+      padding: 16px 32px; border-radius: var(--r-pill); border: none;
+      cursor: pointer; font-family: inherit; text-align: center;
+      transition: background .2s, transform .15s;
+    }
+    .btn-green:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .btn-green:active { transform: translateY(0); }
+    .btn-green:disabled { background: var(--cream-2); color: var(--text-4); cursor: not-allowed; transform: none; }
+
+    /* Outline on light bg */
+    .btn-outline {
+      display: block; width: 100%;
+      background: transparent; color: var(--green-mid);
+      font-size: 15px; font-weight: 700;
+      padding: 14px 32px; border-radius: var(--r-pill);
+      border: 1.5px solid var(--green-mid);
+      cursor: pointer; font-family: inherit; text-align: center;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-outline:hover { background: rgba(28,124,80,0.06); }
+
+    /* Ghost on light bg */
+    .btn-ghost-light {
+      display: block; width: 100%;
+      background: transparent; color: var(--text-3);
+      font-size: 15px; font-weight: 600;
+      padding: 14px 32px; border-radius: var(--r-pill);
+      border: 1.5px solid var(--cream-2);
+      cursor: pointer; font-family: inherit; text-align: center;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .btn-ghost-light:hover { background: var(--white); color: var(--text-2); border-color: var(--cream-2); }
+
+    /* Ghost on dark bg */
+    .btn-ghost-dark {
+      display: block; width: 100%;
+      background: transparent; color: rgba(255,255,255,0.82);
+      font-size: 15px; font-weight: 600;
+      padding: 14px 32px; border-radius: var(--r-pill);
+      border: 1.5px solid rgba(255,255,255,0.28);
+      cursor: pointer; font-family: inherit; text-align: center;
+      transition: border-color .2s, background .2s, color .2s;
+    }
+    .btn-ghost-dark:hover { border-color: rgba(255,255,255,0.6); color: #fff; background: rgba(255,255,255,0.08); }
+
+    /* ─────────────────────────────────────────────────────
+       TRUST PILLS — white on dark
+    ───────────────────────────────────────────────────── */
+    .trust-pills {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
+      margin: 28px 0;
+    }
+    .trust-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--r-pill);
+      padding: 8px 18px;
+      font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .trust-check { color: var(--lime); font-weight: 800; font-size: 12px; }
+
+    /* ─────────────────────────────────────────────────────
+       HOW IT WORKS — step cards matching landing
+    ───────────────────────────────────────────────────── */
+    .how-list { display: flex; flex-direction: column; gap: 10px; }
+    .how-card {
+      border-radius: var(--r-lg); padding: 24px 28px;
+      display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start;
+      transition: transform .22s, box-shadow .22s;
+    }
+    .how-card:hover { transform: translateX(6px); }
+    .how-card--white { background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+    .how-card--sage  { background: var(--cream-3); box-shadow: 0 4px 24px rgba(28,94,62,0.13); }
+    .how-card--glass {
+      background: rgba(255,255,255,0.18);
+      border: 1.5px solid rgba(255,255,255,0.32);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .how-num {
+      font-size: 46px; font-weight: 900; line-height: 1;
+      letter-spacing: -2px; padding-top: 2px;
+    }
+    .how-card--white .how-num { color: var(--lime); }
+    .how-card--sage  .how-num { color: var(--green-dark); }
+    .how-card--glass .how-num { color: rgba(168,224,200,0.9); }
+    .how-content h4 {
+      font-size: 16px; font-weight: 800; letter-spacing: -0.3px;
+      margin-bottom: 5px; padding-top: 6px;
+    }
+    .how-card--white h4 { color: var(--text); }
+    .how-card--sage  h4 { color: var(--text); }
+    .how-card--glass h4 { color: #fff; }
+    .how-content p { font-size: 14px; line-height: 1.6; }
+    .how-card--white p { color: var(--text-3); }
+    .how-card--sage  p { color: var(--text-3); }
+    .how-card--glass p { color: rgba(255,255,255,0.65); }
+
+    /* ─────────────────────────────────────────────────────
+       AI GUIDANCE CARD — glass on dark, feature-row on light
+    ───────────────────────────────────────────────────── */
+    .guide-card-dark {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--r-md);
+      padding: 20px 22px;
+      position: relative; z-index: 2;
+    }
+    .guide-card-dark .overline { color: var(--lime); margin-bottom: 10px; }
+    .guide-card-dark p { font-size: 15px; line-height: 1.68; color: rgba(255,255,255,0.82); }
+    .guide-card-dark p + p { margin-top: 10px; }
+
+    .guide-card-light {
+      background: var(--white);
+      border: 1px solid var(--cream-2);
+      border-left: 3px solid var(--green-mid);
+      border-radius: 0 var(--r-md) var(--r-md) 0;
+      padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .guide-card-light .overline { color: var(--green-mid); margin-bottom: 8px; }
+    .guide-card-light p { font-size: 15px; line-height: 1.65; color: var(--text-2); }
+    .guide-card-light p + p { margin-top: 10px; }
+
+    /* ─────────────────────────────────────────────────────
+       SAFE BANNER — on light bg
+    ───────────────────────────────────────────────────── */
+    .safe-banner {
+      background: var(--cream-3);
+      border: 1.5px solid rgba(28,94,62,0.2);
+      border-radius: var(--r-md);
+      padding: 16px 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .safe-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--green-mid); flex-shrink: 0; margin-top: 5px;
+    }
+    .safe-text { font-size: 15px; color: var(--green-dark); line-height: 1.55; }
+    .safe-text strong { font-weight: 800; }
+
+    /* ─────────────────────────────────────────────────────
+       CHOICE BUTTONS
+    ───────────────────────────────────────────────────── */
+    .choice-list { display: flex; flex-direction: column; gap: 8px; }
+    .choice-btn {
+      background: var(--white);
+      border: 1.5px solid var(--cream-2);
+      border-radius: var(--r-md); padding: 16px 20px;
+      text-align: left; cursor: pointer;
+      font-family: inherit;
+      display: flex; align-items: center; gap: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: all .15s ease;
+    }
+    .choice-btn:hover {
+      border-color: var(--green-mid);
+      box-shadow: 0 4px 16px rgba(28,94,62,0.1);
+      transform: translateX(3px);
+    }
+    .choice-btn.selected {
+      border-color: var(--green-mid);
+      background: var(--cream-3);
+      box-shadow: 0 4px 16px rgba(28,94,62,0.12);
+    }
+    .choice-indicator {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--cream-2);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .choice-btn.selected .choice-indicator {
+      border-color: var(--green-mid);
+      background: var(--green-mid);
+    }
+    .choice-btn.selected .choice-indicator::after {
+      content: '';
+      width: 8px; height: 8px; border-radius: 50%; background: #fff;
+    }
+    .choice-body { flex: 1; }
+    .choice-label {
+      font-size: 15px; font-weight: 700;
+      color: var(--text); line-height: 1.3;
+    }
+    .choice-sub {
+      font-size: 13px; color: var(--text-3);
+      margin-top: 2px; font-weight: 400;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       TEXTAREA / INPUT
+    ───────────────────────────────────────────────────── */
+    .field-wrap { position: relative; }
+    .textarea {
+      width: 100%; border: 1.5px solid var(--cream-2);
+      border-radius: var(--r-md); padding: 18px 20px;
+      font-size: 16px; font-family: inherit; line-height: 1.6;
+      color: var(--text); background: var(--white);
+      resize: none; outline: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .textarea:focus {
+      border-color: var(--green-mid);
+      box-shadow: 0 0 0 4px rgba(28,124,80,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .textarea::placeholder { color: var(--text-4); }
+    .char-count {
+      position: absolute; bottom: 14px; right: 18px;
+      font-size: 12px; font-weight: 500; color: var(--text-4);
+    }
+    .text-input {
+      width: 100%; border: 1.5px solid var(--cream-2);
+      border-radius: var(--r-pill); padding: 15px 22px;
+      font-size: 15px; font-family: inherit; color: var(--text);
+      background: var(--white); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .text-input:focus {
+      border-color: var(--green-mid);
+      box-shadow: 0 0 0 4px rgba(28,124,80,0.08);
+    }
+    .text-input::placeholder { color: var(--text-4); }
+    .text-input.error { border-color: #DC2626; }
+
+    /* ─────────────────────────────────────────────────────
+       ACTION PLAN STEP CARDS — matching landing step-card
+    ───────────────────────────────────────────────────── */
+    .action-step {
+      background: var(--white);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); padding: 26px 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: transform .22s, box-shadow .22s, border-color .2s;
+    }
+    .action-step:hover {
+      transform: translateX(6px);
+      box-shadow: 0 8px 28px rgba(28,74,50,0.1);
+      border-color: rgba(28,124,80,0.2);
+    }
+    .action-step + .action-step { margin-top: 8px; }
+    .action-step-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 10px;
+    }
+    .action-step-num {
+      font-size: 44px; font-weight: 900; line-height: 1;
+      letter-spacing: -2px; color: var(--lime);
+    }
+    .action-step-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; padding: 5px 12px;
+      border-radius: var(--r-pill);
+      margin-top: 6px;
+    }
+    .tag-critical { background: #FFF3E0; color: var(--amber); border: 1px solid #FFD08A; }
+    .tag-high     { background: #FFF7F0; color: #C2410C; border: 1px solid #FED7AA; }
+    .tag-normal   { background: var(--cream-3); color: var(--green-dark); border: 1px solid rgba(28,94,62,0.2); }
+    .action-step h3 {
+      font-size: 17px; font-weight: 800;
+      color: var(--text); letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .action-step p  { font-size: 14px; line-height: 1.62; color: var(--text-3); }
+
+    /* ─────────────────────────────────────────────────────
+       FACT LIST
+    ───────────────────────────────────────────────────── */
+    .fact-list { list-style: none; }
+    .fact-item {
+      display: grid; grid-template-columns: 28px 1fr;
+      padding: 13px 0; border-bottom: 1px solid var(--cream-2);
+      font-size: 15px; line-height: 1.5; gap: 8px; align-items: start;
+    }
+    .fact-item:last-child { border-bottom: none; }
+    .fact-bullet {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green-mid); margin-top: 8px; flex-shrink: 0;
+    }
+    .fact-label { color: var(--text-3); }
+    .fact-value { font-weight: 700; color: var(--text); }
+
+    /* ─────────────────────────────────────────────────────
+       WHITE CARD — generic info container
+    ───────────────────────────────────────────────────── */
+    .white-card {
+      background: var(--white);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    /* ─────────────────────────────────────────────────────
+       FEATURE ROW — matching landing feature-row
+    ───────────────────────────────────────────────────── */
+    .feature-row {
+      display: grid; grid-template-columns: 28px 1fr; gap: 14px;
+      padding: 16px 0; border-bottom: 1px solid var(--cream-2);
+      align-items: start;
+    }
+    .feature-row:last-child { border-bottom: none; }
+    .feature-num {
+      font-size: 12px; font-weight: 800;
+      color: var(--green-mid); opacity: 0.7;
+      font-variant-numeric: tabular-nums; padding-top: 2px;
+    }
+    .feature-text h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .feature-text p  { font-size: 13px; line-height: 1.55; color: var(--text-3); }
+
+    /* ─────────────────────────────────────────────────────
+       LAWYER CARD
+    ───────────────────────────────────────────────────── */
+    .lawyer-card {
+      background: var(--white); border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg); padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .lawyer-card:hover { box-shadow: 0 6px 24px rgba(28,74,50,0.09); border-color: rgba(28,124,80,0.25); }
+    .lawyer-card + .lawyer-card { margin-top: 10px; }
+    .lawyer-head { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 14px; }
+    .lawyer-initials {
+      width: 52px; height: 52px; border-radius: var(--r-md);
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; color: #fff;
+      flex-shrink: 0; letter-spacing: -0.5px;
+    }
+    .lawyer-name { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+    .lawyer-spec { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .lawyer-rating { font-size: 13px; color: #C2860A; font-weight: 700; margin-top: 4px; }
+    .lawyer-match {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--cream-3); color: var(--green-dark);
+      border-radius: var(--r-pill); padding: 5px 12px;
+      font-size: 12px; font-weight: 700; margin-bottom: 12px;
+    }
+    .lawyer-price { font-size: 14px; color: var(--text-3); margin-bottom: 16px; line-height: 1.55; }
+    .lawyer-price strong { color: var(--text); font-weight: 700; }
+
+    /* ─────────────────────────────────────────────────────
+       DOC OPTION TILES
+    ───────────────────────────────────────────────────── */
+    .doc-option {
+      background: var(--white); border: 1.5px solid var(--cream-2);
+      border-radius: var(--r-md); padding: 18px 20px;
+      cursor: pointer; transition: all .15s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .doc-option:hover {
+      border-color: var(--green-mid);
+      box-shadow: 0 4px 16px rgba(28,94,62,0.1);
+      transform: translateX(3px);
+    }
+    .doc-option + .doc-option { margin-top: 8px; }
+    .doc-num {
+      width: 36px; height: 36px; border-radius: var(--r-sm);
+      background: var(--cream-3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: var(--green-dark);
+      flex-shrink: 0;
+    }
+    .doc-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .doc-sub   { font-size: 13px; color: var(--text-3); }
+
+    /* ─────────────────────────────────────────────────────
+       CORRECTION / SKIP / LINK
+    ───────────────────────────────────────────────────── */
+    .correction-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 500; color: var(--text-3);
+      cursor: pointer; padding: 10px 0; transition: color .15s;
+    }
+    .correction-row:hover { color: var(--green-mid); }
+    .skip-link {
+      display: block; text-align: center;
+      font-size: 14px; font-weight: 500; color: var(--text-3);
+      cursor: pointer; text-decoration: underline;
+      text-underline-offset: 2px; transition: color .15s;
+    }
+    .skip-link:hover { color: var(--green-mid); }
+    .inline-link {
+      color: var(--green-mid); text-decoration: underline;
+      font-weight: 600; cursor: pointer;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       STICKY BOTTOM ACTION
+    ───────────────────────────────────────────────────── */
+    .bottom-action {
+      position: sticky; bottom: 0;
+      background: linear-gradient(to top, var(--cream) 70%, transparent);
+      padding: 20px 0 0; margin-top: 24px;
+    }
+
+    /* ─────────────────────────────────────────────────────
+       SPINNER / LOADING
+    ───────────────────────────────────────────────────── */
+    .spinner {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top: 3px solid var(--lime);
+      animation: spin .75s linear infinite; margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─────────────────────────────────────────────────────
+       DIVIDER
+    ───────────────────────────────────────────────────── */
+    .divider { height: 1px; background: var(--cream-2); }
+
+    /* Spacing */
+    .sp-8  { height: 8px; }
+    .sp-12 { height: 12px; }
+    .sp-16 { height: 16px; }
+    .sp-20 { height: 20px; }
+    .sp-24 { height: 24px; }
+    .sp-32 { height: 32px; }
+
+    @media (max-width: 480px) {
+      .hero-panel { padding: 56px 22px 48px; }
+      .content-panel { padding: 28px 20px; }
+      .mid-panel { padding: 32px 20px; }
+      .hero-title { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress strip -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <button class="back-btn" id="backBtn" onclick="back()" style="visibility:hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Wróć
+    </button>
+    <a class="logo" href="#">twojapomoc<span>prawna</span>.pl</a>
+    <span class="step-badge" id="stepBadge" style="display:none"></span>
+  </header>
+
+  <main class="main">
+    <div class="screen-wrap screen-enter" id="screenWrap"></div>
+  </main>
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+const PROGRESS = {
+  landing:'0','problem':'12','clarify-1':'26','clarify-2':'40',
+  'clarify-3':'54','calm':'64','situation':'73','plan':'83',
+  'documents':'88','lawyer-gate':'92','matching':'96','account':'100'
+};
+const LABEL = {
+  problem:'Krok 1 z 5','clarify-1':'Krok 2 z 5','clarify-2':'Krok 3 z 5',
+  'clarify-3':'Krok 4 z 5','calm':'Krok 5 z 5','situation':'Twoja sytuacja',
+  plan:'Plan działania','documents':'Dokumenty','lawyer-gate':'Dalsze kroki',
+  matching:'Dobór prawnika','account':'Twoje konto'
+};
+
+const state = {
+  screen:'landing', history:[], flowState:'idle',
+  aiOutput:null, aiPromise:null,
+  case:{ userText:'', category:null, hasPismo:null, deadline:null }
+};
+
+function goTo(id){ state.history.push(state.screen); state.screen=id; render(); }
+function back(){ if(!state.history.length) return; state.screen=state.history.pop(); render(); }
+
+/* ============================================================
+   AI TRIGGER
+============================================================ */
+function triggerAI(){
+  state.flowState='ai_pending'; state.aiOutput=null;
+  state.aiPromise = fetch('/api/analyze',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(state.case),
+    signal:AbortSignal.timeout(12000)
+  }).then(r=>{ if(!r.ok) throw new Error('HTTP'+r.status); return r.json(); })
+    .then(d=>{ state.aiOutput=d; state.flowState='ai_complete'; })
+    .catch(()=>{ state.aiOutput=fallback(state.case.category); state.flowState='ai_error'; });
+}
+
+function fallback(cat){
+  const F={
+    praca:{
+      classification:{legalArea:'prawo_pracy',caseType:'sprawa_pracownicza',urgencyLevel:'high',confidence:0},
+      extraction:{keyFacts:[{label:'Obszar prawa',value:'Prawo pracy'}],deadlines:[{description:'Odwołanie do sądu pracy',days:21,fromEvent:'zdarzenia'}],missingInfo:[]},
+      summary:{safeToAct:true,situationType:'Sprawa pracownicza',plainExplanation:'Twoja sprawa dotyczy prawa pracy. W zależności od szczegółów masz szereg praw i możliwości działania. Terminy w sprawach pracowniczych są krótkie — działaj bez zbędnej zwłoki.',riskLevel:'medium'},
+      actionPlan:{steps:[
+        {order:1,title:'Sprawdź termin na działanie',body:'Terminy w prawie pracy wynoszą często 21 dni od zdarzenia.',urgency:'critical',deadlineDays:21,deadlineLabel:'21 dni od zdarzenia',canDoAlone:false},
+        {order:2,title:'Zbierz kluczowe dokumenty',body:'Umowa, paski wypłat, korespondencja z pracodawcą — każdy dokument jest ważny.',urgency:'high',deadlineDays:null,deadlineLabel:null,canDoAlone:true},
+        {order:3,title:'Skonsultuj sprawę z prawnikiem',body:'Specjalista prawa pracy oceni Twoje szanse i wskaże najlepszą ścieżkę.',urgency:'normal',deadlineDays:null,deadlineLabel:null,canDoAlone:false}
+      ]}
+    },
+    sad:{
+      classification:{legalArea:'postepowanie_sadowe',caseType:'postepowanie_sadowe',urgencyLevel:'critical',confidence:0},
+      extraction:{keyFacts:[{label:'Obszar prawa',value:'Postępowanie sądowe'}],deadlines:[{description:'Odpowiedź na pismo',days:14,fromEvent:'doręczenia'}],missingInfo:[]},
+      summary:{safeToAct:true,situationType:'Pismo sądowe',plainExplanation:'Otrzymałeś/-aś pismo sądowe z terminem odpowiedzi. Nie ignoruj go — brak reakcji może mieć poważne skutki. Masz konkretne prawa i możliwości obrony.',riskLevel:'high'},
+      actionPlan:{steps:[
+        {order:1,title:'Sprawdź termin odpowiedzi natychmiast',body:'Pismo sądowe ma termin — zazwyczaj 14 dni od doręczenia.',urgency:'critical',deadlineDays:14,deadlineLabel:'14 dni od doręczenia',canDoAlone:false},
+        {order:2,title:'Skonsultuj się z prawnikiem dziś',body:'Sprawa sądowa wymaga fachowej pomocy. Pierwsze 48 godzin są kluczowe.',urgency:'critical',deadlineDays:null,deadlineLabel:null,canDoAlone:false}
+      ]}
+    }
+  };
+  return F[cat]||{
+    classification:{legalArea:'inne',caseType:'sprawa_prawna',urgencyLevel:'medium',confidence:0},
+    extraction:{keyFacts:[],deadlines:[],missingInfo:[]},
+    summary:{safeToAct:true,situationType:'Sprawa prawna',plainExplanation:'Twoja sytuacja wymaga analizy. Możesz działać spokojnie i metodycznie — masz czas. Konsultacja z prawnikiem pomoże określić konkretne kolejne kroki.',riskLevel:'low'},
+    actionPlan:{steps:[
+      {order:1,title:'Opisz sytuację jak najdokładniej',body:'Im więcej szczegółów, tym lepsza ocena Twojej sytuacji.',urgency:'normal',deadlineDays:null,deadlineLabel:null,canDoAlone:true},
+      {order:2,title:'Zbierz dokumenty związane ze sprawą',body:'Korespondencja, umowy, pisma — każde może być ważne.',urgency:'normal',deadlineDays:null,deadlineLabel:null,canDoAlone:true},
+      {order:3,title:'Umów bezpłatną konsultację',body:'15-minutowa rozmowa z prawnikiem wystarczy, żeby ocenić opcje.',urgency:'normal',deadlineDays:null,deadlineLabel:null,canDoAlone:false}
+    ]}
+  };
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render(){
+  const w = document.getElementById('screenWrap');
+  w.classList.remove('screen-enter'); void w.offsetWidth; w.classList.add('screen-enter');
+  w.innerHTML = SCREENS[state.screen]();
+  document.getElementById('progressFill').style.width=(PROGRESS[state.screen]||0)+'%';
+  const lbl=LABEL[state.screen]||'';
+  const badge=document.getElementById('stepBadge');
+  badge.textContent=lbl; badge.style.display=lbl?'inline-block':'none';
+  document.getElementById('backBtn').style.visibility=state.history.length?'visible':'hidden';
+  window.scrollTo(0,0);
+  if(POST[state.screen]) POST[state.screen]();
+}
+
+/* ============================================================
+   SCREENS
+============================================================ */
+const SCREENS = {
+
+/* ── 1. LANDING ─────────────────────────────────────────── */
+landing:()=>`
+  <div class="hero-panel">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="hero-blob hero-blob--2"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Bezpłatna pomoc prawna</div>
+      <h1 class="hero-title">
+        Masz problem prawny?<br>
+        <em>Spokojnie</em> — pokażemy Ci,<br>
+        co zrobić krok po kroku.
+      </h1>
+      <p class="hero-sub">
+        Opisz swoją sytuację i otrzymasz jasne wskazówki bez prawniczego żargonu.
+      </p>
+      <div class="trust-pills">
+        <div class="trust-pill"><span class="trust-check">✓</span> Bezpłatne</div>
+        <div class="trust-pill"><span class="trust-check">✓</span> Bez rejestracji</div>
+        <div class="trust-pill"><span class="trust-check">✓</span> Prywatne</div>
+      </div>
+      <button class="btn-cream" onclick="goTo('problem')">Opisz swoją sytuację →</button>
+    </div>
+  </div>
+
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:20px;">Jak to działa</div>
+      <div class="how-list">
+        ${howCard('1','white','Opisujesz sytuację','Kilka zdań własnymi słowami — bez prawniczej terminologii')}
+        ${howCard('2','sage','Otrzymujesz analizę','System identyfikuje Twoje prawa i możliwe ścieżki działania')}
+        ${howCard('3','glass','Działasz z planem','Konkretne kroki, priorytety i opcjonalne wsparcie prawnika')}
+      </div>
+    </div>
+  </div>
+
+  <div class="content-panel" style="padding-top:24px;padding-bottom:24px;">
+    <p class="caption" style="text-align:center;">
+      Twoje dane są szyfrowane i nie są udostępniane osobom trzecim.
+    </p>
+  </div>
+`,
+
+/* ── 2. PROBLEM ─────────────────────────────────────────── */
+problem:()=>`
+  <div class="content-panel">
+    <h1 class="h1" style="margin-bottom:6px;">Opisz swoją sytuację</h1>
+    <p class="body" style="color:var(--text-3);margin-bottom:24px;">Kilka zdań wystarczy — własnymi słowami, tak jak czujesz.</p>
+    <div class="guide-card-light" style="margin-bottom:22px;">
+      <div class="overline overline--lime">Przewodnik</div>
+      <p>Wszystko, co napiszesz, jest prywatne. Nie musisz znać prawniczych terminów — opisz to tak, jak powiedziałbyś/-łabyś znajomemu.</p>
+    </div>
+    <div class="field-wrap" style="margin-bottom:16px;">
+      <textarea class="textarea" id="problemText" rows="7" maxlength="600"
+        placeholder="Opisz swoją sytuację (np. dostałem pismo z sądu, chcę się rozwieść, zwolniono mnie z pracy bez powodu...)"
+        oninput="onText(this)"></textarea>
+      <div class="char-count" id="charCount">0 / 600</div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn-green" id="continueBtn" disabled onclick="goTo('clarify-1')">Przejdź dalej →</button>
+    </div>
+  </div>
+`,
+
+/* ── 3. CLARIFY: KATEGORIA ──────────────────────────────── */
+'clarify-1':()=>`
+  <div class="content-panel">
+    <div class="guide-card-light" style="margin-bottom:24px;">
+      <div class="overline overline--lime">Przewodnik</div>
+      <p>Dziękuję. Zadam jeszcze kilka krótkich pytań, żeby lepiej zrozumieć Twoją sytuację.</p>
+    </div>
+    <h2 class="h2" style="margin-bottom:6px;">Czego dotyczy Twoja sprawa?</h2>
+    <p class="body" style="color:var(--text-3);margin-bottom:22px;">Wybierz kategorię, która najbliżej pasuje.</p>
+    <div class="choice-list">
+      ${ch('Praca / zatrudnienie','zwolnienie, umowa, wynagrodzenie','category','praca','clarify-2')}
+      ${ch('Rodzina / sprawy osobiste','rozwód, alimenty, opieka nad dziećmi','category','rodzina','clarify-2')}
+      ${ch('Umowa / zakup / sprzedaż','spory o umowy, reklamacje, oszustwo','category','umowa','clarify-2')}
+      ${ch('Mieszkanie / nieruchomości','wynajem, własność, spory sąsiedzkie','category','mieszkanie','clarify-2')}
+      ${ch('Pismo sądowe / urzędowe','wezwanie, pozew, nakaz zapłaty','category','sad','clarify-2')}
+      ${ch('Nie wiem / coś innego','','category','inne','clarify-2')}
+    </div>
+  </div>
+`,
+
+/* ── 4. CLARIFY: PISMO ──────────────────────────────────── */
+'clarify-2':()=>`
+  <div class="content-panel">
+    <div class="guide-card-light" style="margin-bottom:24px;">
+      <div class="overline overline--lime">Przewodnik</div>
+      <p>Pisma urzędowe mają krótkie terminy na odpowiedź. Sprawdzam, czy coś biegnie.</p>
+    </div>
+    <h2 class="h2" style="margin-bottom:6px;">Czy otrzymałeś/-aś oficjalne pismo?</h2>
+    <p class="body" style="color:var(--text-3);margin-bottom:22px;">Np. z sądu, od komornika, od pracodawcy, od urzędu.</p>
+    <div class="choice-list">
+      ${ch('Tak, mam pismo','dostałem/-am dokument do podpisania lub odpowiedzi','hasPismo','tak','clarify-3')}
+      ${ch('Nie, nie mam pisma','sytuacja jest nieoficjalna lub słowna','hasPismo','nie','clarify-3')}
+      ${ch('Nie jestem pewny/-a','','hasPismo','nie_wiem','clarify-3')}
+    </div>
+  </div>
+`,
+
+/* ── 5. CLARIFY: TERMIN ─────────────────────────────────── */
+'clarify-3':()=>`
+  <div class="content-panel">
+    <div class="guide-card-light" style="margin-bottom:24px;">
+      <div class="overline overline--lime">Przewodnik</div>
+      <p>Ostatnie pytanie — i będę gotowy, żeby wyjaśnić Ci Twoją sytuację.</p>
+    </div>
+    <h2 class="h2" style="margin-bottom:6px;">Czy jakiś termin już biegnie?</h2>
+    <p class="body" style="color:var(--text-3);margin-bottom:22px;">Np. termin odpowiedzi na pismo, odwołania, spłaty.</p>
+    <div class="choice-list">
+      ${ch('Tak — mam mniej niż 2 tygodnie','sprawa jest pilna','deadline','pilne','calm')}
+      ${ch('Tak — mam jeszcze trochę czasu','termin za kilka tygodni','deadline','ok','calm')}
+      ${ch('Nie wiem / raczej nie','brak znanych terminów','deadline','nie','calm')}
+    </div>
+    <div class="sp-16"></div>
+    <span class="skip-link" onclick="skipDeadline()">Pomiń to pytanie</span>
+  </div>
+`,
+
+/* ── 6. CALM (AI fires) ─────────────────────────────────── */
+calm:()=>`
+  <div class="hero-panel" style="padding-top:80px;padding-bottom:72px;">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="hero-blob hero-blob--2"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Analiza w toku</div>
+      <h1 class="hero-title" style="font-size:clamp(28px,5vw,44px);">
+        Rozumiemy<br>Twoją sytuację
+      </h1>
+      <p class="hero-sub" style="margin-bottom:32px;">
+        Rozumiem, że ta sytuacja może być stresująca. W wielu podobnych przypadkach masz jeszcze czas na reakcję i kilka możliwych rozwiązań.
+      </p>
+      <div class="guide-card-dark" style="margin-bottom:28px;text-align:left;">
+        <div class="overline overline--lime">Przewodnik</div>
+        <p>Pokażę Ci teraz, co dokładnie oznacza Twoja sytuacja i jakie masz opcje. Masz czas i możliwości działania.</p>
+      </div>
+      <button class="btn-cream" id="calmCta" onclick="onCalmCta()">Pokaż mi, co się dzieje →</button>
+    </div>
+  </div>
+`,
+
+/* ── 7. SITUATION ───────────────────────────────────────── */
+situation:()=>{
+  const ai=state.aiOutput;
+  const facts=ai?.extraction?.keyFacts??[];
+  const explanation=ai?.summary?.plainExplanation??'Analizujemy Twoją sytuację…';
+  const situationType=ai?.summary?.situationType??'';
+  const factItems=facts.length
+    ? facts.map(f=>`<li class="fact-item"><div class="fact-bullet"></div><div><span class="fact-label">${esc(f.label)}: </span><span class="fact-value">${esc(f.value)}</span></div></li>`).join('')
+    : `<li class="fact-item"><div class="fact-bullet"></div><div>Analizujemy dostarczone informacje.</div></li>`;
+  return `
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:6px;">${esc(situationType)}</div>
+      <h1 class="hero-title" style="font-size:clamp(26px,4vw,38px);text-align:left;margin-bottom:16px;">Co się dzieje<br>w Twojej sytuacji</h1>
+      <div class="guide-card-dark">
+        <div class="overline overline--lime">Ocena sytuacji</div>
+        <p>${esc(explanation)}</p>
+      </div>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="safe-banner" style="margin-bottom:24px;">
+      <div class="safe-dot"></div>
+      <div class="safe-text"><strong>Twoje prawa są chronione.</strong> Masz konkretne możliwości działania.</div>
+    </div>
+    <div class="overline overline--dark" style="margin-bottom:14px;">Oto co zrozumieliśmy</div>
+    <ul class="fact-list" style="margin-bottom:24px;">${factItems}</ul>
+    <div class="correction-row" onclick="goTo('problem')">
+      ← Coś się nie zgadza? Popraw opis sytuacji
+    </div>
+    <div class="bottom-action">
+      <button class="btn-green" onclick="goTo('plan')">Pokaż mi plan działania →</button>
+    </div>
+  </div>`;
+},
+
+/* ── 8. PLAN ────────────────────────────────────────────── */
+plan:()=>{
+  const steps=state.aiOutput?.actionPlan?.steps??[];
+  const cards=steps.length
+    ? steps.map(s=>{
+        const tc=s.urgency==='critical'?'tag-critical':s.urgency==='high'?'tag-high':'tag-normal';
+        const tl=s.urgency==='critical'?'Pilne':s.urgency==='high'?'Ważne':'Działanie';
+        const dl=s.deadlineLabel?` — ${esc(s.deadlineLabel)}`:'';
+        return `<div class="action-step">
+          <div class="action-step-top">
+            <div class="action-step-num">${s.order}</div>
+            <div class="action-step-tag ${tc}">${tl}${dl}</div>
+          </div>
+          <h3>${esc(s.title)}</h3>
+          <p>${esc(s.body)}</p>
+        </div>`;
+      }).join('')
+    : `<div class="action-step"><p>Trwa generowanie planu…</p></div>`;
+  return `
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:8px;">Na podstawie Twojej sprawy</div>
+      <h1 class="hero-title" style="font-size:clamp(26px,4vw,38px);text-align:left;">Twój plan<br>działania</h1>
+    </div>
+  </div>
+  <div class="content-panel">
+    <p class="body" style="color:var(--text-3);margin-bottom:22px;">Krok po kroku — w kolejności ważności.</p>
+    ${cards}
+    <div class="sp-32"></div>
+    <div class="overline overline--dark" style="margin-bottom:14px;">Co chcesz zrobić teraz?</div>
+    <button class="btn-green" onclick="goTo('documents')" style="margin-bottom:10px;">Przygotuj pisma i dokumenty</button>
+    <button class="btn-outline" onclick="goTo('lawyer-gate')" style="margin-bottom:10px;">Połącz mnie z prawnikiem</button>
+    <button class="btn-ghost-light" onclick="goTo('account')">Zapisz plan i wróć później</button>
+  </div>`;
+},
+
+/* ── 9. DOCUMENTS ───────────────────────────────────────── */
+documents:()=>`
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:8px;">Dokumenty</div>
+      <h1 class="hero-title" style="font-size:clamp(26px,4vw,36px);text-align:left;">Pomoc<br>z dokumentami</h1>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="guide-card-light" style="margin-bottom:22px;">
+      <div class="overline overline--lime">Przewodnik</div>
+      <p>Na podstawie Twojej sytuacji przygotujemy gotowe pisma. Wystarczy je wydrukować i podpisać.</p>
+    </div>
+    <div class="doc-option" onclick="docDemo('Żądanie uzasadnienia zwolnienia')">
+      <div class="doc-num">01</div>
+      <div><div class="doc-title">Żądanie pisemnego uzasadnienia</div><div class="doc-sub">Gotowe pismo — wygeneruj w 30 sekund</div></div>
+    </div>
+    <div class="doc-option" onclick="docDemo('Wzór pisma procesowego')">
+      <div class="doc-num">02</div>
+      <div><div class="doc-title">Wzór pisma procesowego</div><div class="doc-sub">Wypełniony szablon z Twoimi danymi</div></div>
+    </div>
+    <div class="doc-option" onclick="docDemo('Lista dokumentów do zebrania')">
+      <div class="doc-num">03</div>
+      <div><div class="doc-title">Lista dokumentów do zebrania</div><div class="doc-sub">Personalizowana na Twoją sprawę</div></div>
+    </div>
+    <div class="sp-24"></div>
+    <div class="divider"></div>
+    <div class="sp-20"></div>
+    <button class="btn-outline" onclick="goTo('lawyer-gate')">Wolę skonsultować z prawnikiem →</button>
+  </div>
+`,
+
+/* ── 10. LAWYER GATE ────────────────────────────────────── */
+'lawyer-gate':()=>`
+  <div class="hero-panel" style="padding-top:64px;padding-bottom:56px;">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="hero-blob hero-blob--2"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Wsparcie eksperta</div>
+      <h1 class="hero-title" style="font-size:clamp(28px,5vw,44px);">
+        Czy potrzebujesz<br>prawnika?
+      </h1>
+      <p class="hero-sub">Na tym etapie możesz działać samodzielnie. Jeśli chcesz wsparcia eksperta — dopasujemy Cię z prawnikiem specjalizującym się dokładnie w Twoim typie sprawy.</p>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="white-card" style="margin-bottom:22px;">
+      ${fr('01','Bezpłatna rozmowa wstępna (15 minut)','Bez zobowiązań — ocenisz czy chcesz dalszą pomoc')}
+      ${fr('02','Prawnik dobrany do Twojego przypadku','Na podstawie kategorii, szczegółów i lokalizacji')}
+      ${fr('03','Cennik podany z góry','Bez ukrytych opłat — wiesz ile kosztuje zanim zaczniesz')}
+      ${fr('04','Online lub stacjonarnie','Do wyboru — konsultacja w formie, która Ci odpowiada')}
+    </div>
+    <button class="btn-green" onclick="goTo('matching')" style="margin-bottom:10px;">Znajdź prawnika dla mojej sprawy →</button>
+    <button class="btn-ghost-light" onclick="goTo('plan')">Zostanę przy samodzielnym planie</button>
+  </div>
+`,
+
+/* ── 11. MATCHING ───────────────────────────────────────── */
+matching:()=>`
+  <div class="mid-panel">
+    <div class="mid-inner">
+      <div class="overline overline--light" style="margin-bottom:8px;">Rekomendacje</div>
+      <h1 class="hero-title" style="font-size:clamp(26px,4vw,36px);text-align:left;">Dobrani do<br>Twojej sprawy</h1>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="guide-card-light" style="margin-bottom:22px;">
+      <div class="overline overline--lime">Dlaczego ci prawnicy?</div>
+      <p>Dobrani na podstawie: ${esc(state.aiOutput?.summary?.situationType||state.case.category||'Twojej sprawy')}.</p>
+    </div>
+    <div class="lawyer-card">
+      <div class="lawyer-head">
+        <div class="lawyer-initials">AK</div>
+        <div>
+          <div class="lawyer-name">mec. Anna Kowalska</div>
+          <div class="lawyer-spec">Prawo pracy · Warszawa</div>
+          <div class="lawyer-rating">★★★★★ 4.9 · 63 opinie</div>
+        </div>
+      </div>
+      <div class="lawyer-match">✓ 47 spraw podobnych do Twojej</div>
+      <div class="lawyer-price">Pierwsza rozmowa: <strong>bezpłatna, 15 min</strong><br>Dalsza pomoc: od 200 PLN</div>
+      <button class="btn-green" onclick="goTo('account')">Umów bezpłatną rozmowę →</button>
+    </div>
+    <div class="sp-10" style="height:10px;"></div>
+    <div class="lawyer-card">
+      <div class="lawyer-head">
+        <div class="lawyer-initials">PN</div>
+        <div>
+          <div class="lawyer-name">mec. Piotr Nowak</div>
+          <div class="lawyer-spec">Prawo pracy · Kraków / online</div>
+          <div class="lawyer-rating">★★★★★ 4.8 · 41 opinie</div>
+        </div>
+      </div>
+      <div class="lawyer-match">✓ Odpowiada zwykle w 2 godz.</div>
+      <div class="lawyer-price">Pierwsza rozmowa: <strong>bezpłatna, 15 min</strong><br>Dalsza pomoc: od 180 PLN</div>
+      <button class="btn-green" onclick="goTo('account')">Umów bezpłatną rozmowę →</button>
+    </div>
+    <div class="sp-20"></div>
+    <p class="caption" style="text-align:center;">Wolisz działać samodzielnie? <span class="inline-link" onclick="goTo('plan')">Wróć do planu</span></p>
+  </div>
+`,
+
+/* ── 12. ACCOUNT ────────────────────────────────────────── */
+account:()=>`
+  <div class="hero-panel" style="padding-top:64px;padding-bottom:56px;">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="hero-blob hero-blob--2"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Twoje konto</div>
+      <h1 class="hero-title" style="font-size:clamp(28px,5vw,42px);">
+        Zapisz swoją sprawę
+      </h1>
+      <p class="hero-sub" style="margin-bottom:0;">Wróć do niej w każdej chwili — z dowolnego urządzenia.</p>
+    </div>
+  </div>
+  <div class="content-panel">
+    <div class="white-card" style="margin-bottom:22px;">
+      ${fr('01','Plan działania zapisany bezpiecznie','Dostępny zawsze — wróć kiedy chcesz')}
+      ${fr('02','Powiadomienia o terminach prawnych','Nie przegapisz żadnego ważnego terminu')}
+      ${fr('03','Dostęp do wygenerowanych pism','Wszystkie dokumenty w jednym miejscu')}
+      ${fr('04','Historia sprawy','Pełna dokumentacja na wypadek potrzeby')}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      <input class="text-input" type="email" id="emailInput" placeholder="Twój adres e-mail" />
+      <input class="text-input" type="text" placeholder="Imię (opcjonalnie)" />
+    </div>
+    <button class="btn-green" onclick="submitAccount()" style="margin-bottom:12px;">Zapisz moją sprawę bezpłatnie</button>
+    <p class="caption" style="text-align:center;margin-bottom:22px;">
+      Rejestrując się, akceptujesz <span class="inline-link">regulamin</span> i <span class="inline-link">politykę prywatności</span>.
+    </p>
+    <div class="divider" style="margin-bottom:20px;"></div>
+    <button class="btn-ghost-light">Zaloguj się</button>
+  </div>
+`
+};
+
+/* ============================================================
+   POST-RENDER HOOKS
+============================================================ */
+const POST={
+  problem:()=>{
+    const ta=document.getElementById('problemText');
+    if(ta&&state.case.userText){
+      ta.value=state.case.userText;
+      syncBtn(ta);
+      document.getElementById('charCount').textContent=state.case.userText.length+' / 600';
+    }
+  }
+};
+
+/* ============================================================
+   HANDLERS
+============================================================ */
+function onText(ta){
+  state.case.userText=ta.value;
+  document.getElementById('charCount').textContent=ta.value.length+' / 600';
+  syncBtn(ta);
+}
+function syncBtn(ta){
+  const b=document.getElementById('continueBtn');
+  if(b) b.disabled=ta.value.trim().length<15;
+}
+function pick(el,key,val,next){
+  el.closest('.choice-list').querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  state.case[key]=val;
+  if(next==='calm') triggerAI();
+  setTimeout(()=>goTo(next),330);
+}
+function skipDeadline(){ state.case.deadline=null; triggerAI(); goTo('calm'); }
+async function onCalmCta(){
+  const btn=document.getElementById('calmCta');
+  if(!btn) return;
+  if(state.flowState==='ai_complete'||state.flowState==='ai_error'){ goTo('situation'); return; }
+  btn.disabled=true; btn.textContent='Analizuję…';
+  try{ await state.aiPromise; }catch(_){ state.aiOutput=fallback(state.case.category); }
+  goTo('situation');
+}
+function docDemo(name){ alert('W pełnej wersji: „'+name+'" zostanie wygenerowany przez AI i pobrany jako PDF.'); }
+function submitAccount(){
+  const el=document.getElementById('emailInput');
+  if(!el||el.value.trim().length<5){ if(el) el.classList.add('error'); return; }
+  alert('Twoja sprawa została zapisana!\nWyślemy plan działania na: '+el.value.trim());
+}
+
+/* ============================================================
+   TEMPLATE HELPERS
+============================================================ */
+function esc(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function howCard(n,variant,title,sub){
+  return `<div class="how-card how-card--${variant}">
+    <div class="how-num">${n}</div>
+    <div class="how-content"><h4>${title}</h4><p>${sub}</p></div>
+  </div>`;
+}
+
+function ch(label,sub,key,val,next){
+  const subHtml=sub?`<div class="choice-sub">${sub}</div>`:'';
+  return `<button class="choice-btn" onclick="pick(this,'${key}','${val}','${next}')">
+    <div class="choice-indicator"></div>
+    <div class="choice-body"><div class="choice-label">${label}</div>${subHtml}</div>
+  </button>`;
+}
+
+function fr(num,title,sub){
+  return `<div class="feature-row">
+    <div class="feature-num">${num}</div>
+    <div class="feature-text"><h4>${title}</h4><p>${sub}</p></div>
+  </div>`;
+}
+
+/* ============================================================
+   BOOT
+============================================================ */
+render();
+</script>
+</body>
+</html>
