@@ -1,109 +1,105 @@
-# TPP × LegalPortal — Integration Contract & Implementation Plan
+# TPP — Integration & Implementation Plan
 
-**Wersja:** 1.0
+**Wersja:** 2.0 (zaktualizowana po analizie PRODu)
 **Data:** 2026-04-02
-**Autor:** Kris (TPP) + Claude Sonnet 4.6
-**Status:** Draft do uzgodnienia z kolega (legal-portal)
+**Status:** Aktywny plan
 
 ---
 
-## 1. Kontekst i podział odpowiedzialności
+## 1. Sytuacja wyjściowa — co stoi na PRODzie
 
-### TPP (twojapomocprawna.pl)
-Marketplace dwustronny B2C/B2B. Właściciel product vision.
-**Odpowiada za:** onboarding klienta, AI matching, portal klienta, design system, brand.
+**twojapomocprawna.pl = legal-portal** — jeden system, już wdrożony na Vercel.
+Aktualnie działa jako **narzędzie SaaS dla prawnika** (B2B).
+Brakuje **strony klienta** (B2C) — marketplace, wizard, portal klienta.
 
-### LegalPortal (legal-portal)
-SaaS dla kancelarii — narzędzie pracy prawnika.
-**Dostarcza jako moduły:** auth, wizytówka prawnika, publiczny booking, document RAG chat, Google Calendar.
+### Co jest gotowe (nie budujemy od zera)
 
-### Zasada nadrzędna
-TPP jest hostem. legal-portal dostarcza gotowe moduły przez uzgodnione interfejsy.
-Każdy moduł ma jasno zdefiniowany **input**, **output** i **kontrakt URL**.
+| Moduł | URL | Status |
+|-------|-----|--------|
+| Auth — logowanie, rejestracja (invite-only), reset | `/auth/*` | ✅ PROD |
+| Dashboard prawnika | `/dashboard` | ✅ PROD |
+| Zarządzanie sprawami | `/cases`, `/cases/[id]` | ✅ PROD |
+| Zarządzanie klientami | `/clients` | ✅ PROD |
+| Biblioteka dokumentów + AI analiza | `/documents` | ✅ PROD |
+| Kalendarz + Google Calendar sync | `/calendar` | ✅ PROD |
+| AI chat RAG (OpenAI + LlamaIndex) | `/chats` | ✅ PROD |
+| Kreator wizytówki prawnika | `/landing-page` | ✅ PROD |
+| Publiczny profil prawnika | `/p/[slug]` | ✅ PROD |
+| Publiczny booking klienta | `/book/[slug]` | ✅ PROD |
+| Email (Gmail) integration | `/emails` | ✅ (wymaga połączenia konta) |
+| Powiadomienia | `/notifications` | ✅ PROD |
+| Ustawienia, integracje | `/settings/*` | ✅ PROD |
 
----
+### Co jest w toku (branch `redesign/new-design-system`)
 
-## 2. Wspólna infrastruktura
+- Nowy design system (Inter, warm colors, card radius)
+- Collapsible sidebar z dark mode
+- Globalna wyszukiwarka
+- Poprawki UI (tabele, chat, kalendarz)
 
-### 2.1 Jeden projekt Supabase
-Jeden `NEXT_PUBLIC_SUPABASE_URL` i `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-Kolega dostaje dostęp do projektu TPP na Supabase (jako contributor).
+> ⚠️ Redesign **nie jest jeszcze na PRODzie**. Wdrożyć przed startem pracy nad klientem.
 
-### 2.2 Zmienne środowiskowe — wspólny `.env.local`
+### Co jest wyłączone/stub
 
-```env
-# Supabase — jeden projekt, obaj używają
-NEXT_PUBLIC_SUPABASE_URL=https://[projekt].supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=[klucz-publiczny]
-SUPABASE_SERVICE_ROLE_KEY=[klucz-serwisowy]
-
-# AI
-ANTHROPIC_API_KEY=[klucz-claude]         # pipeline AI (TPP)
-OPENAI_API_KEY=[klucz-openai]            # RAG embeddings (legal-portal)
-
-# Email
-RESEND_API_KEY=[klucz-resend]            # potwierdzenia bookingów
-
-# Google OAuth (booking + calendar)
-GOOGLE_CLIENT_ID=[id]
-GOOGLE_CLIENT_SECRET=[secret]
-
-# Opcjonalne
-TECHNICAL_PAGES_PASSWORD=[haslo]
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=[klucz]
-RECAPTCHA_SECRET_KEY=[klucz]
-```
-
-### 2.3 Stack techniczny
-| Warstwa | Technologia |
-|---------|-------------|
-| Framework | Next.js 16, App Router |
-| Język | TypeScript (strict) |
-| Baza danych | Supabase (PostgreSQL + RLS) |
-| Stylowanie | Tailwind CSS 4 |
-| UI primitives | Radix UI |
-| Formularze | React Hook Form + Zod |
-| Animacje | Framer Motion |
-| i18n | next-intl (pl/en) |
-| Testy | Vitest + Playwright |
-| Email | Resend |
-| AI (matching/analiza) | Anthropic Claude |
-| AI (RAG/embeddings) | OpenAI |
+- Court module (PISP scraper stub) — niedostępny na prod
+- Gmail integration — działa ale wymaga OAuth
+- Rejestracja — invite-only (zarządzane z `/admin`)
 
 ---
 
-## 3. Schemat bazy danych — kontrakt
+## 2. Co trzeba zbudować — scope TPP B2C
 
-Poniżej tabele których TPP potrzebuje od kolegi (legal-portal dostarcza lub adaptuje).
-Tabele oznaczone ★ są rozszerzeniem istniejących tabel z legal-portal.
+Poniższe funkcje nie istnieją w legal-portal i są unikalną wartością TPP jako marketplace.
 
-### 3.1 Tabela: `lawyer_profiles` ★ (rozszerzenie `user_profiles`)
+### 2.1 Rejestracja klienta (rola: `client`)
 
-```sql
-CREATE TABLE lawyer_profiles (
-  id                  UUID PRIMARY KEY REFERENCES user_profiles(id) ON DELETE CASCADE,
-  slug                TEXT UNIQUE NOT NULL,          -- URL: /prawnik/[slug]
-  display_name        TEXT NOT NULL,                 -- "mec. Anna Kowalska"
-  specializations     TEXT[] NOT NULL DEFAULT '{}',  -- ["Prawo pracy", "Prawo cywilne"]
-  city                TEXT,
-  region              TEXT,
-  description         TEXT,                          -- bio na wizytówce
-  avatar_url          TEXT,
-  rating              NUMERIC(3,2),                  -- 4.92
-  review_count        INT DEFAULT 0,
-  response_time_hours INT,                           -- mediana w godzinach
-  is_published        BOOLEAN DEFAULT false,         -- czy wizytówka jest publiczna
-  price_consult       TEXT,                          -- "bezpłatna 15 min"
-  price_hour          TEXT,                          -- "280 PLN/godz."
-  price_fixed         TEXT,                          -- "od 800 PLN"
-  languages           TEXT[] DEFAULT '{pl}',
-  bar_number          TEXT,                          -- nr wpisu na listę
-  created_at          TIMESTAMPTZ DEFAULT now(),
-  updated_at          TIMESTAMPTZ DEFAULT now()
-);
-```
+legal-portal ma tylko rolę `lawyer`. Potrzebna nowa rola z osobnym flow:
+- Rejestracja bez kodu zaproszeniowego (marketplace jest otwarty dla klientów)
+- `client_profiles` — osobna tabela od `user_profiles` prawników
+- Po logowaniu → redirect do `/portal` zamiast `/dashboard`
+- Middleware rozróżniający role
 
-### 3.2 Tabela: `client_profiles` (NOWA — TPP)
+### 2.2 Guided flow wizard
+
+Prototyp: `guided-flow.html` (nasz branch `feat/api-guided-flow`)
+Przepisać na Next.js z prawdziwym backendem:
+- Kroki: opis sprawy → AI analiza → kategoria → matching → profil prawnika → booking
+- Podłączenie `/api/analyze` (Anthropic) — już zbudowany w naszym branchu
+- Zapis sprawy do `tpp_cases` (nowa tabela) po zakończeniu
+- Wynik matchingu z `lawyer_profiles`
+
+### 2.3 Katalog prawników + wyszukiwarka
+
+Publiczna strona `/prawnicy`:
+- Lista opublikowanych wizytówek (`/p/[slug]` już istnieje, brak katalogu)
+- Filtrowanie: specjalizacja, miasto, oceny, dostępność
+- Paginacja, SEO (sitemap)
+
+### 2.4 Portal klienta
+
+Prototyp: `client-portal.html` (nasz branch `feat/api-guided-flow`)
+Przepisać na Next.js:
+- Route: `/portal` (chronione, rola: client)
+- Zakładki: Dom, Moje sprawy, Dokumenty, Wiadomości
+- Dane z Supabase (tpp_cases, tpp_documents, tpp_messages)
+- Real-time chat z prawnikiem (Supabase Realtime)
+- Upload dokumentów (Supabase Storage)
+
+### 2.5 AI matching engine
+
+Endpoint `POST /api/match`:
+- Input: `ai_analysis` ze sprawy klienta
+- Query: `lawyer_profiles` z filtrowaniem
+- Scoring: specjalizacja (50%) + lokalizacja (20%) + oceny (20%) + dostępność (10%)
+- Output: top 3 prawnicy z wyjaśnieniem dopasowania
+
+---
+
+## 3. Nowe tabele w bazie danych
+
+Dodać do istniejącego Supabase projektu legal-portal.
+
+### `client_profiles`
 
 ```sql
 CREATE TABLE client_profiles (
@@ -116,19 +112,23 @@ CREATE TABLE client_profiles (
   created_at      TIMESTAMPTZ DEFAULT now(),
   updated_at      TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE client_profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "client own data" ON client_profiles
+  USING (auth.uid() = id);
 ```
 
-### 3.3 Tabela: `tpp_cases` (NOWA — TPP, oddzielna od `cases` legal-portal)
+### `tpp_cases`
 
 ```sql
 CREATE TABLE tpp_cases (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   client_id       UUID NOT NULL REFERENCES client_profiles(id),
-  lawyer_id       UUID REFERENCES lawyer_profiles(id),  -- nullable: może być bez prawnika
+  lawyer_id       UUID REFERENCES user_profiles(id),  -- FK do user_profiles legal-portal
   title           TEXT NOT NULL,
-  category        TEXT NOT NULL,  -- "prawo-pracy", "prawo-cywilne", etc.
+  category        TEXT NOT NULL,
   description     TEXT,
-  ai_analysis     JSONB,          -- wynik pipeline AI z /api/analyze
+  ai_analysis     JSONB,         -- wynik /api/analyze
   status          TEXT DEFAULT 'new'
                   CHECK (status IN ('new','matched','active','closed','archived')),
   priority        TEXT DEFAULT 'medium'
@@ -139,9 +139,15 @@ CREATE TABLE tpp_cases (
   created_at      TIMESTAMPTZ DEFAULT now(),
   updated_at      TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE tpp_cases ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "client sees own cases" ON tpp_cases
+  USING (client_id = auth.uid());
+CREATE POLICY "lawyer sees assigned cases" ON tpp_cases
+  USING (lawyer_id = auth.uid());
 ```
 
-### 3.4 Tabela: `tpp_messages` (NOWA — TPP)
+### `tpp_messages`
 
 ```sql
 CREATE TABLE tpp_messages (
@@ -153,32 +159,46 @@ CREATE TABLE tpp_messages (
   read_at     TIMESTAMPTZ,
   created_at  TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE tpp_messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "case participants" ON tpp_messages
+  USING (
+    EXISTS (
+      SELECT 1 FROM tpp_cases c
+      WHERE c.id = case_id
+        AND (c.client_id = auth.uid() OR c.lawyer_id = auth.uid())
+    )
+  );
 ```
 
-### 3.5 Tabela: `tpp_documents` (NOWA — TPP, adapter nad `documents`)
+### `tpp_documents`
 
 ```sql
 CREATE TABLE tpp_documents (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   case_id         UUID REFERENCES tpp_cases(id),
   client_id       UUID REFERENCES client_profiles(id),
-  legal_doc_id    UUID REFERENCES documents(id),  -- FK do tabeli legal-portal
+  legal_doc_id    UUID REFERENCES documents(id),  -- opcjonalny link do tabeli legal-portal
   display_name    TEXT NOT NULL,
+  storage_path    TEXT,
+  file_type       TEXT,
+  file_size_bytes BIGINT,
   source          TEXT DEFAULT 'user'
                   CHECK (source IN ('user','ai_generated','lawyer')),
   created_at      TIMESTAMPTZ DEFAULT now()
 );
 ```
 
-### 3.6 Tabela: `tpp_bookings` (adapter nad `consultations` legal-portal)
+### `tpp_bookings`
 
 ```sql
+-- Adapter nad consultation_slots/consultations z legal-portal
 CREATE TABLE tpp_bookings (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  consultation_id UUID REFERENCES consultations(id),  -- FK do legal-portal
+  consultation_id UUID REFERENCES consultations(id),
   case_id         UUID REFERENCES tpp_cases(id),
   client_id       UUID NOT NULL REFERENCES client_profiles(id),
-  lawyer_id       UUID NOT NULL REFERENCES lawyer_profiles(id),
+  lawyer_id       UUID NOT NULL REFERENCES user_profiles(id),
   scheduled_at    TIMESTAMPTZ NOT NULL,
   duration_min    INT DEFAULT 60,
   type            TEXT DEFAULT 'online'
@@ -190,366 +210,204 @@ CREATE TABLE tpp_bookings (
 );
 ```
 
-### 3.7 Tabela: `tpp_reviews` (NOWA — TPP)
+### Rozszerzenie `user_profiles` — lawyer public data
 
 ```sql
-CREATE TABLE tpp_reviews (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  lawyer_id   UUID NOT NULL REFERENCES lawyer_profiles(id),
-  client_id   UUID NOT NULL REFERENCES client_profiles(id),
-  booking_id  UUID REFERENCES tpp_bookings(id),
-  rating      INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-  content     TEXT,
-  is_published BOOLEAN DEFAULT true,
-  created_at  TIMESTAMPTZ DEFAULT now()
-);
+-- Dodać kolumny do istniejącej tabeli user_profiles
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS
+  tpp_slug          TEXT UNIQUE,
+  tpp_specializations TEXT[],
+  tpp_city          TEXT,
+  tpp_rating        NUMERIC(3,2),
+  tpp_review_count  INT DEFAULT 0,
+  tpp_is_listed     BOOLEAN DEFAULT false,  -- czy widoczny w katalogu TPP
+  tpp_price_consult TEXT,
+  tpp_price_hour    TEXT,
+  tpp_price_fixed   TEXT;
 ```
 
 ---
 
-## 4. Routing — podział URL
+## 4. Routing — nowe URL-e do dodania
 
-| Ścieżka | Właściciel | Opis |
-|---------|-----------|------|
-| `/` | TPP | Landing page |
-| `/pl`, `/en` | TPP | i18n root |
-| `/wizard` | TPP | Guided flow — onboarding klienta |
-| `/portal` | TPP | Portal klienta (auth required) |
-| `/portal/sprawy` | TPP | Lista spraw klienta |
-| `/portal/dokumenty` | TPP | Dokumenty klienta |
-| `/portal/wiadomosci` | TPP | Chat z prawnikiem |
-| `/portal/konto` | TPP | Ustawienia konta klienta |
-| `/prawnik/[slug]` | legal-portal | Publiczna wizytówka prawnika |
-| `/book/[slug]` | legal-portal | Publiczny booking (bez auth) |
-| `/book/[slug]/confirm/[token]` | legal-portal | Potwierdzenie bookingu |
-| `/dashboard` | legal-portal | Dashboard prawnika (auth required) |
-| `/dashboard/sprawy` | legal-portal | Sprawy kancelarii |
-| `/dashboard/klienci` | legal-portal | Klienci kancelarii |
-| `/dashboard/dokumenty` | legal-portal | Dokumenty kancelarii |
-| `/dashboard/kalendarz` | legal-portal | Kalendarz + sloty |
-| `/dashboard/wizytowka` | legal-portal | Builder wizytówki |
-| `/auth/login` | legal-portal | Logowanie (shared) |
-| `/auth/signup` | legal-portal | Rejestracja (shared) |
-| `/api/analyze` | TPP | AI analiza dokumentu klienta |
-| `/api/match` | TPP | AI matching prawnik–klient |
+Istniejące URL-e legal-portal zostają bez zmian.
+
+| Nowy URL | Opis | Właściciel |
+|----------|------|-----------|
+| `/prawnicy` | Katalog prawników (public) | TPP |
+| `/prawnicy?spec=prawo-pracy&miasto=warszawa` | Filtered search | TPP |
+| `/wizard` | Guided flow klienta | TPP |
+| `/portal` | Portal klienta — Dom | TPP |
+| `/portal/sprawy` | Lista spraw klienta | TPP |
+| `/portal/sprawy/[id]` | Szczegóły sprawy | TPP |
+| `/portal/dokumenty` | Dokumenty klienta | TPP |
+| `/portal/wiadomosci` | Chat z prawnikiem | TPP |
+| `/portal/konto` | Konto klienta | TPP |
+| `/api/analyze` | AI analiza sprawy (Anthropic) | TPP — już gotowy |
+| `/api/match` | AI matching prawnik–klient | TPP |
 
 ---
 
-## 5. Interfejsy API — kontrakt między modułami
-
-### 5.1 TPP → legal-portal: tworzenie bookingu z portalu klienta
-
-```
-POST /api/tpp/booking
-Authorization: Bearer [supabase-jwt]
-
-Body:
-{
-  "slot_id": "uuid",
-  "case_id": "uuid",
-  "client_name": "string",
-  "client_email": "string",
-  "client_phone": "string",
-  "type": "online" | "in_person"
-}
-
-Response 201:
-{
-  "booking_id": "uuid",
-  "consultation_id": "uuid",
-  "scheduled_at": "ISO8601",
-  "google_meet_url": "string | null",
-  "confirmation_sent": true
-}
-```
-
-### 5.2 TPP → legal-portal: pobranie dostępnych slotów prawnika
-
-```
-GET /api/tpp/slots?lawyer_id=[uuid]&from=[ISO8601]&to=[ISO8601]
-(public, no auth)
-
-Response 200:
-{
-  "slots": [
-    {
-      "id": "uuid",
-      "start": "ISO8601",
-      "end": "ISO8601",
-      "duration_minutes": 60,
-      "type": "online" | "in_person",
-      "google_meet_available": true
-    }
-  ]
-}
-```
-
-### 5.3 TPP → legal-portal: inicjalizacja chatu RAG dla sprawy
-
-```
-POST /api/tpp/chat/init
-Authorization: Bearer [supabase-jwt]
-
-Body:
-{
-  "case_id": "uuid",
-  "document_ids": ["uuid"]
-}
-
-Response 201:
-{
-  "chat_id": "uuid"
-}
-```
-
-### 5.4 legal-portal → TPP: webhook — booking potwierdzony
-
-```
-POST /api/webhooks/booking-confirmed
-X-TPP-Signature: [hmac-sha256]
-
-Body:
-{
-  "consultation_id": "uuid",
-  "tpp_booking_id": "uuid",
-  "status": "confirmed",
-  "google_meet_url": "string | null"
-}
-```
+## 5. Plan implementacji — fazy
 
 ---
 
-## 6. Design system — tokeny kolorów
-
-TPP używa własnych tokenów. legal-portal **musi** zaadaptować swoje komponenty wizytówki i bookingu do poniższej palety gdy są renderowane w domenie TPP:
-
-```css
-/* TPP Design System */
---color-primary:      #2E9465;   /* zielony główny */
---color-primary-dark: #124030;   /* ciemny zielony */
---color-bg:           #F5F0E8;   /* krem */
---color-surface:      #FFFFFF;
---color-text:         #1A1A1A;
---color-text-muted:   #6B7280;
---color-border:       #E5E0D8;
---color-accent:       #2E9465;
-
-/* Gradient — hero sections */
-background: linear-gradient(150deg, #2E9465 0%, #124030 100%);
-
-/* Czcionka */
-font-family: 'Inter', sans-serif;
-```
-
-Komponenty legal-portal renderowane w `/prawnik/[slug]` i `/book/[slug]`
-przyjmują `theme` prop: `"tpp" | "legal-portal"`.
-
----
-
-## 7. Plan implementacji — fazy
-
----
-
-### FAZA 0 — Setup (tydzień 1)
-**Branch:** `feat/backend-foundation`
-**Właściciel:** obaj razem
+### FAZA 0 — Merge redesign na PROD (priorytet natychmiastowy)
+**Branch:** `redesign/new-design-system`
+**Właściciel:** kolega (legal-portal)
+**Czas:** 1–2 dni
 
 **Zadania:**
-- [ ] Stworzenie projektu Supabase (jeden wspólny)
-- [ ] Inicjalizacja Next.js 16 + TypeScript + Tailwind 4 w głównym repo TPP
-- [ ] Konfiguracja next-intl (pl/en)
-- [ ] Wgranie migracji z legal-portal + nowych tabel TPP (sekcja 3)
-- [ ] Konfiguracja RLS na wszystkich tabelach
-- [ ] Wspólny `.env.local` uzgodniony i podzielony bezpiecznie
-- [ ] CI/CD pipeline (GitHub Actions: lint + test + preview deploy)
-- [ ] Vercel project setup (preview per branch)
+- [ ] Review i merge `redesign/new-design-system` → `main`
+- [ ] Deploy na Vercel
+- [ ] Smoke test na PRODzie (sprawy, chat, kalendarz, booking)
 
-**Deliverable:** działające `npm run dev`, puste strony pod właściwymi URL-ami, połączenie z Supabase zweryfikowane.
+**Dlaczego najpierw:** Nowy design system to fundament — nowe komponenty UI budujemy na nim, nie na starym.
 
 ---
 
-### FAZA 1 — Auth (tydzień 1–2)
-**Branch:** `feat/auth`
-**Właściciel:** legal-portal
+### FAZA 1 — Client Auth (tydzień 1)
+**Branch:** `feat/client-auth`
+**Właściciel:** TPP + kolega razem
 
 **Zadania:**
-- [ ] Adaptacja auth z legal-portal do TPP repo
-- [ ] Strony: `/auth/login`, `/auth/signup`, `/auth/reset-password`
-- [ ] Middleware Next.js: ochrona `/portal/*` i `/dashboard/*`
-- [ ] Rozróżnienie ról: `client` vs `lawyer` po zalogowaniu → redirect
-- [ ] Tworzenie `client_profiles` i `lawyer_profiles` po rejestracji (trigger Supabase)
-- [ ] Strona `/auth/verify-email`
+- [ ] Nowa tabela `client_profiles` w Supabase (migracja)
+- [ ] Modyfikacja signup flow — rozróżnienie roli: `lawyer` vs `client`
+- [ ] Klienci rejestrują się bez kodu zaproszeniowego
+- [ ] Middleware: po logowaniu jako `client` → redirect `/portal`, jako `lawyer` → `/dashboard`
+- [ ] Strona `/portal` — podstawowy layout (header, bottom nav)
+- [ ] Ochrona `/portal/*` — tylko rola `client`
 
-**Deliverable:** pełen flow rejestracja → weryfikacja email → login → redirect według roli.
+**Deliverable:** klient może się zarejestrować i zalogować, widzi `/portal`.
 
 ---
 
-### FAZA 2 — Guided Flow (tydzień 2–3)
+### FAZA 2 — Guided Flow Wizard (tydzień 1–2)
 **Branch:** `feat/guided-flow`
 **Właściciel:** TPP
 
 **Zadania:**
-- [ ] Przepisanie `guided-flow.html` na Next.js (App Router, Server + Client components)
-- [ ] Wizard steps jako oddzielne komponenty
-- [ ] Podłączenie `/api/analyze` (Anthropic) — real API call
-- [ ] Zapis `tpp_cases` po ukończeniu wizarda
-- [ ] Ekran `matching` — query do `lawyer_profiles` z filtrowaniem
-- [ ] Ekran `lawyer-profile` — dane z `lawyer_profiles`
-- [ ] Redirect do `/portal` po zakończeniu
+- [ ] Przepisanie `guided-flow.html` na Next.js App Router
+- [ ] Wizard jako `/wizard` — Server + Client Components
+- [ ] Podłączenie `/api/analyze` (Anthropic) — migracja z naszego branchu
+- [ ] Zapis `tpp_cases` po zakończeniu wizarda
+- [ ] Ekran matching — query do `user_profiles` gdzie `tpp_is_listed = true`
+- [ ] Link do `/p/[slug]` z wizarda (istniejąca wizytówka)
+- [ ] Link do `/book/[slug]` z profilu prawnika (istniejący booking)
+- [ ] Po bookingu → redirect do `/portal`
 
-**Deliverable:** działający wizard end-to-end, sprawa zapisana w bazie.
+**Deliverable:** klient przechodzi przez wizard, sprawa zapisana, booking umówiony.
 
 ---
 
-### FAZA 3 — Wizytówka prawnika (tydzień 3–4)
-**Branch:** `feat/lawyer-profile`
-**Właściciel:** legal-portal
+### FAZA 3 — Lawyer listing w katalogu (tydzień 2)
+**Branch:** `feat/lawyer-directory`
+**Właściciel:** TPP
 
 **Zadania:**
-- [ ] Adaptacja Landing Page Builder z legal-portal
-- [ ] Route `/dashboard/wizytowka` — builder (auth, rola: lawyer)
-- [ ] Route `/prawnik/[slug]` — publiczny widok (no auth)
-- [ ] Aplikacja tokenów TPP design system (theme prop)
-- [ ] Sekcje: bio, specjalizacje, opinie, cennik, CTA booking
-- [ ] Generowanie `slug` z `display_name`
-- [ ] Toggle `is_published` — kontrola widoczności
+- [ ] Migracja — dodanie kolumn `tpp_*` do `user_profiles`
+- [ ] Strona `/prawnicy` — grid kart prawników z `tpp_is_listed = true`
+- [ ] Filtry: specjalizacja, miasto, dostępność, cena
+- [ ] Paginacja + SEO (metadata per strona)
+- [ ] Sitemap: `/prawnicy` + wszystkie `/p/[slug]`
+- [ ] W dashboardzie prawnika: toggle "Widoczny w katalogu TPP"
 
-**Deliverable:** prawnik tworzy wizytówkę w dashboardzie, klient widzi ją pod `/prawnik/[slug]`.
-
----
-
-### FAZA 4 — Booking (tydzień 4–5)
-**Branch:** `feat/booking`
-**Właściciel:** legal-portal
-
-**Zadania:**
-- [ ] Adaptacja publicznego booking flow z legal-portal
-- [ ] Route `/book/[slug]` — wybór slotu (no auth)
-- [ ] Route `/book/[slug]/confirm/[token]` — potwierdzenie
-- [ ] Integracja z Google Calendar (istniejąca w legal-portal)
-- [ ] Email potwierdzenia via Resend
-- [ ] API endpoint `POST /api/tpp/booking` (sekcja 5.1)
-- [ ] API endpoint `GET /api/tpp/slots` (sekcja 5.2)
-- [ ] Zapis `tpp_bookings` po potwierdzeniu
-- [ ] Webhook `POST /api/webhooks/booking-confirmed` (sekcja 5.4)
-- [ ] Integracja CTA z wizytówki → booking
-
-**Deliverable:** klient klika "Umów wizytę" na wizytówce → wybiera slot → dostaje email z potwierdzeniem i linkiem Google Meet.
+**Deliverable:** publiczna wyszukiwarka prawników.
 
 ---
 
-### FAZA 5 — Portal klienta (tydzień 5–6)
+### FAZA 4 — Portal klienta (tydzień 2–3)
 **Branch:** `feat/client-portal`
 **Właściciel:** TPP
 
 **Zadania:**
-- [ ] Przepisanie `client-portal.html` na Next.js
-- [ ] Layout: fixed header + bottom nav + scroll container (jak w prototypie)
-- [ ] Tab: Dom — dashboard z alertem terminu, hero stats, notyfikacje
-- [ ] Tab: Sprawy — lista `tpp_cases` z bazy, klikalne → szczegóły
-- [ ] Tab: Dokumenty — lista `tpp_documents`, upload (Supabase Storage)
-- [ ] Tab: Wiadomości — real-time chat (Supabase Realtime) z `tpp_messages`
+- [ ] Migracja tabel: `tpp_cases`, `tpp_messages`, `tpp_documents`, `tpp_bookings`
+- [ ] Layout `/portal` — fixed header + bottom nav (jak w prototypie `client-portal.html`)
+- [ ] Tab **Dom** — deadline alert, stats, case-summary-card, appointment card
+- [ ] Tab **Sprawy** — lista `tpp_cases`, klikalne → szczegóły
+- [ ] Widok szczegółów sprawy — oś czasu, AI analiza, dokumenty, sekcja prawnika
+- [ ] Tab **Dokumenty** — lista `tpp_documents`, upload (Supabase Storage)
+- [ ] Tab **Wiadomości** — real-time chat (Supabase Realtime) z `tpp_messages`
 - [ ] Account drawer — dane z `client_profiles`, edycja
-- [ ] Widok szczegółów sprawy — oś czasu, AI analiza, dokumenty, prawnik
-- [ ] Podłączenie pod prawdziwe dane (Supabase queries)
-- [ ] Supabase Realtime dla wiadomości (live updates)
+- [ ] Powiadomienia push (Supabase Realtime) — nowe wiadomości
 
-**Deliverable:** pełen portal klienta z prawdziwymi danymi, real-time chat.
+**Deliverable:** pełen portal klienta z prawdziwymi danymi.
 
 ---
 
-### FAZA 6 — Dashboard prawnika (tydzień 6–7)
-**Branch:** `feat/lawyer-dashboard`
-**Właściciel:** legal-portal
-
-**Zadania:**
-- [ ] Adaptacja dashboard z legal-portal do TPP kontekstu
-- [ ] Widok spraw `tpp_cases` gdzie `lawyer_id = current_user`
-- [ ] Chat z klientem (shared `tpp_messages`)
-- [ ] Kalendarz konsultacji (`tpp_bookings`)
-- [ ] Zarządzanie dokumentami sprawy
-- [ ] Statystyki: liczba spraw, oceny, przychód
-- [ ] Powiadomienia: nowe sprawy, wiadomości, bookingji
-
-**Deliverable:** prawnik zarządza sprawami, rozmawia z klientami, widzi kalendarz.
-
----
-
-### FAZA 7 — AI Matching (tydzień 7–8)
+### FAZA 5 — AI Matching Engine (tydzień 3)
 **Branch:** `feat/ai-matching`
 **Właściciel:** TPP
 
 **Zadania:**
-- [ ] Endpoint `POST /api/match` — AI scoring prawnik vs sprawa klienta
-- [ ] Algorytm: specjalizacja (50%) + lokalizacja (20%) + oceny (20%) + dostępność (10%)
-- [ ] Integracja z ekranem `matching` w guided flow
-- [ ] Ranking wyników — top 3 prawnicy
+- [ ] Endpoint `POST /api/match`
+- [ ] Scoring algorytm: specjalizacja (50%) + lokalizacja (20%) + oceny (20%) + dostępność (10%)
+- [ ] Integracja z ekranem matching w guided flow (Faza 2)
 - [ ] Personalizacja na podstawie `ai_analysis` z `tpp_cases`
+- [ ] Top 3 prawnicy z wyjaśnieniem dlaczego dopasowani
+- [ ] A/B test placeholders (feature flag)
 
-**Deliverable:** klient dostaje trafnie dopasowanych prawników na podstawie AI.
+**Deliverable:** klient dostaje trafnie dopasowanych prawników.
 
 ---
 
-### FAZA 8 — RAG Chat (tydzień 8)
-**Branch:** `feat/rag-chat`
-**Właściciel:** legal-portal
+### FAZA 6 — Powiadomienia prawnika o nowych sprawach (tydzień 3–4)
+**Branch:** `feat/lawyer-notifications`
+**Właściciel:** kolega (legal-portal)
 
 **Zadania:**
-- [ ] Adaptacja document RAG chat z legal-portal
-- [ ] Podłączenie do `tpp_documents` (embeddingi po uploadzie)
-- [ ] API `POST /api/tpp/chat/init` (sekcja 5.3)
-- [ ] Interfejs chatu z dokumentami w portalu klienta (zakładka Dokumenty)
-- [ ] Rate limiting (jak w legal-portal)
+- [ ] Powiadomienie w dashboardzie gdy klient dopasował prawnika (`tpp_is_listed`)
+- [ ] Email (Resend) do prawnika: "Nowy klient czeka na Twoją odpowiedź"
+- [ ] W dashboardzie: zakładka/widżet "Wnioski od klientów TPP"
+- [ ] Prawnik może zaakceptować/odrzucić → aktualizacja `tpp_cases.status`
+- [ ] Po akceptacji — chat odblokowany
 
-**Deliverable:** klient może zadawać pytania AI o swoje dokumenty.
+**Deliverable:** prawnik widzi i obsługuje nowych klientów z TPP.
 
 ---
 
-### FAZA 9 — Polish & Launch prep (tydzień 9)
+### FAZA 7 — Polish & Launch prep (tydzień 4)
 **Branch:** `feat/launch-prep`
 **Właściciel:** obaj
 
 **Zadania:**
-- [ ] Testy E2E Playwright: pełen user journey (rejestracja → wizard → booking → portal)
-- [ ] Testy jednostkowe Vitest: pokrycie >80%
-- [ ] Audyt dostępności (jest-axe, WCAG AA)
-- [ ] Audyt bezpieczeństwa (OWASP Top 10, RLS policies)
-- [ ] Sprawdzenie i18n — wszystkie stringi przetłumaczone
-- [ ] Performance: Lighthouse >90
-- [ ] SEO: meta tags, OG, sitemap dla wizytówek
-- [ ] Monitoring: error tracking (Sentry), analytics
-- [ ] Dokumentacja `DEPLOY.md` — aktualizacja
+- [ ] Testy E2E Playwright: rejestracja klienta → wizard → booking → portal
+- [ ] Testy E2E: rejestracja prawnika → wizytówka → dashboard
+- [ ] Audyt RLS — sprawdzić czy klient nie widzi danych innych klientów
+- [ ] Performance: Lighthouse >90 dla `/`, `/prawnicy`, `/wizard`
+- [ ] SEO: OG tags dla wizytówek prawników
+- [ ] Error monitoring: Sentry dla nowych routes
+- [ ] Otwarcie rejestracji dla klientów (wyłączyć invite-only dla roli `client`)
+- [ ] Landing page aktualizacja — CTA "Znajdź prawnika" → `/wizard`
 
-**Deliverable:** aplikacja gotowa do beta launch z prawdziwymi użytkownikami.
+**Deliverable:** beta launch gotowy.
 
 ---
 
-## 8. Harmonogram (orientacyjny)
+## 6. Harmonogram
 
 ```
-Tydzień 1:   Faza 0 (Setup) + Faza 1 (Auth)
-Tydzień 2:   Faza 1 (Auth) + Faza 2 start (Wizard)
-Tydzień 3:   Faza 2 (Wizard) + Faza 3 start (Wizytówka)
-Tydzień 4:   Faza 3 (Wizytówka) + Faza 4 start (Booking)
-Tydzień 5:   Faza 4 (Booking) + Faza 5 start (Portal)
-Tydzień 6:   Faza 5 (Portal) + Faza 6 start (Dashboard)
-Tydzień 7:   Faza 6 (Dashboard) + Faza 7 (Matching)
-Tydzień 8:   Faza 7 (Matching) + Faza 8 (RAG)
-Tydzień 9:   Faza 9 (Polish & Launch)
+Tydzień 0:   Merge redesign → PROD
+Tydzień 1:   Faza 1 (Auth) + Faza 2 (Wizard)
+Tydzień 2:   Faza 2 finish + Faza 3 (Katalog) + Faza 4 start (Portal)
+Tydzień 3:   Faza 4 finish + Faza 5 (Matching) + Faza 6 start (Notifications)
+Tydzień 4:   Faza 6 finish + Faza 7 (Launch prep)
 ```
 
-Łącznie: **~9 tygodni** do beta launch (zakładając 2 devów pracujących regularnie).
+**Łącznie: ~4 tygodnie do beta launch.**
+
+Skrócono z 9 do 4 tygodni — bo backend, auth, booking i wizytówka są już gotowe na PRODzie.
 
 ---
 
-## 9. Pytania do uzgodnienia przed startem
+## 7. Pytania do ustalenia przed Fazą 1
 
-- [ ] **Kto zakłada projekt Supabase?** (Kris lub kolega, ale jeden shared)
-- [ ] **Jak dzielimy sekrety?** (1Password shared vault? Bitwarden?)
-- [ ] **Który Vercel account?** (deploy preview per branch)
-- [ ] **Jak zarządzamy branchami?** (forki vs jeden repo z uprawnieniami)
-- [ ] **Kiedy startujemy Fazę 0?**
+- [ ] **Redesign merge** — kiedy kolega jest gotowy do merge?
+- [ ] **Supabase migrations** — kto puszcza migracje na PRODzie? (rola service role)
+- [ ] **Invite-only** — zostawiamy dla prawników, otwieramy dla klientów?
+- [ ] **Anthropic API key** — wgrać do `.env` na Vercel (TPP pipeline AI)
+- [ ] **Nazewnictwo ról** — `lawyer` / `client` w `user_profiles` czy osobne tabele?
 
 ---
 
-*Dokument do aktualizacji po każdym sprint review.*
+*Dokument żywy — aktualizować po każdej fazie.*
