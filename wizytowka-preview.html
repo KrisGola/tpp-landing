@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TPP — Wizytówka prawnika · Wizualizacja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:      #2E9465;
+  --green-dark: #124030;
+  --green-10:   rgba(46,148,101,.10);
+  --green-20:   rgba(46,148,101,.20);
+  --cream:      #F5F0E8;
+  --surface:    #FFFFFF;
+  --border:     #E5E0D8;
+  --border-s:   #D4CFC7;
+  --text:       #1A1A1A;
+  --text-2:     #6B7280;
+  --text-3:     #9CA3AF;
+  --grad:       linear-gradient(150deg,#2E9465 0%,#124030 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#1A1A2E;color:var(--text);font-size:15px;line-height:1.5;}
+
+/* ── LAYOUT ── */
+.page-wrap{max-width:1400px;margin:0 auto;padding:40px 24px 80px;}
+
+.page-title{color:white;font-size:28px;font-weight:800;margin-bottom:8px;}
+.page-sub{color:rgba(255,255,255,.55);font-size:15px;margin-bottom:48px;}
+
+/* Flow arrow */
+.flow{display:flex;align-items:flex-start;gap:0;margin-bottom:64px;overflow-x:auto;padding-bottom:8px;}
+.flow-step{flex:1;min-width:220px;position:relative;}
+.flow-arrow{display:flex;align-items:center;padding-top:28px;color:rgba(255,255,255,.3);font-size:28px;flex-shrink:0;padding:28px 8px 0;}
+
+.step-num{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--green);margin-bottom:8px;}
+.step-label{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.4;}
+
+/* ── PHONE SHELL ── */
+.phone{
+  width:100%;
+  max-width:320px;
+  background:var(--cream);
+  border-radius:28px;
+  overflow:hidden;
+  border:6px solid #2A2A3E;
+  box-shadow:0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+  position:relative;
+}
+.phone-notch{
+  height:22px;background:#1A1A1A;
+  display:flex;align-items:center;justify-content:center;
+}
+.phone-notch-pill{width:60px;height:8px;background:#333;border-radius:4px;}
+
+/* ── SCREEN CONTENTS ── */
+.screen{background:var(--cream);min-height:560px;overflow:hidden;}
+
+/* Header */
+.ph{height:52px;background:var(--green-dark);display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+.ph-logo{font-size:13px;color:white;font-weight:600;}
+.ph-logo span{opacity:.6;font-weight:400;}
+.ph-av{width:28px;height:28px;border-radius:50%;background:var(--green);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.3);}
+
+/* ── SCREEN 1: Matching ── */
+.s1-title{font-size:17px;font-weight:700;color:var(--text);padding:16px 16px 4px;}
+.s1-sub{font-size:12px;color:var(--text-2);padding:0 16px 14px;}
+
+.lawyer-card{background:white;border:1.5px solid var(--border);border-radius:14px;margin:0 12px 12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.lawyer-card.featured{border-color:var(--green);box-shadow:0 0 0 2px var(--green-10),0 4px 12px rgba(0,0,0,.08);}
+
+.lc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.lc-av{width:38px;height:38px;border-radius:50%;background:var(--grad);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lc-name{font-size:14px;font-weight:700;color:var(--text);}
+.lc-city{font-size:11px;color:var(--text-2);}
+.lc-match{margin-left:auto;background:var(--green-10);color:#124030;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;}
+
+.lc-specs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.lc-spec{font-size:10px;background:#EDE9E0;color:var(--text-2);padding:3px 8px;border-radius:999px;}
+
+.lc-stats{display:flex;gap:14px;padding:8px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:10px;}
+.lc-stat{display:flex;flex-direction:column;align-items:center;gap:1px;flex:1;}
+.lc-stat-v{font-size:14px;font-weight:700;color:var(--text);}
+.lc-stat-l{font-size:9px;color:var(--text-3);}
+
+.lc-why{font-size:11px;color:var(--text-2);margin-bottom:10px;line-height:1.4;}
+.lc-why span{color:var(--green);font-weight:600;}
+
+.lc-btns{display:flex;gap:8px;}
+.btn-outline{flex:1;padding:9px;border:1.5px solid var(--border-s);border-radius:8px;font-size:12px;font-weight:500;color:var(--text);text-align:center;background:transparent;cursor:pointer;}
+.btn-green{flex:1.4;padding:9px;background:var(--grad);color:white;border-radius:8px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:none;}
+
+/* ── SCREEN 2: Wizytówka ── */
+.wiz-hero{background:var(--grad);padding:20px 16px 24px;position:relative;overflow:hidden;}
+.wiz-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px);background-size:18px 18px;}
+.wiz-back{font-size:12px;color:rgba(255,255,255,.75);margin-bottom:12px;display:block;position:relative;z-index:1;}
+.wiz-av{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative;z-index:1;}
+.wiz-name{font-size:20px;font-weight:800;color:white;line-height:1.2;margin-bottom:4px;position:relative;z-index:1;}
+.wiz-title{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:12px;position:relative;z-index:1;}
+
+.wiz-badges{display:flex;gap:6px;flex-wrap:wrap;position:relative;z-index:1;}
+.wiz-badge{background:rgba(255,255,255,.15);color:white;font-size:10px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);}
+
+/* Stats bar */
+.wiz-stats{display:flex;background:white;border-bottom:1px solid var(--border);}
+.wiz-stat{flex:1;padding:10px 8px;text-align:center;border-right:1px solid var(--border);}
+.wiz-stat:last-child{border-right:none;}
+.wiz-stat-v{font-size:16px;font-weight:700;color:var(--text);}
+.wiz-stat-l{font-size:9px;color:var(--text-3);margin-top:1px;}
+
+/* Sticky nav */
+.wiz-nav{display:flex;background:white;border-bottom:2px solid var(--border);overflow-x:auto;}
+.wiz-nav-item{flex-shrink:0;padding:10px 14px;font-size:11px;font-weight:600;color:var(--text-2);white-space:nowrap;cursor:pointer;}
+.wiz-nav-item.active{color:var(--green);border-bottom:2px solid var(--green);margin-bottom:-2px;}
+
+.wiz-section{padding:14px 14px 0;}
+.wiz-s-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text-3);margin-bottom:8px;}
+.wiz-s-text{font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:14px;}
+
+.wiz-spec-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.wiz-spec-item{background:white;border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.wiz-spec-icon{width:28px;height:28px;border-radius:8px;background:var(--green-10);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.wiz-spec-name{font-size:12px;font-weight:600;color:var(--text);}
+.wiz-spec-desc{font-size:10px;color:var(--text-2);}
+
+/* Review */
+.wiz-review{background:white;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.wiz-rev-stars{color:#F59E0B;font-size:11px;margin-bottom:4px;}
+.wiz-rev-text{font-size:11px;color:var(--text-2);line-height:1.5;margin-bottom:6px;}
+.wiz-rev-author{font-size:10px;font-weight:600;color:var(--text-3);}
+
+/* Booking section */
+.wiz-book{background:var(--green-10);border:1px solid var(--green-20);border-radius:12px;padding:14px;margin:14px;}
+.wiz-book-title{font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:10px;}
+.wiz-slots{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.wiz-slot-day{font-size:10px;font-weight:700;color:var(--text-2);margin-bottom:4px;}
+.wiz-slot-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.wiz-chip{background:white;border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;}
+.wiz-chip:hover,.wiz-chip.sel{background:var(--green);color:white;border-color:var(--green);}
+.wiz-book-btn{width:100%;padding:11px;background:var(--grad);color:white;border-radius:8px;font-size:13px;font-weight:700;text-align:center;border:none;cursor:pointer;}
+
+/* Pricing */
+.wiz-price{background:white;border:1px solid var(--border);border-radius:10px;padding:12px;margin:0 14px 14px;}
+.wiz-price-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.wiz-price-row:last-child{border-bottom:none;}
+.wiz-price-lbl{color:var(--text-2);}
+.wiz-price-val{font-weight:700;color:var(--text);}
+.wiz-price-free{color:var(--green);font-weight:700;}
+
+/* ── SCREEN 3: /prawnicy ── */
+.cat-hero{background:var(--grad);padding:20px 14px;position:relative;overflow:hidden;}
+.cat-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px);background-size:18px 18px;}
+.cat-h1{font-size:17px;font-weight:800;color:white;position:relative;z-index:1;margin-bottom:4px;}
+.cat-sub{font-size:11px;color:rgba(255,255,255,.7);position:relative;z-index:1;margin-bottom:14px;}
+.cat-search{background:white;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;position:relative;z-index:1;}
+.cat-search-icon{color:var(--text-3);}
+.cat-search-text{font-size:12px;color:var(--text-3);}
+
+.cat-filters{display:flex;gap:6px;padding:12px 12px 8px;overflow-x:auto;}
+.cat-filter{flex-shrink:0;padding:6px 12px;background:white;border:1.5px solid var(--border);border-radius:999px;font-size:11px;font-weight:500;color:var(--text-2);cursor:pointer;}
+.cat-filter.active{background:var(--green);color:white;border-color:var(--green);}
+
+.cat-count{font-size:11px;color:var(--text-3);padding:0 12px 10px;}
+
+.cat-card{background:white;border:1px solid var(--border);border-radius:14px;margin:0 12px 10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);cursor:pointer;transition:border-color .15s;}
+.cat-card:hover{border-color:var(--green);}
+.cat-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cat-av{width:36px;height:36px;border-radius:50%;background:var(--grad);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cat-name{font-size:13px;font-weight:700;color:var(--text);}
+.cat-loc{font-size:11px;color:var(--text-2);}
+.cat-rating{margin-left:auto;display:flex;align-items:center;gap:3px;font-size:12px;font-weight:700;color:var(--text);}
+.cat-star{color:#F59E0B;font-size:11px;}
+
+.cat-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.cat-tag{font-size:10px;background:#EDE9E0;color:var(--text-2);padding:3px 8px;border-radius:999px;}
+
+.cat-footer{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);}
+.cat-avail{font-size:10px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px;}
+.cat-avail-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.cat-price{font-size:10px;color:var(--text-2);}
+.cat-price strong{color:var(--text);}
+.cat-arrow{font-size:16px;color:var(--text-3);}
+
+/* ── BOTTOM STICKY BOOK ── */
+.wiz-sticky{position:sticky;bottom:0;background:white;border-top:1px solid var(--border);padding:10px 14px 14px;display:flex;gap:8px;}
+.wiz-sticky-info{flex:1;}
+.wiz-sticky-name{font-size:12px;font-weight:700;color:var(--text);}
+.wiz-sticky-price{font-size:11px;color:var(--green);}
+.wiz-sticky-btn{padding:10px 18px;background:var(--grad);color:white;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap;border:none;cursor:pointer;}
+
+/* ── ANNOTATION ── */
+.note{background:#0D1117;border:1px solid #30363D;border-radius:10px;padding:14px 16px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.65);line-height:1.6;}
+.note strong{color:#58A6FF;}
+.note .tag{display:inline-block;background:#1C3A5E;color:#58A6FF;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:4px;}
+.note .tag.green{background:#1A3A2A;color:#4ADE80;}
+.note .tag.yellow{background:#3A2E00;color:#FCD34D;}
+
+/* ── CONNECTION LINE ── */
+.connector{display:flex;align-items:center;justify-content:center;padding:16px 0;color:rgba(255,255,255,.2);font-size:28px;}
+
+/* ── SECTION HEADER ── */
+.section-h{color:white;font-size:18px;font-weight:700;margin:48px 0 6px;}
+.section-s{color:rgba(255,255,255,.5);font-size:13px;margin-bottom:24px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .flow{flex-direction:column;align-items:center;}
+  .flow-arrow{transform:rotate(90deg);padding:4px 0;}
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <p class="page-title">TPP · Wizytówka prawnika — Wizualizacja przepływu</p>
+  <p class="page-sub">Jak wizytówka z legal-portal wpisuje się w flow klienta TPP</p>
+
+  <!-- ══════════════════════════════════════════════════
+       FLOW OVERVIEW
+  ══════════════════════════════════════════════════ -->
+  <div class="flow">
+
+    <!-- STEP 1 -->
+    <div class="flow-step">
+      <div class="step-num">KROK 1</div>
+      <div class="step-label">Klient kończy wizard<br>→ widzi dopasowanych prawników</div>
+      <div class="phone">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="screen">
+          <div class="ph">
+            <div class="ph-logo">twojapomoc<span>prawna.pl</span></div>
+            <div class="ph-av">MW</div>
+          </div>
+
+          <div class="s1-title">Dopasowani prawnicy</div>
+          <div class="s1-sub">AI wybrał najlepszych dla Twojej sprawy</div>
+
+          <!-- Card 1 — featured -->
+          <div class="lawyer-card featured">
+            <div class="lc-head">
+              <div class="lc-av">AK</div>
+              <div>
+                <div class="lc-name">mec. Anna Kowalska</div>
+                <div class="lc-city">Warszawa</div>
+              </div>
+              <div class="lc-match">94%</div>
+            </div>
+            <div class="lc-specs">
+              <span class="lc-spec">Prawo pracy</span>
+              <span class="lc-spec">Odwołania</span>
+            </div>
+            <div class="lc-stats">
+              <div class="lc-stat"><span class="lc-stat-v">4.9</span><span class="lc-stat-l">Ocena</span></div>
+              <div class="lc-stat"><span class="lc-stat-v">63</span><span class="lc-stat-l">Opinii</span></div>
+              <div class="lc-stat"><span class="lc-stat-v">1h</span><span class="lc-stat-l">Odpowiedź</span></div>
+            </div>
+            <div class="lc-why"><span>✓</span> Specjalizacja: prawo pracy · <span>✓</span> Dostępna dziś</div>
+            <div class="lc-btns">
+              <div class="btn-outline" style="border-color:#2E9465;color:#2E9465;font-weight:600;">Zobacz profil</div>
+              <div class="btn-green">Dostępna dziś</div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="lawyer-card" style="opacity:.75;">
+            <div class="lc-head">
+              <div class="lc-av" style="font-size:10px;">KD</div>
+              <div>
+                <div class="lc-name" style="font-size:13px;">mec. K. Dąbrowska</div>
+                <div class="lc-city">Gdańsk</div>
+              </div>
+              <div class="lc-match" style="opacity:.8;">81%</div>
+            </div>
+            <div class="lc-btns">
+              <div class="btn-outline">Zobacz profil</div>
+              <div class="btn-green" style="opacity:.8;">Umów wizytę</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="tag green">TPP — nasz kod</span><br>
+        Ekran <strong>WizardMatching.js</strong> — wyniki z <strong>/api/match</strong>.<br>
+        Przycisk <strong>„Zobacz profil"</strong> → otwiera <code>/p/[slug]</code>
+      </div>
+    </div>
+
+    <div class="flow-arrow">›</div>
+
+    <!-- STEP 2 -->
+    <div class="flow-step">
+      <div class="step-num">KROK 2</div>
+      <div class="step-label">Klient wchodzi na wizytówkę<br>→ <code>/p/anna-kowalska</code></div>
+      <div class="phone">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="screen">
+          <div class="ph">
+            <div class="ph-logo">twojapomoc<span>prawna.pl</span></div>
+          </div>
+
+          <!-- Hero -->
+          <div class="wiz-hero">
+            <div class="wiz-back">← Wróć do wyników</div>
+            <div class="wiz-av">AK</div>
+            <div class="wiz-name">mec. Anna Kowalska</div>
+            <div class="wiz-title">Radca prawny · Kancelaria AK Legal</div>
+            <div class="wiz-badges">
+              <span class="wiz-badge">Warszawa</span>
+              <span class="wiz-badge">Prawo pracy</span>
+              <span class="wiz-badge">Dostępna dziś</span>
+            </div>
+          </div>
+
+          <!-- Stats bar -->
+          <div class="wiz-stats">
+            <div class="wiz-stat"><div class="wiz-stat-v">4.9</div><div class="wiz-stat-l">Ocena</div></div>
+            <div class="wiz-stat"><div class="wiz-stat-v">63</div><div class="wiz-stat-l">Opinii</div></div>
+            <div class="wiz-stat"><div class="wiz-stat-v">47</div><div class="wiz-stat-l">Spraw</div></div>
+            <div class="wiz-stat"><div class="wiz-stat-v">1h</div><div class="wiz-stat-l">Odpowiedź</div></div>
+          </div>
+
+          <!-- Nav -->
+          <div class="wiz-nav">
+            <div class="wiz-nav-item active">O mnie</div>
+            <div class="wiz-nav-item">Specjalizacje</div>
+            <div class="wiz-nav-item">Opinie</div>
+            <div class="wiz-nav-item">Terminy</div>
+            <div class="wiz-nav-item">Cennik</div>
+          </div>
+
+          <!-- About -->
+          <div class="wiz-section">
+            <div class="wiz-s-label">O MNIE</div>
+            <div class="wiz-s-text">Specjalizuję się w prawie pracy od 12 lat. Reprezentowałam ponad 300 pracowników w sporach z pracodawcami. Wygrana w 78% spraw sądowych.</div>
+          </div>
+
+          <!-- Specs -->
+          <div class="wiz-section" style="padding-top:0;">
+            <div class="wiz-s-label">SPECJALIZACJE</div>
+            <div class="wiz-spec-list">
+              <div class="wiz-spec-item">
+                <div class="wiz-spec-icon">⚖️</div>
+                <div><div class="wiz-spec-name">Prawo pracy</div><div class="wiz-spec-desc">Zwolnienia, mobbing, wynagrodzenia</div></div>
+              </div>
+              <div class="wiz-spec-item">
+                <div class="wiz-spec-icon">📋</div>
+                <div><div class="wiz-spec-name">Odwołania od zwolnienia</div><div class="wiz-spec-desc">Sąd pracy, przywrócenie do pracy</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking slots -->
+          <div class="wiz-book">
+            <div class="wiz-book-title">Umów konsultację</div>
+            <div class="wiz-slots">
+              <div>
+                <div class="wiz-slot-day">Dziś, 2 kwi</div>
+                <div class="wiz-slot-chips">
+                  <div class="wiz-chip sel">14:00</div>
+                  <div class="wiz-chip">15:30</div>
+                  <div class="wiz-chip">17:00</div>
+                </div>
+              </div>
+              <div>
+                <div class="wiz-slot-day">Jutro, 3 kwi</div>
+                <div class="wiz-slot-chips">
+                  <div class="wiz-chip">09:00</div>
+                  <div class="wiz-chip">10:30</div>
+                </div>
+              </div>
+            </div>
+            <button class="wiz-book-btn">Umów wybrany termin</button>
+          </div>
+
+          <!-- Pricing -->
+          <div class="wiz-price">
+            <div class="wiz-price-row"><span class="wiz-price-lbl">Pierwsza konsultacja</span><span class="wiz-price-free">bezpłatna 15 min</span></div>
+            <div class="wiz-price-row"><span class="wiz-price-lbl">Konsultacja godzinna</span><span class="wiz-price-val">280 PLN</span></div>
+            <div class="wiz-price-row"><span class="wiz-price-lbl">Stałe prowadzenie sprawy</span><span class="wiz-price-val">od 800 PLN</span></div>
+          </div>
+
+          <!-- Reviews -->
+          <div class="wiz-section" style="padding-top:0;">
+            <div class="wiz-s-label">OPINIE KLIENTÓW</div>
+            <div class="wiz-review">
+              <div class="wiz-rev-stars">★★★★★</div>
+              <div class="wiz-rev-text">„Wygrałam sprawę o przywrócenie do pracy. Pani mecenas była dostępna przez cały czas i wszystko dokładnie tłumaczyła."</div>
+              <div class="wiz-rev-author">Klientka · marzec 2026</div>
+            </div>
+          </div>
+
+          <!-- Sticky bottom -->
+          <div class="wiz-sticky">
+            <div class="wiz-sticky-info">
+              <div class="wiz-sticky-name">mec. Anna Kowalska</div>
+              <div class="wiz-sticky-price">Bezpłatna konsultacja 15 min</div>
+            </div>
+            <button class="wiz-sticky-btn">Umów wizytę</button>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="tag yellow">legal-portal — gotowe ✅</span><br>
+        Strona <strong>/p/[slug]</strong> już istnieje na PRODzie.<br>
+        <strong>Adaptacja TPP:</strong> zmiana kolorów (1C5E3E → 2E9465) + przycisk „← Wróć do wyników" zamiast ogólnego back.<br>
+        Booking sloty pobierane z <strong>consultation_slots</strong> — już działa.
+      </div>
+    </div>
+
+    <div class="flow-arrow">›</div>
+
+    <!-- STEP 3 -->
+    <div class="flow-step">
+      <div class="step-num">KROK 3</div>
+      <div class="step-label">Booking → potwierdzenie<br>→ sprawa w portalu klienta</div>
+      <div class="phone">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="screen">
+          <div class="ph">
+            <div class="ph-logo">twojapomoc<span>prawna.pl</span></div>
+          </div>
+
+          <!-- Success -->
+          <div style="padding:40px 20px 0;text-align:center;">
+            <div style="width:80px;height:80px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 0 0 12px rgba(46,148,101,.12);">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M8 18l6 6 14-14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="font-size:20px;font-weight:800;color:#1A1A1A;margin-bottom:8px;">Wizyta umówiona!</div>
+            <div style="font-size:13px;color:#6B7280;margin-bottom:24px;line-height:1.5;">Dostaniesz potwierdzenie na e-mail z linkiem Google Meet</div>
+          </div>
+
+          <!-- Booking summary -->
+          <div style="background:white;border:1px solid var(--border);border-radius:14px;margin:0 16px 16px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+              <div class="lc-av">AK</div>
+              <div><div style="font-size:14px;font-weight:700;">mec. Anna Kowalska</div><div style="font-size:12px;color:#6B7280;">Prawo pracy</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:#6B7280;">Data</span><strong>2 kwi 2026, 14:00</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:#6B7280;">Format</span><strong>Online · Google Meet</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:#6B7280;">Czas trwania</span><strong>15 min (bezpłatna)</strong></div>
+            </div>
+          </div>
+
+          <div style="padding:0 16px;display:flex;flex-direction:column;gap:10px;">
+            <button style="padding:13px;background:var(--grad);color:white;border-radius:10px;font-size:14px;font-weight:700;border:none;width:100%;cursor:pointer;">Dołącz do Google Meet</button>
+            <a href="/portal" style="display:block;padding:13px;border:1.5px solid var(--border-s);border-radius:10px;font-size:14px;font-weight:600;color:var(--green);text-align:center;">Przejdź do swojego panelu</a>
+          </div>
+
+          <!-- Portal preview -->
+          <div style="margin:20px 16px 0;padding:12px;background:rgba(46,148,101,.06);border:1px solid rgba(46,148,101,.2);border-radius:10px;">
+            <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:6px;">ZAPISANO W TWOIM PANELU</div>
+            <div style="font-size:12px;color:#1A1A1A;font-weight:600;">Bezprawne zwolnienie z pracy</div>
+            <div style="font-size:11px;color:#6B7280;margin-top:2px;">Prawnik: mec. Anna Kowalska · Spotkanie: 2 kwi 14:00</div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="tag yellow">legal-portal — gotowe ✅</span><br>
+        Strona <strong>/book/l/[token]</strong> już istnieje.<br>
+        Email potwierdzenia przez <strong>Resend</strong> — działa.<br>
+        <strong>Do dodania:</strong> zapis do <code>tpp_bookings</code> i link sprawy.
+      </div>
+    </div>
+
+  </div><!-- /flow -->
+
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 4 — KATALOG /prawnicy
+  ══════════════════════════════════════════════════ -->
+  <div class="section-h">Dodatkowy ekran — Katalog <code>/prawnicy</code></div>
+  <div class="section-s">Publiczna wyszukiwarka prawników (TPP — do zbudowania). Wejście alternatywne bez wizarda.</div>
+
+  <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+    <div>
+      <div class="phone" style="max-width:280px;">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="screen">
+          <div class="ph">
+            <div class="ph-logo">twojapomoc<span>prawna.pl</span></div>
+          </div>
+
+          <div class="cat-hero">
+            <div class="cat-h1">Znajdź prawnika</div>
+            <div class="cat-sub">128 specjalistów w całej Polsce</div>
+            <div class="cat-search">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="cat-search-icon"><circle cx="6" cy="6" r="5" stroke="#9CA3AF" stroke-width="1.4"/><path d="M10 10l3 3" stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span class="cat-search-text">Specjalizacja lub miasto…</span>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="cat-filters">
+            <div class="cat-filter active">Wszystkie</div>
+            <div class="cat-filter">Prawo pracy</div>
+            <div class="cat-filter">Rodzinne</div>
+            <div class="cat-filter">Cywilne</div>
+            <div class="cat-filter">Warszawa</div>
+          </div>
+
+          <div class="cat-count">34 prawników · sortuj: Najlepiej dopasowani</div>
+
+          <!-- Card 1 -->
+          <div class="cat-card">
+            <div class="cat-card-head">
+              <div class="cat-av">AK</div>
+              <div>
+                <div class="cat-name">mec. Anna Kowalska</div>
+                <div class="cat-loc">Warszawa · Prawo pracy</div>
+              </div>
+              <div class="cat-rating"><span class="cat-star">★</span> 4.9</div>
+            </div>
+            <div class="cat-tags">
+              <span class="cat-tag">Odwołania od zwolnienia</span>
+              <span class="cat-tag">Mobbing</span>
+            </div>
+            <div class="cat-footer">
+              <div class="cat-avail"><div class="cat-avail-dot"></div> Dostępna dziś</div>
+              <div class="cat-price">od <strong>bezpłatna</strong></div>
+              <div class="cat-arrow">›</div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="cat-card">
+            <div class="cat-card-head">
+              <div class="cat-av" style="font-size:10px;">KD</div>
+              <div>
+                <div class="cat-name">mec. K. Dąbrowska</div>
+                <div class="cat-loc">Gdańsk · Prawo pracy</div>
+              </div>
+              <div class="cat-rating"><span class="cat-star">★</span> 4.8</div>
+            </div>
+            <div class="cat-tags">
+              <span class="cat-tag">Prawo pracy</span>
+              <span class="cat-tag">Postępowanie sądowe</span>
+            </div>
+            <div class="cat-footer">
+              <div class="cat-avail"><div class="cat-avail-dot"></div> Dostępna dziś</div>
+              <div class="cat-price">od <strong>bezpłatna</strong></div>
+              <div class="cat-arrow">›</div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="cat-card" style="opacity:.8;">
+            <div class="cat-card-head">
+              <div class="cat-av" style="font-size:10px;">PN</div>
+              <div>
+                <div class="cat-name">adw. Piotr Nowak</div>
+                <div class="cat-loc">Kraków · Prawo cywilne</div>
+              </div>
+              <div class="cat-rating"><span class="cat-star">★</span> 4.7</div>
+            </div>
+            <div class="cat-footer">
+              <div class="cat-avail" style="color:#9CA3AF;"><div class="cat-avail-dot" style="background:#9CA3AF;"></div> Dostępny jutro</div>
+              <div class="cat-price">od <strong>30 min</strong></div>
+              <div class="cat-arrow">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:280px;">
+      <div class="note" style="margin-top:0;">
+        <span class="tag green">TPP — do zbudowania</span><br><br>
+        <strong>Co to jest:</strong> Publiczny katalog prawników którzy kliknęli „Widoczny w TPP" w swoim dashboardzie.<br><br>
+        <strong>Źródło danych:</strong> <code>user_profiles WHERE tpp_is_listed = true</code><br><br>
+        <strong>Filtrowanie:</strong> specjalizacja, miasto, ocena, dostępność — query params w URL.<br><br>
+        <strong>Karty linkują do:</strong> <code>/p/[tpp_slug]</code> — istniejąca wizytówka.<br><br>
+        <strong>Nakład:</strong> ~1 dzień pracy. Mam już logikę w <code>matchingEngine.js</code> — to te same dane, tylko inny widok.
+      </div>
+
+      <div class="note" style="margin-top:12px;">
+        <strong>Dwa wejścia do wizytówki:</strong><br><br>
+        1. <span class="tag">przez wizard</span> AI dobiera prawników → matching screen → „Zobacz profil"<br><br>
+        2. <span class="tag">przez katalog</span> /prawnicy → filtruj → karta → wizytówka<br><br>
+        Oba prowadzą do <strong>tej samej strony /p/[slug]</strong> — zero duplikacji.
+      </div>
+
+      <div class="note" style="margin-top:12px;">
+        <strong>Jedyna zmiana w legal-portal:</strong><br><br>
+        W dashboardzie prawnika → zakładka „Podstawowe info" → dodać toggle:<br>
+        <code style="color:#4ADE80;">„Widoczny w katalogu twojapomocprawna.pl"</code><br><br>
+        Zapisuje <code>tpp_is_listed = true</code> do <code>user_profiles</code>.<br>
+        Kolega: ~2 godziny pracy.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+</body>
+</html>

@@ -1,0 +1,217 @@
+/* Shell */
+.shell {
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  height: var(--header-h);
+  background: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+.logo { font-size: 15px; color: white; }
+.logoLight { opacity: .75; font-weight: 400; }
+.logoBold  { font-weight: 700; }
+.logoTld   { opacity: .5; font-weight: 400; }
+
+.wizardCta {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.12);
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.2);
+  white-space: nowrap;
+  transition: background .15s;
+}
+.wizardCta:hover { background: rgba(255,255,255,.2); }
+
+/* Hero */
+.hero {
+  background: var(--gradient-primary);
+  padding: 28px 20px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.heroInner {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.heroTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 6px;
+}
+.heroSub {
+  font-size: 15px;
+  color: rgba(255,255,255,.75);
+  margin-bottom: 20px;
+}
+
+/* Filters bar */
+.filtersBar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 0 0;
+  position: sticky;
+  top: var(--header-h);
+  z-index: 90;
+}
+.filtersScroll {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filtersScroll::-webkit-scrollbar { display: none; }
+
+.filterPill {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  background: transparent;
+  border: 1.5px solid var(--color-border-strong, #D4CFC7);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.filterPill:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.filterPillActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white !important;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+}
+.select {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border-strong, #D4CFC7);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color .15s;
+}
+.select:focus { border-color: var(--color-primary); }
+
+/* Results bar */
+.resultsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+.resultsCount {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+.resultsSub { color: var(--color-text-muted); font-weight: 400; }
+.clearFilters {
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* List */
+.list {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-secondary);
+}
+.emptyBtn {
+  margin-top: 16px;
+  padding: 12px 24px;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+/* Bottom CTA */
+.bottomCta {
+  background: var(--color-primary-dark);
+  padding: 24px 20px;
+  margin-top: 16px;
+}
+.bottomCtaInner {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+.bottomCtaText {
+  font-size: 16px;
+  color: rgba(255,255,255,.8);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+.bottomCtaBtn {
+  display: inline-block;
+  padding: 14px 24px;
+  background: rgba(255,255,255,.15);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,.25);
+  transition: background .15s;
+  text-align: center;
+}
+.bottomCtaBtn:hover { background: rgba(255,255,255,.25); }
