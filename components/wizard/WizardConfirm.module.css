@@ -1,0 +1,75 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 48px;
+  text-align: center;
+}
+
+.successCircle {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  box-shadow: 0 0 0 12px var(--color-primary-100);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+.sub {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 28px;
+  max-width: 320px;
+}
+
+.summaryCard {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  margin-bottom: 24px;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+.summaryRow { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.summaryAvatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.summaryName { font-size: 15px; font-weight: 700; color: var(--color-text); }
+.summaryCity { font-size: 13px; color: var(--color-text-secondary); }
+.summaryPrice {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+.summaryPrice strong { color: var(--color-text); }
+
+.ctaBtn { display: block; text-align: center; text-decoration: none; }
+.portalBtn { display: block; text-align: center; text-decoration: none; }
+
+.note {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 16px;
+  line-height: 1.5;
+}

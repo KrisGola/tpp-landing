@@ -1,0 +1,41 @@
+/* Portal shell — fixed-height mobile layout */
+.shell {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.scrollArea {
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0;
+  bottom: var(--nav-h);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* View wrapper */
+.view {
+  min-height: 100%;
+}
+
+/* Slide animations */
+.animIn {
+  animation: vIn .25s cubic-bezier(.4,0,.2,1) forwards;
+}
+.animBack {
+  animation: vBack .25s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes vIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes vBack {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}

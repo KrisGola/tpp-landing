@@ -1,0 +1,16 @@
+.question { margin-bottom: 24px; }
+.qLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+.options { display: flex; flex-direction: column; }
+.error {
+  font-size: 13px;
+  color: var(--color-error);
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #FEF2F2;
+  border-radius: var(--radius-sm);
+}

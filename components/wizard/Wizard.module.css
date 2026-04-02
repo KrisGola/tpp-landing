@@ -1,0 +1,206 @@
+/* Wizard shell */
+.shell {
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Dot grid overlay */
+.shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(46,148,101,.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--color-primary-dark);
+  z-index: 100;
+}
+
+.headerInner {
+  max-width: 480px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 16px;
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.logoLight { opacity: .8; font-weight: 400; }
+.logoBold  { font-weight: 700; }
+.logoTld   { opacity: .6; font-weight: 400; }
+
+.progressBar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  background: rgba(255,255,255,.85);
+  border-radius: 2px;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+
+.backBtn {
+  font-size: 13px;
+  color: rgba(255,255,255,.7);
+  padding: 6px 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color .15s;
+}
+.backBtn:hover { color: white; }
+
+/* Main */
+.main {
+  flex: 1;
+  padding-top: var(--header-h);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Step wrapper */
+.stepWrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* Animations */
+.animIn {
+  animation: vIn .25s cubic-bezier(.4,0,.2,1) forwards;
+}
+.animBack {
+  animation: vBack .25s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes vIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes vBack {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Shared step styles ─────────────────────────────── */
+
+/* Section title */
+.stepTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 32px 0 8px;
+  line-height: 1.3;
+}
+.stepSubtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* Card */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Primary button */
+.btnPrimary {
+  width: 100%;
+  padding: 16px;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  margin-top: 24px;
+}
+.btnPrimary:hover   { opacity: .92; }
+.btnPrimary:active  { transform: scale(.98); }
+.btnPrimary:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary button */
+.btnSecondary {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s;
+  margin-top: 12px;
+}
+.btnSecondary:hover { background: var(--color-primary-50); }
+
+/* Option button (selectable) */
+.optionBtn {
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.optionBtn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+.optionBtnSelected {
+  border-color: var(--color-primary) !important;
+  background: var(--color-primary-100) !important;
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+.optionLabel {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.optionSub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}

@@ -1,0 +1,47 @@
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.logo { font-size: 15px; color: white; }
+.logoLight { opacity: .75; font-weight: 400; }
+.logoBold  { font-weight: 700; }
+.logoTld   { opacity: .5; font-weight: 400; }
+
+.right { display: flex; align-items: center; gap: 14px; }
+
+.notifBtn {
+  position: relative;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+.notifDot {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 8px; height: 8px;
+  background: #F59E0B;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary-dark);
+}
+
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,.3);
+  transition: border-color .15s;
+}
+.avatar:hover { border-color: rgba(255,255,255,.7); }

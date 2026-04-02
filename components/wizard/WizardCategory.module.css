@@ -1,0 +1,2 @@
+.grid { display: flex; flex-direction: column; }
+.check { margin-left: auto; flex-shrink: 0; }
