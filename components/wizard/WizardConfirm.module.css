@@ -73,3 +73,70 @@
   margin-top: 16px;
   line-height: 1.5;
 }
+
+/* ── Inline registration form ──────────────────────────── */
+.signupForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.formIntro {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0 0 4px;
+  text-align: center;
+}
+.formInput {
+  font: inherit;
+  font-size: 15px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.formInput:focus {
+  outline: none;
+  border-color: var(--tpp-primary, #2E9465);
+  box-shadow: 0 0 0 3px rgba(46, 148, 101, 0.12);
+}
+.formError {
+  font-size: 13px;
+  color: #B91C1C;
+  padding: 10px 12px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 10px;
+}
+
+/* ── Email-sent state ─────────────────────────────────── */
+.emailSent {
+  padding: 20px;
+  background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+  border: 1px solid #BBF7D0;
+  border-radius: 16px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+.emailIcon { font-size: 36px; margin-bottom: 10px; }
+.emailTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #124030;
+  margin: 0 0 8px;
+}
+.emailBody {
+  font-size: 14px;
+  color: #4a5c55;
+  line-height: 1.5;
+  margin: 0;
+}
